@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Entav78/semester-project-2#readme",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.1",
