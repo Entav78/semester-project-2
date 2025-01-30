@@ -1,4 +1,4 @@
-import { Navigation } from './Navigation.js';
+import { Navigation } from './navigation.js';
 import { fetchListings } from './api/listings.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
