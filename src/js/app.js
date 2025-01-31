@@ -1,5 +1,7 @@
 import { Navigation } from './navigation.js';
 import { fetchListings } from './api/listings.js';
+import '../styles/main.scss';
+//import '../styles/test.css';
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('✅ DOM Loaded - Initializing Navigation and Listings');

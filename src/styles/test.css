@@ -2,5 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@use './_variables.scss'as *;
-@use './_mixins.scss'as *;
+body {
+  background-color: red;
+}
