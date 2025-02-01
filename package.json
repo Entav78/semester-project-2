@@ -24,11 +24,14 @@
   },
   "homepage": "https://github.com/Entav78/semester-project-2#readme",
   "devDependencies": {
+    "@tailwindcss/cli": "^4.0.3",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
+    "postcss-import": "^16.1.0",
+    "prettier": "^3.4.2",
     "sass": "^1.83.4",
     "sass-embedded": "^1.83.4",
-    "tailwindcss": "^4.0.2",
+    "tailwindcss": "^4.0.3",
     "vite": "^6.0.11"
   }
 }

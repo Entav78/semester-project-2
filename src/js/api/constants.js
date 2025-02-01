@@ -22,7 +22,7 @@ export const API_SOCIAL_PROFILES = `${API_SOCIAL}/profiles`;
 export const basePath =
   window.location.hostname === 'localhost' ? '' : '/js2-ca-hilde';*/
 
-export const API_BASE = 'https://v2.api.noroff.dev';
+export const API_BASE = "https://v2.api.noroff.dev";
 
 // Auction Endpoints
 export const API_AUCTION = `${API_BASE}/auction`;

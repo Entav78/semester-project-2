@@ -1,17 +1,14 @@
 // SCSS dependencies MUST go first!
-@use 'variables';
-@use 'mixins';
-@use 'custom';
+@use "variables";
+@use "mixins";
+@use "custom";
 
-@use 'tailwindcss/base';
-@use 'tailwindcss/components';
-@use 'tailwindcss/utilities';
+@use "../pages/home/home";
+@use "../pages/auth/login";
+@use "../pages/auth/register";
+@use "../pages/listings/listings";
+@use "../pages/profile/profile";
 
-// Page-specific styles
-@use '../pages/home/home';
-@use '../pages/auth/login';
-@use '../pages/auth/register';
-@use '../pages/listings/listings';
-@use '../pages/profile/profile';
-
-// THEN Tailwind (so it doesn’t break SCSS processing)
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
