@@ -1,4 +1,4 @@
-import { basePath } from "../api/constants.js";
+import { basePath } from "@/js/api/constants.js";
 
 export default async function router(pathname = window.location.pathname) {
   console.log("Router running");

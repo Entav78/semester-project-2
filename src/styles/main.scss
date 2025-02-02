@@ -1,4 +1,4 @@
-// SCSS dependencies MUST go first!
+
 @use "variables";
 @use "mixins";
 @use "custom";
@@ -9,6 +9,7 @@
 @use "../pages/listings/listings";
 @use "../pages/profile/profile";
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
