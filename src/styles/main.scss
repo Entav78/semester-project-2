@@ -3,11 +3,11 @@
 @use "mixins";
 @use "custom";
 
-@use "../pages/home/home";
-@use "../pages/auth/login";
-@use "../pages/auth/register";
-@use "../pages/listings/listings";
-@use "../pages/profile/profile";
+@use "../pages/home/index" as home;
+@use "../pages/auth/login/index" as login;
+@use "../pages/auth/register/index" as register;
+@use "../pages/listings/index" as listings;
+@use "../pages/profile/index" as profile;
 
 @tailwind base;
 @tailwind components;
