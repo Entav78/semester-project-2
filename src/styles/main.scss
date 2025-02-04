@@ -1,4 +1,3 @@
-
 @use "variables";
 @use "mixins";
 @use "custom";
@@ -6,10 +5,17 @@
 @use "../pages/home/index" as home;
 @use "../pages/auth/login/index" as login;
 @use "../pages/auth/register/index" as register;
-@use "../pages/listings/index" as listings;
 @use "../pages/profile/index" as profile;
+@use "../js/navigation/index" as navigation;
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+
+
+
 

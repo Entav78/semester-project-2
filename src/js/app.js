@@ -1,4 +1,4 @@
-import { Navigation } from "./navigation.js";
+import Navigation from "@/js/navigation/index.js";
 import router from "@/pages/router/router.js";
 import "../styles/main.scss";
 
@@ -11,4 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Run the router to load page-specific scripts
   await router();
 });
+
+
 

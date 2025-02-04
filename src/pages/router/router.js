@@ -23,10 +23,6 @@ export default async function router(pathname = window.location.pathname) {
         console.log("🆕 Loading Register Page...");
         await import("@/pages/auth/register/index.js");
         break;
-      case cleanPathname === "/listings/":
-        console.log("📃 Loading Listings Page...");
-        await import("@/pages/listings/index.js");
-        break;
       case cleanPathname === "/profile/":
         console.log("👤 Loading Profile Page...");
         await import("@/pages/profile/index.js");

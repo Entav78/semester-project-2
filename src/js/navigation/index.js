@@ -1,6 +1,4 @@
-import router from "@/pages/router/router.js";
-
-export class Navigation {
+export default class Navigation {
   constructor() {
     console.log("🔍 Checking if navigation elements exist...");
 
@@ -16,9 +14,9 @@ export class Navigation {
 
     console.log("✅ Navigation elements found, adding event listeners...");
 
-    this.openSidebar.addEventListener("click", () => this.openNav());
-    this.closeSidebar.addEventListener("click", () => this.closeNav());
-    this.overlay.addEventListener("click", () => this.closeNav());
+    this.openSidebar.addEventListener("click", () => this.toggleNav());
+    this.closeSidebar.addEventListener("click", () => this.toggleNav());
+    this.overlay.addEventListener("click", () => this.toggleNav());
 
     // Attach router functionality to navigation links
     document.querySelectorAll(".nav-link").forEach(link => {
@@ -33,20 +31,11 @@ export class Navigation {
     });
   }
 
-  openNav() {
-    this.sidebar.classList.remove("translate-x-full");
-    this.sidebar.classList.add("scale-100");
-    this.overlay.classList.remove("hidden");
-    this.overlay.classList.add("opacity-100");
-    this.openSidebar.classList.add("hidden");
-  }
-
-  closeNav() {
-    this.sidebar.classList.add("translate-x-full");
-    this.sidebar.classList.remove("scale-100");
-    this.overlay.classList.add("hidden");
-    this.overlay.classList.remove("opacity-100");
-    this.openSidebar.classList.remove("hidden");
+  toggleNav() {
+    console.log("🍔 Toggling sidebar...");
+    this.sidebar.classList.toggle("sidebar-open");
+    this.overlay.classList.toggle("overlay-visible");
   }
 }
+
 

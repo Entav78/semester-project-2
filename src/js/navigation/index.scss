@@ -1,0 +1,67 @@
+// Hamburger Button
+.open-sidebar {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.75rem;
+  background-color: #1E1E1E;
+  color: white;
+  border-radius: 9999px; // Makes it round
+  font-size: 1.5rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  z-index: 50;
+}
+
+// Sidebar
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 16rem;
+  background-color: #B09187;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%); // Hide sidebar off-screen by default
+  transition: transform 0.5s ease-in-out;
+  z-index: 40;
+}
+
+// Sidebar Open
+.sidebar-open {
+  transform: translateX(0) !important;
+}
+
+// Overlay
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease-in-out;
+  display: none; // Hide overlay by default
+  z-index: 40;
+}
+
+// Overlay Visible
+.overlay-visible {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+// Close Button
+.close-sidebar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #2B1B0F;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: white;
+  }
+}
+
+
