@@ -2,15 +2,25 @@ import Navigation from "@/components/navigation/index.js";
 import router from "@/pages/router/router.js";
 import "../styles/main.scss";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🚀 App initialized");
+console.log("🛠️ Initializing Router...");
+router();
 
-  // Initialize Navigation
-  new Navigation();
-
-  // Run the router to load page-specific scripts
-  await router();
+// Ensure elements exist before instantiating
+document.addEventListener("readystatechange", () => {
+  if (document.readyState === "interactive" || document.readyState === "complete") {
+    console.log("✅ DOM Ready: Initializing Navigation...");
+    
+    // Only initialize navigation if elements exist
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    if (sidebar && overlay) {
+      new Navigation();
+    } else {
+      console.warn("⚠️ Sidebar or overlay not found. Navigation not initialized.");
+    }
+  }
 });
+
 
 
 

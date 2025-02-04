@@ -1,20 +1,28 @@
 import { fetchListings } from "@/js/api/listings.js";
+alert("🏠 home/index.js is running!");
+console.log("🏠 home/index.js is running!");
 
-function fetchListingsAndRender() {
+async function fetchListingsAndRender() {
   console.log("🏠 Fetching and rendering listings...");
 
   const container = document.getElementById("listings-container");
   if (!container) {
-    console.error("❌ listings-container not found in the DOM!");
+    console.warn("⚠️ listings-container not found. Retrying in 100ms...");
+    setTimeout(fetchListingsAndRender, 100);
     return;
   }
 
-  fetchListings()
-    .then((listings) => {
-      if (listings.length > 0) {
-        container.innerHTML = listings
-          .map(
-            (listing) => `
+  console.log("✅ listings-container found! Proceeding to fetch listings...");
+
+  try {
+    const listings = await fetchListings();
+    console.log("✅ Listings Fetched:", listings);
+
+    if (Array.isArray(listings) && listings.length > 0) {
+      console.log("✅ Rendering Listings Now...");
+      container.innerHTML = listings
+        .map(
+          (listing) => `
           <div class="border p-4 rounded-lg shadow-lg">
             <h2 class="text-xl font-bold">${listing.title}</h2>
             <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
@@ -23,20 +31,27 @@ function fetchListingsAndRender() {
             <a href="/pages/item/item.html?id=${listing.id}" class="block mt-4 text-blue-500 underline">View Item</a>
           </div>
         `
-          )
-          .join("");
-        console.log("✅ Listings rendered!");
-      } else {
-        container.innerHTML = "<p>No listings available.</p>";
-      }
-    })
-    .catch((error) => console.error("❌ Error fetching listings:", error));
+        )
+        .join("");
+      console.log("✅ Listings rendered!");
+    } else {
+      console.warn("⚠️ No listings available.");
+      container.innerHTML = "<p>No listings available.</p>";
+    }
+  } catch (error) {
+    console.error("❌ Error fetching listings:", error);
+  }
 }
 
-// Ensure function runs **immediately**, even if DOM is already loaded
+// ✅ Ensure function runs when DOM is ready
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", fetchListingsAndRender);
+  console.warn("⏳ Document still loading. Retrying in 100ms...");
+  setTimeout(fetchListingsAndRender, 100);
 } else {
-  fetchListingsAndRender(); // Run immediately if DOM is already loaded
+  console.log("🚀 Document ready. Running fetchListingsAndRender()...");
+  fetchListingsAndRender();
 }
+
+
+
 

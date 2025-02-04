@@ -1,21 +1,13 @@
 export default class Navigation {
   constructor() {
-    console.log("🔍 Checking if navigation elements exist...");
-
     this.sidebar = document.getElementById("sidebar");
     this.overlay = document.getElementById("overlay");
-    this.openSidebar = document.getElementById("openSidebar");
-    this.closeSidebar = document.getElementById("closeSidebar");
 
-    if (!this.sidebar || !this.overlay || !this.openSidebar || !this.closeSidebar) {
-      console.error("❌ Navigation elements not found in DOM.");
+    if (!this.sidebar || !this.overlay) {
+      console.warn("⚠️ Navigation elements missing. Navigation not initialized.");
       return;
     }
 
-    console.log("✅ Navigation elements found, adding event listeners...");
-
-    this.openSidebar.addEventListener("click", () => this.toggleNav());
-    this.closeSidebar.addEventListener("click", () => this.toggleNav());
     this.overlay.addEventListener("click", () => this.toggleNav());
 
     // Attach router functionality to navigation links
@@ -29,6 +21,8 @@ export default class Navigation {
         }
       });
     });
+
+    console.log("🍔 Navigation initialized.");
   }
 
   toggleNav() {
@@ -37,5 +31,6 @@ export default class Navigation {
     this.overlay.classList.toggle("overlay-visible");
   }
 }
+
 
 
