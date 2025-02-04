@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite",
-    "build": "vite build",
-    "tailwind": "tailwindcss -i ./src/styles/main.css -o ./dist/main.css --watch",
+    "build": "vite build && tailwindcss -i ./src/styles/main.scss -o ./dist/assets/main.css",
+    "tailwind": "tailwindcss -i ./src/styles/main.scss -o ./dist/assets/main.css --watch",
     "serve": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

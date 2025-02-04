@@ -1,4 +1,4 @@
-import Navigation from "@/js/navigation/index.js";
+import Navigation from "@/components/navigation/index.js";
 import router from "@/pages/router/router.js";
 import "../styles/main.scss";
 
