@@ -14,21 +14,21 @@ export default async function router(pathname = window.location.pathname) {
           console.log("✅ home/index.js LOADED", module);
         });
         break;
-      case cleanPathname.startsWith("/pages/item"):
+      case cleanPathname.startsWith("src/pages/item"):
         console.log("🛒 Loading Item Page...");
         await import("@/pages/item/item.js").then((module) => {
           console.log("✅ item/item.js LOADED", module);
         });
         break;
-      case cleanPathname === "/auth/login":
+      case cleanPathname === "src/auth/login":
         console.log("🔑 Loading Login Page...");
         await import("@/pages/auth/login/login.js");
         break;
-      case cleanPathname === "/auth/register":
+      case cleanPathname === "src/auth/register":
         console.log("🆕 Loading Register Page...");
         await import("@/pages/auth/register/register.js");
         break;
-      case cleanPathname === "/profile":
+      case cleanPathname === "src/profile":
         console.log("👤 Loading Profile Page...");
         await import("@/pages/profile/profile.js");
         break;
