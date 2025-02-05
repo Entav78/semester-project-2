@@ -7,10 +7,16 @@
 </head>
 <body>
   
-  <div class="filter-container p-4 border rounded-lg shadow-md">
+  <div id="filter-container">
     <label for="search-bar" class="block text-lg font-bold mb-2">Search Listings</label>
-    <input type="text" id="search-bar" placeholder="Search for items..." class="p-3 border rounded-lg shadow-sm w-full mb-4">
-  
+    <div class="flex gap-2">
+      <input type="text" id="search-bar" placeholder="Search for items..." class="p-3 border rounded-lg shadow-sm w-full">
+      <button id="search-btn" class="p-3 bg-blue-500 text-white rounded-lg shadow-md">
+        🔍
+      </button>
+    </div>
+
+    
     <label for="category-filter" class="block text-lg font-bold mb-2">Filter by Category</label>
     <select id="category-filter" class="p-3 border rounded-lg shadow-sm w-full">
       <option value="">All Categories</option>
@@ -31,6 +37,7 @@
       <label class="block"><input type="checkbox" name="category" value="collectibles"> Collectibles</label>
       
       <button id="apply-filters" class="mt-3 bg-blue-500 text-white p-2 rounded-lg">Apply Filters</button>
+      <button id="clear-filters" class="mt-3 bg-gray-500 text-white p-2 rounded-lg">Clear Filters</button>
     </div>
   </div>
 

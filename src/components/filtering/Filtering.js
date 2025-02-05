@@ -6,9 +6,10 @@ export default class Filtering {
     this.advancedFilters = document.getElementById("advanced-filters");
     this.applyFiltersBtn = document.getElementById("apply-filters");
     this.searchBar = document.getElementById("search-bar");
+    this.searchBtn = document.getElementById("search-btn");
     this.listings = document.querySelectorAll(".listing-item");
 
-    if (!this.categoryFilter || !this.advancedFilters || !this.applyFiltersBtn || !this.searchBar) {
+    if (!this.categoryFilter || !this.advancedFilters || !this.applyFiltersBtn || !this.searchBar || !this.searchBtn) {
       console.warn("⚠️ Filtering elements not found. Skipping setup.");
       return;
     }
@@ -16,57 +17,58 @@ export default class Filtering {
     this.setupEventListeners();
   }
 
-  // 🔹 Attach all filtering-related event listeners
   setupEventListeners() {
-    // Show/hide advanced filtering
-    this.categoryFilter.addEventListener("change", () => this.toggleAdvancedFilters());
+    // ✅ Show or hide checkboxes when "Multiple Categories" is selected
+    this.categoryFilter.addEventListener("change", () => {
+      if (this.categoryFilter.value === "multiple") {
+        this.advancedFilters.classList.remove("hidden"); // ✅ Show checkboxes
+      } else {
+        this.advancedFilters.classList.add("hidden"); // ✅ Hide checkboxes
+        this.clearCheckboxes(); // ✅ Clear selected checkboxes when switching
+      }
+      this.applyFilters(); // ✅ Apply new filtering immediately
+    });
 
-    // Handle applying category filters
-    this.applyFiltersBtn.addEventListener("click", () => this.applyCategoryFilters());
+    // ✅ Event listener for search input (Enter key)
+    this.searchBar.addEventListener("input", () => this.applyFilters());
 
-    // Handle search input filtering
-    this.searchBar.addEventListener("input", () => this.applySearchFilter());
+    // ✅ Event listener for clicking search button
+    this.searchBtn.addEventListener("click", () => this.applyFilters());
+
+    // ✅ Event listener for applying advanced filters
+    this.applyFiltersBtn.addEventListener("click", () => this.applyFilters());
   }
 
-  // 🔹 Show or hide advanced filters when "Multiple Categories" is selected
-  toggleAdvancedFilters() {
-    if (this.categoryFilter.value === "multiple") {
-      this.advancedFilters.classList.remove("hidden");
-    } else {
-      this.advancedFilters.classList.add("hidden");
-    }
+  clearCheckboxes() {
+    document.querySelectorAll("input[name='category']:checked").forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+    console.log("🧹 Checkboxes cleared.");
   }
 
-  // 🔹 Apply filtering based on selected categories
-  applyCategoryFilters() {
+  applyFilters() {
+    const query = this.searchBar.value.toLowerCase();
+    console.log("🔍 Search Query:", query);
+
     const selectedCategories = Array.from(document.querySelectorAll("input[name='category']:checked"))
       .map((checkbox) => checkbox.value);
 
-    console.log("✅ Selected categories:", selectedCategories);
-    this.filterListings(selectedCategories, this.searchBar.value);
-  }
-
-  // 🔹 Apply search filtering
-  applySearchFilter() {
-    const searchQuery = this.searchBar.value.toLowerCase();
-    this.filterListings([], searchQuery);
-  }
-
-  // 🔹 Filter listings dynamically based on search and category
-  filterListings(categories = [], searchQuery = "") {
-    console.log("🔍 Filtering Listings...");
+    console.log("✅ Selected Categories:", selectedCategories);
 
     this.listings.forEach((listing) => {
       const title = listing.querySelector(".listing-title")?.textContent.toLowerCase() || "";
       const description = listing.querySelector(".listing-description")?.textContent.toLowerCase() || "";
       const category = listing.dataset.category || "";
 
-      const matchesSearch = searchQuery === "" || title.includes(searchQuery) || description.includes(searchQuery);
-      const matchesCategory = categories.length === 0 || categories.includes(category);
+      const matchesSearch = query === "" || title.includes(query) || description.includes(query);
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(category);
 
       listing.style.display = matchesSearch && matchesCategory ? "block" : "none";
     });
   }
 }
+
+
+
 
 
