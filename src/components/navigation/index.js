@@ -1,36 +1,41 @@
+console.log("✅ Navigation script is running!");
+
 export default class Navigation {
   constructor() {
     this.sidebar = document.getElementById("sidebar");
     this.overlay = document.getElementById("overlay");
+    this.openButton = document.getElementById("openSidebar");
+    console.log("🔍 Checking openSidebar button:", document.getElementById("openSidebar"));
+    this.closeButton = document.getElementById("closeSidebar");
 
-    if (!this.sidebar || !this.overlay) {
+    if (!this.sidebar || !this.overlay || !this.openButton || !this.closeButton) {
       console.warn("⚠️ Navigation elements missing. Navigation not initialized.");
       return;
     }
 
-    this.overlay.addEventListener("click", () => this.toggleNav());
-
-    // Attach router functionality to navigation links
-    document.querySelectorAll(".nav-link").forEach(link => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault(); // Prevents default page reload
-        const page = event.target.getAttribute("data-page");
-        if (page) {
-          console.log(`📌 Navigating to /${page}/ via Router`);
-          router(`/${page}/`); // Call the router instead of changing window.location
-        }
-      });
-    });
+    this.openButton.addEventListener("click", () => this.toggleNav(true));
+    this.closeButton.addEventListener("click", () => this.toggleNav(false));
+    this.overlay.addEventListener("click", () => this.toggleNav(false));
 
     console.log("🍔 Navigation initialized.");
   }
 
-  toggleNav() {
-    console.log("🍔 Toggling sidebar...");
-    this.sidebar.classList.toggle("sidebar-open");
-    this.overlay.classList.toggle("overlay-visible");
+  toggleNav(open) {
+    console.log(open ? "📂 Opening sidebar..." : "📂 Closing sidebar...");
+    if (open) {
+      this.sidebar.classList.remove("translate-x-full");
+      this.overlay.classList.remove("hidden");
+    } else {
+      this.sidebar.classList.add("translate-x-full");
+      this.overlay.classList.add("hidden");
+    }
   }
 }
+
+
+
+
+
 
 
 

@@ -9,7 +9,7 @@ router();
 document.addEventListener("readystatechange", () => {
   if (document.readyState === "interactive" || document.readyState === "complete") {
     console.log("✅ DOM Ready: Initializing Navigation...");
-    
+    new Navigation(); 
     // ✅ Only initialize navigation if elements exist
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
@@ -19,20 +19,18 @@ document.addEventListener("readystatechange", () => {
       console.warn("⚠️ Sidebar or overlay not found. Navigation not initialized.");
     }
 
-    // ✅ Check if we're on the home page ("/") and if `#listings-container` exists
     const listingsContainer = document.getElementById("listings-container");
     if (listingsContainer) {
-      console.log("✅ listings-container exists - Home Page detected!");
-      // Here you could initialize logic related to listings if needed
-    } else {
-      console.warn("⚠️ listings-container NOT found - Not on Home Page.");
-    }
+    console.log("✅ listings-container exists - Home Page detected!");
+    // 🚀 If needed, initialize listing-related logic here
+}
 
-    // ✅ Check if we're on the item page ("/pages/item/") and if `#item-container` exists
+
+    // ✅ Check if we're on the item page ("/src/pages/item/") and if `#item-container` exists
     const pathname = window.location.pathname;
     console.log("📌 Current Page Path:", pathname);
 
-    if (pathname.startsWith("/pages/item/")) {
+    if (pathname.startsWith("/src/pages/item/")) {
       console.log("🛒 Loading Item Page Script...");
       import("@/pages/item/item.js").then((module) => {
         console.log("✅ item/item.js LOADED", module);

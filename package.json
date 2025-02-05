@@ -6,6 +6,8 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite",
+    "clean": "rm -rf dist",
+    "build-preview": "pnpm clean && pnpm build && pnpm vite preview",
     "build": "vite build && tailwindcss -i ./src/styles/main.scss -o ./dist/assets/main.css",
     "tailwind": "tailwindcss -i ./src/styles/main.scss -o ./dist/assets/main.css --watch",
     "serve": "vite preview",

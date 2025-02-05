@@ -4,7 +4,7 @@ import Listing from "@/models/listing.js"; // ✅ Ensure this model exists!
 console.log("🛒 Item Page JavaScript is running!");
 
 // ✅ Ensure script only runs on the item page
-if (!window.location.pathname.startsWith("/pages/item")) {
+if (!window.location.pathname.startsWith("/src/pages/item")) {
   console.warn("⚠️ Item script loaded on the wrong page, exiting...");
 } else {
   console.log("✅ Correctly running on item page");
