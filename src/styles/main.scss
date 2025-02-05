@@ -8,6 +8,8 @@
 @use "@/pages/auth/register/index" as register;
 @use "@/pages/profile/index" as profile;
 @use "@/components/navigation/index" as navigation;
+@use "@/components/buttons/index" as buttons;
+
 
 @tailwind base;
 @tailwind components;

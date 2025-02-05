@@ -1,0 +1,13 @@
+.view-item {
+  background-color: #3490dc; 
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background-color: #2779bd; 
+  }
+}

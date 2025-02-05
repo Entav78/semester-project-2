@@ -1,25 +1,22 @@
-import { fetchListings } from "@/js/api/listings.js";
-alert("🏠 home/index.js is running!");
-console.log("🏠 home/index.js is running!");
+import { fetchListings } from "@/js/api/listings.js"; 
+import { setupListingButtons } from "@/components/buttons/index.js";
 
-async function fetchListingsAndRender() {
+async function fetchAndRenderListings() {
   console.log("🏠 Fetching and rendering listings...");
 
   const container = document.getElementById("listings-container");
   if (!container) {
-    console.warn("⚠️ listings-container not found. Retrying in 100ms...");
-    setTimeout(fetchListingsAndRender, 100);
+    console.error("❌ listings-container not found in the DOM!");
     return;
   }
 
-  console.log("✅ listings-container found! Proceeding to fetch listings...");
-
   try {
-    const listings = await fetchListings();
-    console.log("✅ Listings Fetched:", listings);
+    console.log("🔍 Calling fetchListings()...");
+    const listings = await fetchListings(); 
+    console.log("✅ Listings Fetched in home/index.js:", listings);
 
     if (Array.isArray(listings) && listings.length > 0) {
-      console.log("✅ Rendering Listings Now...");
+      console.log("🖼️ Rendering Listings...");
       container.innerHTML = listings
         .map(
           (listing) => `
@@ -28,14 +25,19 @@ async function fetchListingsAndRender() {
             <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
             <p class="text-gray-600 mt-2">${listing.description || "No description available."}</p>
             <p class="font-bold mt-2">${listing.price} credits</p>
-            <a href="/pages/item/item.html?id=${listing.id}" class="block mt-4 text-blue-500 underline">View Item</a>
+            <button class="view-item bg-blue-500 text-white px-4 py-2 rounded mt-4" data-id="${listing.id}">
+              View Item
+            </button>
           </div>
         `
         )
         .join("");
+
       console.log("✅ Listings rendered!");
+      
+      setupListingButtons(); 
     } else {
-      console.warn("⚠️ No listings available.");
+      console.warn("⚠️ No listings available. Something is wrong.");
       container.innerHTML = "<p>No listings available.</p>";
     }
   } catch (error) {
@@ -43,14 +45,14 @@ async function fetchListingsAndRender() {
   }
 }
 
-// ✅ Ensure function runs when DOM is ready
+// ✅ Run immediately if DOM is ready
 if (document.readyState === "loading") {
   console.warn("⏳ Document still loading. Retrying in 100ms...");
-  setTimeout(fetchListingsAndRender, 100);
+  setTimeout(fetchAndRenderListings, 100);
 } else {
-  console.log("🚀 Document ready. Running fetchListingsAndRender()...");
-  fetchListingsAndRender();
+  fetchAndRenderListings();
 }
+
 
 
 
