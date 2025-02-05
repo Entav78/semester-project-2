@@ -17,7 +17,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: "index.html", 
+        main: "index.html",
+        item: "src/pages/item/item.html", 
+        profile: "src/pages/profile/profile.html",
       },
       output: {
         assetFileNames: "assets/[name][extname]", // ✅ Prevent hashed filenames

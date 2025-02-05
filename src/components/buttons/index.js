@@ -1,17 +1,21 @@
-export function setupListingButtons() {
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest(".view-item");
-    if (button) {
-      const itemId = button.getAttribute("data-id");
-      if (!itemId) {
-        console.error("❌ Button is missing data-id!");
-        return;
-      }
+document.querySelectorAll(".view-item").forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    event.preventDefault(); // ✅ Prevent default behavior
 
-      console.log(`🛒 Redirecting to Item: ${itemId}`);
-      window.location.href = `/pages/item/?id=${itemId}`;
+    const itemId = btn.dataset.id;
+    if (!itemId) {
+      console.error("❌ No item ID found on button.");
+      return;
     }
+
+    console.log(`🛒 Navigating to Item Page: /pages/item/item.html?id=${itemId}`);
+
+    // ✅ Redirect to the correct new page
+    window.location.href = `/pages/item/item.html?id=${itemId}`;
   });
-}
+});
+
+
+
 
 
