@@ -1,5 +1,6 @@
+import { router } from "@/pages/router/router.js";
 import { API_LISTINGS } from "@/js/api/constants.js";
-import Listing from "@/models/listing.js"; // ✅ Ensure this model exists!
+import { Listing } from "@/models/listing.js"; // ✅ Ensure this model exists!
 
 console.log("🛒 Item Page JavaScript is running!");
 

@@ -10,7 +10,11 @@
   transform: translateX(0);
 }
 
-
+.nav-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #ffcc00; /* Change this to match your theme */
+}
 
 /* first try
 .open-sidebar {

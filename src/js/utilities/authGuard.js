@@ -1,6 +1,6 @@
 import { getToken } from "./storage.js"; // A utility to fetch the user token
 
-export default function authGuard(redirectPath = "/") {
+export function authGuard(redirectPath = "/") {
   const token = getToken();
   if (!token) {
     alert("You must log in to access this page.");

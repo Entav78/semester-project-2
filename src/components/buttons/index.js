@@ -1,8 +1,10 @@
 export function setupListingButtons() {
-  document.querySelectorAll(".view-item").forEach((btn) => {
-    btn.addEventListener("click", (event) => {
-      event.preventDefault(); // ✅ Prevent default behavior
+  console.log("🔍 Setting up item buttons...");
+  document.querySelectorAll(".view-item").forEach((btn, index) => {
+    console.log(`🛒 Button ${index + 1}:`, btn);
 
+    btn.addEventListener("click", (event) => {
+      event.preventDefault(); 
       const itemId = btn.dataset.id;
       if (!itemId) {
         console.error("❌ No item ID found on button.");

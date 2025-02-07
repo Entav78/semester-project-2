@@ -18,9 +18,11 @@ export const API_SOCIAL = `${API_BASE}/social`;
 export const API_SOCIAL_POSTS = `${API_SOCIAL}/posts`;
 
 export const API_SOCIAL_PROFILES = `${API_SOCIAL}/profiles`;
+*/
 
 export const basePath =
-  window.location.hostname === 'localhost' ? '' : '/js2-ca-hilde';*/
+  window.location.hostname === "localhost" ? "" : "/semester-project-2";
+
 
 export const API_BASE = "https://v2.api.noroff.dev";
 

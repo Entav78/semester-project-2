@@ -1,4 +1,4 @@
-export default class Filtering {
+export class Filtering {
   constructor() {
     console.log("🔍 Initializing Filtering...");
 

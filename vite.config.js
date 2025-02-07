@@ -17,9 +17,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: "index.html",
+        main: "index.html", // Home page
         item: "src/pages/item/item.html", 
         profile: "src/pages/profile/profile.html",
+        login: "src/pages/auth/login/login.html", // ✅ Add login.html
+        register: "src/pages/auth/register/register.html", // ✅ Add register.html
       },
       output: {
         assetFileNames: "assets/[name][extname]", // ✅ Prevent hashed filenames
@@ -27,6 +29,7 @@ export default defineConfig({
     },
   },
 });
+
 
 
 

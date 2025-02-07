@@ -1,15 +1,32 @@
-import { fetchListings } from "@/js/api/listings.js"; 
+import { fetchListings } from "@/js/api/listings.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
-import Filtering from "@/components/filtering/Filtering.js";
+import { Filtering } from "@/components/filtering/Filtering.js";
 
 async function initializeHomePage() {
   console.log("🏠 Initializing Home Page...");
 
+  // 🔥 Ensure the listings container exists before fetching
+  await waitForListingsContainer();
+
   // ✅ Initialize Filtering Class
   new Filtering();
-  
+
   // ✅ Fetch and render listings
   fetchAndRenderListings();
+}
+
+// ✅ Function to wait until listings-container is added to DOM
+async function waitForListingsContainer() {
+  return new Promise((resolve) => {
+    const checkExist = setInterval(() => {
+      const container = document.getElementById("listings-container");
+      if (container) {
+        console.log("✅ listings-container found!");
+        clearInterval(checkExist);
+        resolve(container);
+      }
+    }, 50);
+  });
 }
 
 async function fetchAndRenderListings() {
@@ -23,7 +40,7 @@ async function fetchAndRenderListings() {
 
   try {
     console.log("🔍 Calling fetchListings()...");
-    const listings = await fetchListings(); 
+    const listings = await fetchListings();
     console.log("✅ Listings Fetched:", listings);
 
     if (Array.isArray(listings) && listings.length > 0) {
@@ -45,8 +62,7 @@ async function fetchAndRenderListings() {
         .join("");
 
       console.log("✅ Listings rendered!");
-      
-      setupListingButtons(); 
+      setupListingButtons();
     } else {
       console.warn("⚠️ No listings available. Something is wrong.");
       container.innerHTML = "<p>No listings available.</p>";
@@ -56,13 +72,18 @@ async function fetchAndRenderListings() {
   }
 }
 
-// ✅ Run initialization when DOM is ready
-if (document.readyState === "loading") {
-  console.warn("⏳ Document still loading. Retrying in 100ms...");
-  setTimeout(initializeHomePage, 100);
-} else {
+// ✅ Ensure script runs correctly when home page is loaded
+document.addEventListener("home-loaded", () => {
+  console.log("♻ Reloading Home Page Listings...");
   initializeHomePage();
-}
+});
+
+initializeHomePage();
+
+
+
+
+
 
 
 

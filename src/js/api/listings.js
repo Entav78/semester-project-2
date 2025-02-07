@@ -1,5 +1,5 @@
 import { API_LISTINGS } from "./constants.js";
-import Listing from "../../models/Listing.js";
+import { Listing } from "../../models/Listing.js";
 
 console.log("🔍 API_LISTINGS URL:", API_LISTINGS); // ✅ Check if correct URL is used
 
