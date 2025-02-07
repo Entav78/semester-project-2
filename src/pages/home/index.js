@@ -2,16 +2,11 @@ import { fetchListings } from "@/js/api/listings.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 
-async function initializeHomePage() {
+export async function initializeHomePage() {
   console.log("🏠 Initializing Home Page...");
 
-  // 🔥 Ensure the listings container exists before fetching
   await waitForListingsContainer();
-
-  // ✅ Initialize Filtering Class
   new Filtering();
-
-  // ✅ Fetch and render listings
   fetchAndRenderListings();
 }
 
@@ -29,10 +24,11 @@ async function waitForListingsContainer() {
   });
 }
 
+// ✅ Fetch and render listings
 async function fetchAndRenderListings() {
   console.log("🏠 Fetching and rendering listings...");
-
   const container = document.getElementById("listings-container");
+
   if (!container) {
     console.error("❌ listings-container not found in the DOM!");
     return;
@@ -73,12 +69,16 @@ async function fetchAndRenderListings() {
 }
 
 // ✅ Ensure script runs correctly when home page is loaded
-document.addEventListener("home-loaded", () => {
-  console.log("♻ Reloading Home Page Listings...");
-  initializeHomePage();
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("🌍 DOM fully loaded - Checking if on home page...");
+  if (window.location.pathname === "/") {
+    initializeHomePage();
+  }
 });
 
-initializeHomePage();
+
+
+
 
 
 

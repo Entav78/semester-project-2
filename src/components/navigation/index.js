@@ -1,4 +1,5 @@
 import { router } from "@/pages/router/router.js";
+import { basePath } from "@/js/api/constants.js";
 
 export class Navigation {
   constructor(container, isLoggedIn) {
@@ -20,15 +21,16 @@ export class Navigation {
     this.container.innerHTML = ""; // Clear existing content
 
     const nav = document.createElement("ul");
-    nav.className = "navbar-nav flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6";
+    nav.className = "navbar-nav flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6"
 
-    const navItems = [
-      { text: "Home", path: "/" },
-      { text: "Profile", path: "/profile/", show: isLoggedIn },
-      { text: "Login", path: "/auth/login/", show: !isLoggedIn },
-      { text: "Register", path: "/auth/register/", show: !isLoggedIn },
-      { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
-    ];
+const navItems = [
+  { text: "Home", path: `${basePath}/` },
+  { text: "Profile", path: `${basePath}/src/pages/profile/profile`, show: isLoggedIn },
+  { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
+  { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
+  { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
+];
+
 
     navItems.forEach(({ text, path, show, action }) => {
       if (show !== undefined && !show) return;

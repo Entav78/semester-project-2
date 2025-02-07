@@ -11,10 +11,8 @@ export async function fetchListings() {
     if (!response.ok) throw new Error("Failed to fetch listings");
 
     const json = await response.json();
-    console.log("📊 Full API Response:", json); // ✅ Log full response
 
     const { data } = json;
-    console.log("✅ Listings Fetched:", data);
 
     return data.map((listingData) => new Listing(listingData)); // ✅ Ensure correct format
   } catch (error) {

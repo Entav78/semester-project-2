@@ -1,29 +1,27 @@
+import { basePath } from "@/js/api/constants.js";
 import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import "../styles/main.scss";
 
 console.log("🛠️ Initializing App...");
 
-// ✅ Force router execution on first load
-router();
-
-// ✅ Check login state
 const isLoggedIn = Boolean(localStorage.getItem("accessToken"));
-
-// ✅ Find navigation containers
 const navContainers = document.querySelectorAll(".navbar-nav");
-
-// ✅ Create and update navigation dynamically
-navContainers.forEach(container => {
-  const navigationInstance = new Navigation(container, isLoggedIn);
-  navigationInstance.createNavbar(isLoggedIn);
-});
+navContainers.forEach(container => new Navigation(container, isLoggedIn));
 
 document.body.addEventListener("click", (event) => {
-  const button = event.target.closest("button.nav-link");
+  const button = event.target.closest(".nav-link");
   if (button) {
     event.preventDefault();
-    const path = button.dataset.path;
+    let path = button.dataset.path;
+
+    if (!path) {
+      console.warn("⚠️ No path found on clicked button.");
+      return;
+    }
+
+    // ✅ Ensure path includes basePath
+    path = basePath + path.replace(basePath, "");
 
     console.log(`🔍 Navigating to: ${path}`);
     window.history.pushState({}, "", path);
@@ -31,10 +29,12 @@ document.body.addEventListener("click", (event) => {
   }
 });
 
-// ✅ Ensure router updates on back/forward
 window.addEventListener("popstate", () => {
   router();
 });
+
+
+
 
 
 

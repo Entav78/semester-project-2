@@ -1,58 +1,71 @@
-import { Navigation } from "@/components/navigation/index.js";
+import { initializeHomePage } from "@/pages/home/index.js";
+import { basePath } from "@/js/api/constants.js";
 
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
   console.log("📌 Detected Path:", pathname);
 
-  const cleanPathname = pathname.replace(/\/$/, ""); // Normalize path
+  const cleanPathname = pathname.replace(basePath, "").split("?")[0] || "/";
+
   console.log("📌 Clean Pathname:", cleanPathname);
 
   try {
-    let pageHtml = "";
     switch (true) {
-      case cleanPathname === "":
       case cleanPathname === "/":
         console.log("🏠 Loading Home Page...");
-        pageHtml = await fetch("/index.html").then((res) => res.text());
-        await import("@/pages/home/index.js");
+        initializeHomePage();
         break;
 
-      case cleanPathname.startsWith("/auth/register"):
+      case cleanPathname.startsWith("/src/pages/item"):
+        console.log("🛒 Loading Item Page...");
+        await import("@/pages/item/item.js").then((module) => {
+          if (module.initializeItemPage) {
+            module.initializeItemPage();
+          }
+        });
+        break;
+
+      case cleanPathname === `${basePath}/src/pages/auth/register/register.html`:
         console.log("🆕 Loading Register Page...");
-        pageHtml = await fetch("/src/pages/auth/register/register.html").then((res) => res.text());
-        await import("@/pages/auth/register/register.js");
+        await import("@/pages/auth/register/register.js").then((module) => {
+          if (module.initializeRegisterPage) {
+            module.initializeRegisterPage();
+          }
+        });
         break;
 
-      case cleanPathname.startsWith("/auth/login"):
+      case cleanPathname === `${basePath}/src/pages/auth/login/login.html`:
         console.log("🔑 Loading Login Page...");
-        pageHtml = await fetch("/src/pages/auth/login/login.html").then((res) => res.text());
-        await import("@/pages/auth/login/login.js");
+        await import("@/pages/auth/login/login.js").then((module) => {
+          if (module.initializeLoginPage) {
+            module.initializeLoginPage();
+          }
+        });
         break;
 
-      case cleanPathname.startsWith("/profile"):
+      case cleanPathname === "/profile":
         console.log("👤 Loading Profile Page...");
-        pageHtml = await fetch("/src/pages/profile/profile.html").then((res) => res.text());
-        await import("@/pages/profile/profile.js");
+        await import("@/pages/profile/profile.js").then((module) => {
+          if (module.initializeProfilePage) {
+            module.initializeProfilePage();
+          }
+        });
         break;
 
       default:
         console.log("❓ Page Not Found - Loading 404");
-        pageHtml = await fetch("/src/pages/notFound.html").then((res) => res.text());
+        await import("@/pages/notFound.js");
     }
 
-    // ✅ Replace current body with new page content
-    document.body.innerHTML = pageHtml;
+    // ✅ Force full page refresh to ensure correct content is displayed
+    window.location.reload();  
 
-    // ✅ Reinitialize Navigation After Page Change
-    setTimeout(() => {
-      const isLoggedIn = Boolean(localStorage.getItem("accessToken"));
-      const navContainers = document.querySelectorAll(".navbar-nav");
-      navContainers.forEach((container) => new Navigation(container, isLoggedIn));
-    }, 100);
   } catch (error) {
     console.error("❌ Router Error:", error.message);
   }
 }
+
+
 
 
 
