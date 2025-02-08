@@ -22,6 +22,7 @@ export default defineConfig({
         item: "src/pages/item/item.html", 
         profile: "src/pages/profile/profile.html",
         login: "src/pages/auth/login/login.html", // ✅ Add login.html
+        loginScript: "src/pages/auth/login/login.js",
         register: "src/pages/auth/register/register.html", // ✅ Add register.html
         registerScript: "src/pages/auth/register/register.js",
       },

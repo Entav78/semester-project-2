@@ -2,6 +2,8 @@ import { basePath } from "@/js/api/constants.js";
 import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
+import { initializeLoginPage } from "@/pages/auth/login/login.js";
+
 
 import "../styles/main.scss";
 
@@ -14,6 +16,11 @@ navContainers.forEach(container => new Navigation(container, isLoggedIn));
 if (window.location.pathname.includes("/auth/register")) {
   console.log("🆕 Register Page Detected - Initializing...");
   initializeRegisterPage();
+}
+
+if (window.location.pathname.includes("/auth/login")) {
+  console.log("🔑 Login Page Detected - Initializing...");
+  initializeLoginPage();
 }
 
 document.body.addEventListener("click", (event) => {
