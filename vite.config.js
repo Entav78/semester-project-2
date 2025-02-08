@@ -7,6 +7,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  
   css: {
     preprocessorOptions: {
       scss: {
@@ -22,13 +23,16 @@ export default defineConfig({
         profile: "src/pages/profile/profile.html",
         login: "src/pages/auth/login/login.html", // ✅ Add login.html
         register: "src/pages/auth/register/register.html", // ✅ Add register.html
+        registerScript: "src/pages/auth/register/register.js",
       },
       output: {
-        assetFileNames: "assets/[name][extname]", // ✅ Prevent hashed filenames
+        entryFileNames: "assets/[name].js", // ✅ Keep predictable JS filenames
+        assetFileNames: "assets/[name][extname]",
       },
     },
   },
 });
+
 
 
 

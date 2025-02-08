@@ -25,8 +25,6 @@ import { basePath } from "@/js/api/constants.js";
 
 export function setupListingButtons() {
   document.querySelectorAll(".view-item").forEach((btn, index) => {
-    console.log(`🛒 Button ${index + 1}:`, btn);
-
     btn.addEventListener("click", (event) => {
       event.preventDefault(); 
       const itemId = btn.dataset.id;

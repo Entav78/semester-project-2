@@ -27,12 +27,10 @@ export async function router(pathname = window.location.pathname) {
 
       case cleanPathname === `${basePath}/src/pages/auth/register/register.html`:
         console.log("🆕 Loading Register Page...");
-        await import("@/pages/auth/register/register.js").then((module) => {
-          if (module.initializeRegisterPage) {
-            module.initializeRegisterPage();
-          }
-        });
+        initializeRegisterPage(); 
         break;
+
+      
 
       case cleanPathname === `${basePath}/src/pages/auth/login/login.html`:
         console.log("🔑 Loading Login Page...");

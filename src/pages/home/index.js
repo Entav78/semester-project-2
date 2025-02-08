@@ -69,12 +69,13 @@ async function fetchAndRenderListings() {
 }
 
 // ✅ Ensure script runs correctly when home page is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("🌍 DOM fully loaded - Checking if on home page...");
-  if (window.location.pathname === "/") {
-    initializeHomePage();
-  }
+document.addEventListener("home-loaded", () => {
+  console.log("♻ Reloading Home Page Listings...");
+  initializeHomePage();
 });
+
+// ✅ Run initialization immediately (in case home page loads first)
+initializeHomePage();
 
 
 
