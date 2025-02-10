@@ -1,19 +1,19 @@
-
-
 @use "mixins";
 @use "custom";
 
-@use "@/pages/home/index" as home;
-@use "@/pages/auth/login/login" as login;
-@use "@/pages/auth/register/register" as register;
-@use "@/pages/profile/profile" as profile;
-@use "@/components/navigation/index" as navigation;
-@use "@/components/buttons/index" as buttons;
+@use "/src/pages/home/index.scss" as home;
+@use "/src/pages/auth/login/login.scss" as login;
+@use "/src/pages/auth/register/register.scss" as register;
+@use "/src/pages/profile/profile.scss" as profile;
+@use "/src/components/navigation/index.scss" as navigation;
+@use "/src/components/buttons/index.scss" as buttons;
+
 
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 
 .errorMessage {

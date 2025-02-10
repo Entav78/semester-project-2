@@ -3,7 +3,7 @@ import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
 import { initializeLoginPage } from "@/pages/auth/login/login.js";
-
+import { initializeProfilePage } from "@/pages/profile/profile.js";
 
 import "../styles/main.scss";
 
@@ -21,6 +21,11 @@ if (window.location.pathname.includes("/auth/register")) {
 if (window.location.pathname.includes("/auth/login")) {
   console.log("🔑 Login Page Detected - Initializing...");
   initializeLoginPage();
+}
+
+if (window.location.pathname.includes("/profile")) {
+  console.log("👤 Profile Page Detected - Initializing...");
+  initializeProfilePage();
 }
 
 document.body.addEventListener("click", (event) => {

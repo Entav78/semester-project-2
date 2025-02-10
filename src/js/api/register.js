@@ -59,10 +59,10 @@ export class Register {
     const bannerAlt = formData.get("bannerAlt")?.trim() || "";
     const venueManager = formData.get("venueManager") === "on"; // Checkbox handling
   
-    // ✅ Username validation: only letters, numbers, and underscores
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
-    if (!usernameRegex.test(name)) {
-      errorDiv.textContent = "Username can only contain letters, numbers, and underscores (_).";
+    // ✅ userName validation: only letters, numbers, and underscores
+    const userNameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!userNameRegex.test(name)) {
+      errorDiv.textContent = "userName can only contain letters, numbers, and underscores (_).";
       return;
     }
   

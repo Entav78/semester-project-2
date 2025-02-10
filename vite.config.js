@@ -5,13 +5,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "@scss": path.resolve(__dirname, "src/styles"), // ✅ New alias for SCSS
     },
   },
   
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/styles/variables" as vars;`, // ✅ Inject SCSS globally
+        additionalData: `@use "@scss/variables" as vars;`, // ✅ Inject SCSS globally
       },
     },
   },
