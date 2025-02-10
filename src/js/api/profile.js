@@ -2,13 +2,18 @@ import { getUserListings, getUserBids } from "@/js/api/constants.js";
 
 // 🔐 Get user details from localStorage
 const user = JSON.parse(localStorage.getItem("user"));
-if (!user || !user.accessToken) {
+const authToken = localStorage.getItem("authToken");
+/*
+if (!user || !authToken) {
   console.warn("⚠️ No auth token found. Redirecting to login...");
-  window.location.href = "/src/pages/auth/login/login.html";
-}
 
-const authToken = user ? user.accessToken : null;
-const apiKey = "b1daef81-f82b-4fa8-888b-135fdb584411"; // ✅ Your API Key
+  if (window.location.pathname.includes("/profile") || 
+      window.location.pathname.includes("/manageListings")) {
+    window.location.href = "/src/pages/auth/login/login.html";
+  }
+} else {
+  console.log("✅ Auth token found. User is logged in!");
+}*/
 
 // 🛠️ Fetch user listings
 export async function fetchUserListings(userName) {

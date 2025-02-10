@@ -1,5 +1,9 @@
 import { initializeHomePage } from "@/pages/home/index.js";
 import { basePath } from "@/js/api/constants.js";
+import { initializeLoginPage } from "@/pages/auth/login/login.js";
+import { initializeRegisterPage } from "@/pages/auth/register/register.js";
+
+
 
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
@@ -25,12 +29,18 @@ export async function router(pathname = window.location.pathname) {
         });
         break;
 
-      case cleanPathname === `${basePath}/src/pages/auth/register/register.html`:
+      case cleanPathname === "/src/pages/manageListings/manageListings":
+        console.log("🛒 Loading Manage Listings Page...");
+        initializeManageListingsPage();
+        break;
+  
+
+      case cleanPathname === `${basePath}/src/pages/auth/register/register`:
         console.log("🆕 Loading Register Page...");
         initializeRegisterPage(); 
         break;
 
-      case cleanPathname === `${basePath}/src/pages/auth/login/login.html`:
+      case cleanPathname === `${basePath}/src/pages/auth/login/login`:
         console.log("🔑 Loading Login Page...");
         initializeLoginPage();
         break;
@@ -47,10 +57,7 @@ export async function router(pathname = window.location.pathname) {
       default:
         console.log("❓ Page Not Found - Loading 404");
         await import("@/pages/notFound.js");
-    }
-
-    // ✅ Force full page refresh to ensure correct content is displayed
-    window.location.reload();  
+    }  
 
   } catch (error) {
     console.error("❌ Router Error:", error.message);

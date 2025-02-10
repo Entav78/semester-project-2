@@ -5,7 +5,7 @@ export class Listing {
     this.description = data.description || "No description available.";
     this.price = data.price || 0;
     this.media = data.media || []; 
-    this.seller = data.seller || { name: "Unknown" }; 
+    this.seller = data.seller || { userName: "Unknown" }; 
     this.createdAt = data.created || new Date().toISOString();
   }
 

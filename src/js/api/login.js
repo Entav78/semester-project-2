@@ -28,17 +28,18 @@ export class Login {
       const responseData = await response.json();
       console.log("✅ Login successful:", responseData);
 
-      // ✅ Store user data locally
       localStorage.setItem(
         "user",
         JSON.stringify({
-          name: responseData.data.name,
+          userName: responseData.data.userName,
           email: responseData.data.email,
-          accessToken: responseData.data.accessToken, // Store token for authentication
+          accessToken: responseData.data.accessToken, // ✅ Ensure token is inside "user"
           avatar: responseData.data.avatar || {},
           banner: responseData.data.banner || {},
         })
       );
+      localStorage.setItem("authToken", responseData.data.accessToken); // ✅ Separate storage for token
+      
 
       return responseData;
     } catch (error) {
@@ -71,8 +72,8 @@ export class Login {
       const user = await this.login(userData);
     
       // Store authentication token & user info in localStorage
-      localStorage.setItem("authToken", user.data.accessToken);
-      localStorage.setItem("userName", user.data.name);
+      localStorage.setItem("authToken", responseData.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(responseData.data));
     
       // Create a success message element dynamically
       const successMessage = document.createElement("p");

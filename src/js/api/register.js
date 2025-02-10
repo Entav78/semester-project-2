@@ -103,7 +103,7 @@ export class Register {
     }
   
     const userData = {
-      name,
+      userName: name,
       email,
       password,
       bio,
@@ -120,7 +120,7 @@ export class Register {
   
       // ✅ Store user data locally
       localStorage.setItem("user", JSON.stringify({
-        name: user.name,
+        userName: user.userName,
         email: user.email,
         credits: 1000, // Assuming the API assigns this
       }));

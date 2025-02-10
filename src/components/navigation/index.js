@@ -23,9 +23,13 @@ export class Navigation {
     const nav = document.createElement("ul");
     nav.className = "navbar-nav flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6"
 
+    console.log("🛠️ basePath:", basePath);
+
+
 const navItems = [
   { text: "Home", path: `${basePath}/` },
   { text: "Profile", path: `${basePath}/src/pages/profile/profile`, show: isLoggedIn },
+  { text: "Manage Listings", path: "/src/pages/manageListings/manageListings", show: isLoggedIn },
   { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
   { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
   { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
@@ -63,11 +67,24 @@ const navItems = [
   }
 
   handleLogout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    console.log("✅ User logged out.");
-    window.location.reload();
-  }
+    console.log("🚪 Logging out user...");
+    localStorage.removeItem("authToken");  
+    localStorage.removeItem("user");
+    localStorage.removeItem("userName");
+
+    console.log("🗑️ LocalStorage cleared!");
+
+    // ✅ Redirect logic: Stay on public pages, go home if on protected page
+    const protectedPages = ["/profile", "/manageListings"];
+    if (protectedPages.some(page => window.location.pathname.includes(page))) {
+        console.log("🔄 Redirecting to Home after logout...");
+        window.location.href = `${basePath}/`;
+    } else {
+        console.log("✅ Logout successful. User is now on a public page.");
+        window.location.reload();
+    }
+}
+
 
   setupSidebar() {
     // ✅ Attach sidebar event listeners again after navigation changes

@@ -9,7 +9,7 @@ import "../styles/main.scss";
 
 console.log("🛠️ Initializing App...");
 
-const isLoggedIn = Boolean(localStorage.getItem("accessToken"));
+const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 const navContainers = document.querySelectorAll(".navbar-nav");
 navContainers.forEach(container => new Navigation(container, isLoggedIn));
 
@@ -32,21 +32,21 @@ document.body.addEventListener("click", (event) => {
   const button = event.target.closest(".nav-link");
   if (button) {
     event.preventDefault();
-    let path = button.dataset.path;
+    const path = button.dataset.path;
 
     if (!path) {
       console.warn("⚠️ No path found on clicked button.");
       return;
     }
 
-    // ✅ Ensure path includes basePath
-    path = basePath + path.replace(basePath, "");
-
     console.log(`🔍 Navigating to: ${path}`);
     window.history.pushState({}, "", path);
-    router(path);
+    
+    // ✅ Trigger router() **after DOM is updated**
+    setTimeout(() => router(path), 50);
   }
 });
+
 
 window.addEventListener("popstate", () => {
   router();
