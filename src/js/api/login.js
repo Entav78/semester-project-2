@@ -28,18 +28,19 @@ export class Login {
       const responseData = await response.json();
       console.log("✅ Login successful:", responseData);
 
+      // ✅ Ensure API returns 'name' (or change to 'userName' if required)
       localStorage.setItem(
         "user",
         JSON.stringify({
-          userName: responseData.data.userName,
+          userName: responseData.data.name, // Ensure correct key
           email: responseData.data.email,
-          accessToken: responseData.data.accessToken, // ✅ Ensure token is inside "user"
+          accessToken: responseData.data.accessToken, 
           avatar: responseData.data.avatar || {},
           banner: responseData.data.banner || {},
         })
       );
-      localStorage.setItem("authToken", responseData.data.accessToken); // ✅ Separate storage for token
-      
+      localStorage.setItem("authToken", responseData.data.accessToken); // ✅ Ensure token is stored separately
+      localStorage.setItem("userName", responseData.data.name); // ✅ Ensure username is stored separately
 
       return responseData;
     } catch (error) {
@@ -69,27 +70,29 @@ export class Login {
     console.log("📩 Submitting login data:", userData);
 
     try {
-      const user = await this.login(userData);
-    
-      // Store authentication token & user info in localStorage
-      localStorage.setItem("authToken", responseData.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(responseData.data));
-    
-      // Create a success message element dynamically
+      const user = await this.login(userData); // ✅ Fix incorrect variable reference
+
+      // ✅ Store authentication token & user info correctly
+      localStorage.setItem("authToken", user.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(user.data));
+      localStorage.setItem("userName", user.data.name); // ✅ Ensure username is stored
+
+      // ✅ Create a success message dynamically
       const successMessage = document.createElement("p");
       successMessage.textContent = "🎉 Login successful! Redirecting...";
-      successMessage.className = "text-green-600 font-bold mt-2"; 
-      document.body.appendChild(successMessage); 
-    
-      // Redirect after a short delay (for better UX)
+      successMessage.className = "text-green-600 font-bold mt-2";
+      document.body.appendChild(successMessage);
+
+      // ✅ Redirect after a short delay
       setTimeout(() => {
         window.location.href = "/src/pages/profile/profile.html";
-      }, 1500); // 1.5s delay
-    
+      }, 1500);
+
     } catch (error) {
-      // Display error message dynamically
+      // ✅ Display error message dynamically
       errorDiv.textContent = `Login failed: ${error.message}`;
       errorDiv.className = "text-red-600 font-bold mt-2";
     }
-  }  
+  }
 }
+
