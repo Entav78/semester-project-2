@@ -68,14 +68,6 @@ async function fetchAndRenderListings() {
   }
 }
 
-// ✅ Ensure script runs only when home page is loaded
-document.addEventListener("home-loaded", () => {
-  console.log("♻ Reloading Home Page Listings...");
-  if (!window.homeInitialized) {
-    initializeHomePage();
-    window.homeInitialized = true; // ✅ Prevents double execution
-  }
-});
 
 
 

@@ -1,18 +1,19 @@
 import { API_LISTINGS } from "@/js/api/constants.js";
 import { Listing } from "@/models/listing.js"; 
 
-console.log("🛒 Item Page JavaScript is running!");
-
 export function initializeItemPage() {
+  // 🛑 Prevent duplicate execution
+  if (window.itemPageInitialized) return;
+  window.itemPageInitialized = true; // ✅ Prevents infinite loop
+
   console.log("🛒 Initializing Item Page...");
 
-  // ✅ Ensure script only runs on the correct page
   if (!window.location.pathname.includes("/item")) {
     console.warn("⚠️ Item script loaded on the wrong page, exiting...");
-    return; // ⛔ Stop execution
+    return; // ✅ Exit early to prevent running on the wrong page
   }
 
-  console.log("✅ Correctly running on item page");
+  console.log("✅ Running Item script on the correct page");
 
   // ✅ Get the item ID from the URL
   const params = new URLSearchParams(window.location.search);
@@ -62,8 +63,11 @@ export function initializeItemPage() {
     });
 }
 
-// ✅ Run initialization
+// ✅ Run initialization **ONCE**
 initializeItemPage();
+
+
+
 
 
 

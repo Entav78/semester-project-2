@@ -3,17 +3,6 @@ import { getUserListings, getUserBids } from "@/js/api/constants.js";
 // 🔐 Get user details from localStorage
 const user = JSON.parse(localStorage.getItem("user"));
 const authToken = localStorage.getItem("authToken");
-/*
-if (!user || !authToken) {
-  console.warn("⚠️ No auth token found. Redirecting to login...");
-
-  if (window.location.pathname.includes("/profile") || 
-      window.location.pathname.includes("/manageListings")) {
-    window.location.href = "/src/pages/auth/login/login.html";
-  }
-} else {
-  console.log("✅ Auth token found. User is logged in!");
-}*/
 
 // 🛠️ Fetch user listings
 export async function fetchUserListings(userName) {

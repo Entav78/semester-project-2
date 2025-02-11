@@ -77,6 +77,9 @@ export class Login {
       localStorage.setItem("user", JSON.stringify(user.data));
       localStorage.setItem("userName", user.data.name); // ✅ Ensure username is stored
 
+      // ✅ Update navbar after login
+      document.querySelector(".navbar-nav")?.updateNavbar(true);
+
       // ✅ Create a success message dynamically
       const successMessage = document.createElement("p");
       successMessage.textContent = "🎉 Login successful! Redirecting...";
@@ -94,5 +97,6 @@ export class Login {
       errorDiv.className = "text-red-600 font-bold mt-2";
     }
   }
+
 }
 

@@ -27,7 +27,6 @@ if (document.readyState === "complete") {
   });
 }
 */
-console.log("✅ Register script is running!");
 
 import { Register } from "@/js/api/register.js";
 

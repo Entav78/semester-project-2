@@ -14,10 +14,12 @@ console.log("🛠️ Initializing App...");
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 const navContainers = document.querySelectorAll(".navbar-nav");
 
-// 🛑 Check if navigation already exists
-if (!document.querySelector(".navbar-nav ul")) { 
+// 🛑 Ensure Navigation is created only once
+if (!window.navigationInitialized) { 
   navContainers.forEach(container => new Navigation(container, isLoggedIn));
+  window.navigationInitialized = true; // ✅ Prevents duplicate creation
 }
+
 
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)
@@ -47,31 +49,25 @@ if (currentPath.includes("/item")) {
   console.log("🛒 Item Page Detected - Initializing...");
   initializeItemPage();
 }
-/*
-if (currentPath.includes("/manageListings")) {
-  console.log("🛒 Manage Listings Page Detected - Initializing...");
-  initializeManageListingsPage();
-}
-*/
-// ✅ Handle Click Events for Navigation
+
 document.body.addEventListener("click", (event) => {
   const button = event.target.closest(".nav-link");
-  if (button) {
-    event.preventDefault();
-    const path = button.dataset.path;
+  if (!button) return; // ✅ Ensure we clicked a navigation button
 
-    if (!path) {
-      console.warn("⚠️ No path found on clicked button.");
-      return;
-    }
+  event.preventDefault();
+  const path = button.dataset.path;
 
-    console.log(`🔍 Navigating to: ${path}`);
-    window.history.pushState({}, "", path);
-    
-    // ✅ Trigger router() **after DOM is updated**
-    setTimeout(() => router(path), 50);
+  if (!path) {
+    console.warn("⚠️ No path found on clicked button.");
+    return;
   }
+
+  console.log(`🔍 Navigating to: ${path}`);
+  window.history.pushState({}, "", path);
+  
+  router(path); // ✅ Run the router immediately without delay
 });
+
 
 // ✅ Ensure correct page loads on back/forward navigation
 window.addEventListener("popstate", () => {
