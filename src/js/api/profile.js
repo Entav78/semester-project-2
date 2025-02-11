@@ -1,4 +1,6 @@
+import { API_KEY } from "@/js/api/constants.js";
 import { getUserListings, getUserBids } from "@/js/api/constants.js";
+
 
 // 🔐 Get user details from localStorage
 const user = JSON.parse(localStorage.getItem("user"));
@@ -14,8 +16,8 @@ export async function fetchUserListings(userName) {
   try {
     const response = await fetch(getUserListings(userName), {
       headers: {
-        "Authorization": `Bearer ${authToken}`, // ✅ Bearer token
-        "X-Noroff-API-Key": apiKey, // ✅ API key
+        "Authorization": `Bearer ${authToken}`, 
+        "X-Noroff-API-Key": API_KEY, 
         "Content-Type": "application/json",
       },
     });
@@ -44,7 +46,7 @@ export async function fetchUserBids(userName) {
     const response = await fetch(getUserBids(userName), {
       headers: {
         "Authorization": `Bearer ${authToken}`, // ✅ Bearer token
-        "X-Noroff-API-Key": apiKey, // ✅ API key
+        "X-Noroff-API-Key": API_KEY,
         "Content-Type": "application/json",
       },
     });

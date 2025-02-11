@@ -3,7 +3,7 @@ import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 export function initializeProfilePage() {
   console.log("👤 Profile Page Initializing...");
 
-  const userName = localStorage.getItem("userName"); // Replace with actual logic
+  const userName = localStorage.getItem("userName"); 
   if (!userName) {
     console.warn("⚠️ No user logged in.");
     return;
@@ -13,7 +13,7 @@ export function initializeProfilePage() {
 
   displayUserListings(userName);
   displayUserBids(userName);
-  setupTabNavigation(); // ✅ Tab switching logic
+  setupTabNavigation(); 
 
   console.log("✅ Profile Page Setup Complete!");
 }
@@ -55,7 +55,7 @@ async function displayUserBids(userName) {
   const response = await fetchUserBids(userName);
 
   console.log("🛠️ Bids API Response:", response); // Debugging
-
+  
   const bids = response.data; // ✅ Extract bids from response.data
 
   if (!Array.isArray(bids)) {
@@ -108,3 +108,5 @@ function setupTabNavigation() {
 
   console.log("✅ Tabs Initialized!");
 }
+
+export { initializeProfilePage, displayUserListings, displayUserBids, setupTabNavigation };

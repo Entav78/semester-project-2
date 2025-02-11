@@ -25,6 +25,10 @@ export const basePath =
 
 
 export const API_BASE = "https://v2.api.noroff.dev";
+export const API_KEY = import.meta.env.VITE_API_KEY;
+console.log("🔑 API Key Loaded:", API_KEY); //REMEMBER TO REMOVE THIS BEFORE DELIVERY!
+
+
 
 // Auction Endpoints
 export const API_AUCTION = `${API_BASE}/auction`;

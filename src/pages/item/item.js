@@ -6,13 +6,13 @@ export function initializeItemPage() {
   if (window.itemPageInitialized) return;
   window.itemPageInitialized = true; // ✅ Prevents infinite loop
 
-  console.log("🛒 Initializing Item Page...");
+  
 
   if (!window.location.pathname.includes("/item")) {
     console.warn("⚠️ Item script loaded on the wrong page, exiting...");
     return; // ✅ Exit early to prevent running on the wrong page
   }
-
+  console.log("🛒 Initializing Item Page...");
   console.log("✅ Running Item script on the correct page");
 
   // ✅ Get the item ID from the URL
