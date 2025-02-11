@@ -11,11 +11,16 @@ export class Navigation {
     this.container = container;
     this.isLoggedIn = isLoggedIn;
 
-    console.log("🛠️ Creating Navigation...");
+    console.log(`🛠️ Creating Navigation for: ${this.container.id || "Unknown Element"}`);
 
     this.createNavbar(isLoggedIn);
-    this.setupSidebar(); // ✅ Ensure sidebar works again!
+
+    // ✅ Only call `setupSidebar` if it's the sidebar
+    if (this.container.id === "sidebar-nav") {
+      this.setupSidebar();
+    }
   }
+
 
   createNavbar(isLoggedIn) {
     this.container.innerHTML = ""; // Clear existing content
@@ -64,39 +69,50 @@ export class Navigation {
   }
 
   setupSidebar() {
-    // ✅ Re-add sidebar functionality
+    if (this.container.id !== "sidebar-nav") {
+      console.log("⚠️ Skipping sidebar setup for main navigation.");
+      return; // ✅ Ensures only sidebar nav gets this logic
+    }
+  
+    console.log("🍔 Setting up sidebar functionality...");
+  
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
     const openButton = document.getElementById("openSidebar");
     const closeButton = document.getElementById("closeSidebar");
 
+    // ✅ Log each element to debug missing parts
+    console.log("🔍 Sidebar:", sidebar);
+    console.log("🔍 Overlay:", overlay);
+    console.log("🔍 Open Button:", openButton);
+    console.log("🔍 Close Button:", closeButton);
+  
     if (!sidebar || !overlay || !openButton || !closeButton) {
       console.warn("⚠️ Sidebar elements missing. Skipping sidebar setup.");
       return;
     }
-
-    console.log("🍔 Setting up sidebar functionality...");
-
+  
     openButton.addEventListener("click", () => {
       console.log("📂 Opening sidebar...");
       sidebar.classList.remove("translate-x-full");
       overlay.classList.remove("hidden");
     });
-
+  
     closeButton.addEventListener("click", () => {
       console.log("📂 Closing sidebar...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
     });
-
+  
     overlay.addEventListener("click", () => {
       console.log("📂 Closing sidebar via overlay...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
     });
-
+  
     console.log("✅ Sidebar setup completed.");
   }
+  
 
   updateNavbar(isLoggedIn) {
     const nav = this.container.querySelector("ul"); // Find existing nav
@@ -148,9 +164,13 @@ export class Navigation {
     localStorage.removeItem("userName");
 
     // ✅ Update the navigation **without refreshing**
-    if (window.navigationInstance) {
-        window.navigationInstance.updateNavbar(false);
+    if (window.mainNavigation) {
+      window.mainNavigation.updateNavbar(false);
     }
+    if (window.sidebarNavigation) {
+      window.sidebarNavigation.updateNavbar(false);
+    }
+  
 
     console.log("🗑️ LocalStorage cleared!");
 

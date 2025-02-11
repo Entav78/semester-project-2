@@ -78,9 +78,13 @@ export class Login {
       localStorage.setItem("userName", user.data.name); // ✅ Ensure username is stored
 
        // ✅ Update the navigation without refreshing the page!
-       if (window.navigationInstance) {
-        window.navigationInstance.updateNavbar(true);
+       if (window.mainNavigation) {
+            window.mainNavigation.updateNavbar(true);
       }
+      if (window.sidebarNavigation) {
+          window.sidebarNavigation.updateNavbar(true);
+      }
+    
 
 
       // ✅ Create a success message dynamically

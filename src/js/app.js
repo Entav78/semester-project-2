@@ -12,17 +12,28 @@ console.log("🛠️ Initializing App...");
 
 // ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
-const navContainers = document.querySelectorAll(".navbar-nav");
-let navigationInstance;
 
-if (!document.querySelector(".navbar-nav ul")) {
-  navContainers.forEach(container => {
-    navigationInstance = new Navigation(container, isLoggedIn);
-  });
+const mainNav = document.getElementById("main-nav");
+const sidebarNav = document.getElementById("sidebar-nav");
+
+let mainNavigationInstance = null;
+let sidebarNavigationInstance = null;
+
+if (!window.navigationInitialized) {
+  if (mainNav && !mainNav.dataset.navInitialized) {
+    mainNavigationInstance = new Navigation(mainNav, isLoggedIn);
+    mainNav.dataset.navInitialized = "true";
+  }
+  if (sidebarNav && !sidebarNav.dataset.navInitialized) {
+    sidebarNavigationInstance = new Navigation(sidebarNav, isLoggedIn);
+    sidebarNav.dataset.navInitialized = "true";
+  }
+  window.navigationInitialized = true;
 }
 
-// ✅ Make sure we can access navigationInstance globally
-window.navigationInstance = navigationInstance;
+// ✅ Make sure both instances are globally accessible
+window.mainNavigation = mainNavigationInstance;
+window.sidebarNavigation = sidebarNavigationInstance;
 
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)
