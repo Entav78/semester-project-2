@@ -13,13 +13,16 @@ console.log("🛠️ Initializing App...");
 // ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 const navContainers = document.querySelectorAll(".navbar-nav");
+let navigationInstance;
 
-// 🛑 Ensure Navigation is created only once
-if (!window.navigationInitialized) { 
-  navContainers.forEach(container => new Navigation(container, isLoggedIn));
-  window.navigationInitialized = true; // ✅ Prevents duplicate creation
+if (!document.querySelector(".navbar-nav ul")) {
+  navContainers.forEach(container => {
+    navigationInstance = new Navigation(container, isLoggedIn);
+  });
 }
 
+// ✅ Make sure we can access navigationInstance globally
+window.navigationInstance = navigationInstance;
 
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)

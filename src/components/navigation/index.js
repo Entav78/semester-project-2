@@ -110,7 +110,7 @@ export class Navigation {
       { text: "Manage Listings", path: `${basePath}/src/pages/manageListings/manageListings`, show: isLoggedIn },
       { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
       { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
-      { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
+      { text: "Logout", path: "#", show: isLoggedIn, action: () => this.handleLogout() },
     ];
 
     navItems.forEach(({ text, path, show, action }) => {
@@ -140,6 +140,30 @@ export class Navigation {
 
     console.log("🔄 Navbar updated:", nav);
   }
+
+  handleLogout() {
+    console.log("🚪 Logging out user...");
+    localStorage.removeItem("authToken");  
+    localStorage.removeItem("user");
+    localStorage.removeItem("userName");
+
+    // ✅ Update the navigation **without refreshing**
+    if (window.navigationInstance) {
+        window.navigationInstance.updateNavbar(false);
+    }
+
+    console.log("🗑️ LocalStorage cleared!");
+
+    // ✅ Redirect logic: Stay on public pages, go home if on protected page
+    const protectedPages = ["/profile", "/manageListings"];
+    if (protectedPages.some(page => window.location.pathname.includes(page))) {
+        console.log("🔄 Redirecting to Home after logout...");
+        window.history.pushState({}, "", `${basePath}/`);
+        router();
+    } else {
+        console.log("✅ Logout successful. User is now on a public page.");
+    }
+}
 }
 
 
