@@ -1,33 +1,59 @@
-import { basePath } from "@/js/api/constants.js";
 import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
 import { initializeLoginPage } from "@/pages/auth/login/login.js";
 import { initializeProfilePage } from "@/pages/profile/profile.js";
-
+import { initializeItemPage } from "@/pages/item/item.js";
+import { initializeHomePage } from "@/pages/home/index.js"; // ✅ FIXED PATH
+//import { initializeManageListingsPage } from "@/pages/manageListings/manageListings.js";
 import "../styles/main.scss";
 
 console.log("🛠️ Initializing App...");
 
+// ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 const navContainers = document.querySelectorAll(".navbar-nav");
-navContainers.forEach(container => new Navigation(container, isLoggedIn));
 
-if (window.location.pathname.includes("/auth/register")) {
+// 🛑 Check if navigation already exists
+if (!document.querySelector(".navbar-nav ul")) { 
+  navContainers.forEach(container => new Navigation(container, isLoggedIn));
+}
+
+
+// ✅ Page Initialization (APP.JS HANDLES THIS)
+const currentPath = window.location.pathname;
+
+if (currentPath === "/" || currentPath === "/index.html") {
+  console.log("🏠 Initializing Home Page...");
+  initializeHomePage();
+}
+
+if (currentPath.includes("/auth/register")) {
   console.log("🆕 Register Page Detected - Initializing...");
   initializeRegisterPage();
 }
 
-if (window.location.pathname.includes("/auth/login")) {
+if (currentPath.includes("/auth/login")) {
   console.log("🔑 Login Page Detected - Initializing...");
   initializeLoginPage();
 }
 
-if (window.location.pathname.includes("/profile")) {
+if (currentPath.includes("/profile")) {
   console.log("👤 Profile Page Detected - Initializing...");
   initializeProfilePage();
 }
 
+if (currentPath.includes("/item")) {
+  console.log("🛒 Item Page Detected - Initializing...");
+  initializeItemPage();
+}
+/*
+if (currentPath.includes("/manageListings")) {
+  console.log("🛒 Manage Listings Page Detected - Initializing...");
+  initializeManageListingsPage();
+}
+*/
+// ✅ Handle Click Events for Navigation
 document.body.addEventListener("click", (event) => {
   const button = event.target.closest(".nav-link");
   if (button) {
@@ -47,10 +73,11 @@ document.body.addEventListener("click", (event) => {
   }
 });
 
-
+// ✅ Ensure correct page loads on back/forward navigation
 window.addEventListener("popstate", () => {
   router();
 });
+
 
 
 

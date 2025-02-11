@@ -29,7 +29,7 @@ export class Navigation {
 const navItems = [
   { text: "Home", path: `${basePath}/` },
   { text: "Profile", path: `${basePath}/src/pages/profile/profile`, show: isLoggedIn },
-  { text: "Manage Listings", path: "/src/pages/manageListings/manageListings", show: isLoggedIn },
+  { text: "Manage Listings", path: `${basePath}/src/pages/manageListings/manageListings`, show: isLoggedIn },
   { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
   { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
   { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
@@ -49,11 +49,19 @@ const navItems = [
       } else {
         // ✅ Ensure navigation buttons trigger the router
         button.addEventListener("click", (event) => {
-          event.preventDefault();
-          console.log(`🔍 Navigating to: ${path}`);
-          window.history.pushState({}, "", path);
-          router(path);
-        });
+  event.preventDefault();
+  
+  const path = button.dataset.path;
+  if (!path) {
+    console.warn("⚠️ No path found on clicked button.");
+    return;
+  }
+
+  console.log(`🔍 Navigating to: ${path}`);
+  window.history.pushState({}, "", path);
+  router(path); // ✅ Ensure router() is triggered
+});
+
       }
 
       const listItem = document.createElement("li");
