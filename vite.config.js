@@ -4,11 +4,16 @@ import path from "path";
 export default defineConfig({
   base: process.env.BASE_PATH || "/",
   server: {
-    hmr: true, // ✅ Enables Hot Module Replacement (if needed)
+    hmr: true, // ✅ Enables Hot Module Replacement (HMR) (optional)
+    fs: {
+      strict: false, // ✅ Ensures Vite serves all necessary files
+    },
+    historyFallback: true, // ✅ Properly handles deep links & SPA behavior
     watch: {
-      usePolling: true, // ✅ Helps detect file changes on some systems
+      usePolling: true, // ✅ Helps detect file changes on Windows/Mac/Linux
     },
   },
+  
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -26,19 +31,25 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: "index.html", // Home page
-        item: "src/pages/item/item.html", 
-        profile: "src/pages/profile/profile.html",
-        login: "src/pages/auth/login/login.html", // ✅ Add login.html
-        register: "src/pages/auth/register/register.html", // ✅ Add register.html
+        main: "index.html",
+        item: "src/pages/item/item.html",
+        profile: "src/pages/profile/profile.html", // ✅ Ensure the HTML is built
+        "assets/profileScript": "src/pages/profile/profile.js", // ✅ Ensure the script is built
+      },
+        login: "src/pages/auth/login/login.html",
+        loginScript: "src/pages/auth/login/login.js",
+        register: "src/pages/auth/register/register.html",
+        registerScript: "src/pages/auth/register/register.js",
       },
       output: {
         entryFileNames: "assets/[name].js", // ✅ Keep predictable JS filenames
         assetFileNames: "assets/[name][extname]",
       },
+      preserveModules: true,
+
     },
   },
-});
+);
 
 
 

@@ -1,4 +1,5 @@
 import { basePath } from "@/js/api/constants.js";
+//import  initializeProfilePage  from "@/pages/profile/profile.js";
 
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
@@ -32,15 +33,19 @@ export async function router(pathname = window.location.pathname) {
       mainContainer.innerHTML = await response.text();
 
       // ✅ Dynamically import and initialize the JavaScript module
-      const module = await import(jsModule);
-      console.log("✅ Loaded Module:", module);
+      const module = await import(/* @vite-ignore */ jsModule);
 
-      if (module[initFunction]) {
-        module[initFunction](); // ✅ Call the page's initialization function
-        console.log(`✅ ${initFunction} executed successfully.`);
+      console.log("✅ Loaded Module:", module);
+      console.log("🛠️ Checking module:", module);
+      console.log("🛠️ Available keys:", Object.keys(module));
+
+      if (module.initializeProfilePage) {
+        module.initializeProfilePage(); // ✅ Correct way for named export
       } else {
-        console.error(`❌ Function ${initFunction} NOT found in module.`);
+        console.error("❌ Function initializeProfilePage NOT found in module.");
       }
+      
+      
   
       console.log(`✅ Successfully loaded ${path}`);
   
@@ -70,17 +75,10 @@ export async function router(pathname = window.location.pathname) {
           console.log("👤 Profile Page Detected");
           console.log("🔍 Importing profile script...");
 
-          loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
+        loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
+        .catch(error => console.error(`❌ Error loading Profile Page:`, error));
 
-            .then(() => {
-              if (window.initializeProfilePage) {
-                window.initializeProfilePage(); // ✅ Use global function
-              } else {
-                console.error("❌ window.initializeProfilePage is NOT defined.");
-              }
-            })
-            .catch(error => console.error(`❌ Error loading Profile Page:`, error));
-          break;
+        break;
         
 
 
