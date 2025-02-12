@@ -1,50 +1,3 @@
-/*import { basePath } from "@/js/api/constants.js";
-
-export async function router(pathname = window.location.pathname) {
-  console.log("🚀 Router running");
-  console.log("📌 Detected Path:", pathname);
-
-  const cleanPathname = pathname.replace(basePath, "").split("?")[0] || "/";
-
-  console.log("📌 Clean Pathname:", cleanPathname);
-
-  try {
-    switch (cleanPathname) {
-      case "/":
-        console.log("🏠 Home Page Detected");
-        break;
-
-      case "/item":
-        console.log("🛒 Item Page Detected");
-        break;
-
-      case "/manageListings":
-        console.log("📦 Manage Listings Page Detected");
-        break;
-
-      case "/register":
-        console.log("🆕 Register Page Detected");
-        break;
-
-      case "/login":
-        console.log("🔑 Login Page Detected");
-        break;
-
-      case "/profile":
-        console.log("👤 Profile Page Detected");
-        break;
-
-      default:
-        console.log("❓ Page Not Found - Loading 404");
-        await import("@/pages/notFound.js");
-    }  
-  } catch (error) {
-    console.error("❌ Router Error:", error.message);
-  }
-}
-
-*/
-
 import { basePath } from "@/js/api/constants.js";
 
 export async function router(pathname = window.location.pathname) {
@@ -62,6 +15,7 @@ export async function router(pathname = window.location.pathname) {
   console.log("📌 Clean Pathname:", cleanPathname);
 
   async function loadPage(path, htmlPath, jsModule, initFunction) {
+    console.clear();
     console.log(`🔍 Loading Page: ${path}`);
 
     const mainContainer = document.querySelector("main");
@@ -81,8 +35,9 @@ export async function router(pathname = window.location.pathname) {
       const module = await import(jsModule);
       console.log("✅ Loaded Module:", module);
 
-      if (module && module[initFunction]) {
-        module[initFunction]();
+      if (module[initFunction]) {
+        module[initFunction](); // ✅ Call the page's initialization function
+        console.log(`✅ ${initFunction} executed successfully.`);
       } else {
         console.error(`❌ Function ${initFunction} NOT found in module.`);
       }
@@ -111,11 +66,19 @@ export async function router(pathname = window.location.pathname) {
         loadPage("/register", "/src/pages/auth/register/register.html", "@/pages/auth/register/register.js", "initializeRegisterPage");
         break;
 
-      case "/profile":
-        console.log("👤 Profile Page Detected");
-        loadPage("/profile", "/src/pages/profile/profile.html", "@/pages/profile/profile.js", "initializeProfilePage");
-
-        break;
+        case "/profile":
+          console.log("👤 Profile Page Detected");
+          loadPage("/profile", "/src/pages/profile/profile.html", "/assets/profileScript.js", "initializeProfilePage")
+            .then(() => {
+              if (window.initializeProfilePage) {
+                window.initializeProfilePage(); // ✅ Use global function
+              } else {
+                console.error("❌ window.initializeProfilePage is NOT defined.");
+              }
+            })
+            .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+          break;
+        
 
 
       case "/manageListings":

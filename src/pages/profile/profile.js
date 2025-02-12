@@ -1,22 +1,29 @@
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 
+console.log("👤 Profile Page is running...");
+
 export function initializeProfilePage() {
   console.log("👤 Profile Page Initializing...");
 
-  const userName = localStorage.getItem("userName"); 
+  // Remove existing event listeners (if needed)
+  document.querySelectorAll(".tab-button").forEach(tab => {
+    tab.replaceWith(tab.cloneNode(true)); // ✅ Cloning removes old event listeners
+  });
+
+  const userName = localStorage.getItem("userName");
   if (!userName) {
     console.warn("⚠️ No user logged in.");
     return;
   }
 
   console.log(`🔍 Fetching data for user: ${userName}`);
-
   displayUserListings(userName);
   displayUserBids(userName);
-  setupTabNavigation(); 
+  setupTabNavigation();
 
   console.log("✅ Profile Page Setup Complete!");
 }
+
 
 async function displayUserListings(userName) {
   const listingsContainer = document.getElementById("listingsContainer");
@@ -107,6 +114,9 @@ function setupTabNavigation() {
   });
 
   console.log("✅ Tabs Initialized!");
+  
+
 }
 
-export { initializeProfilePage, displayUserListings, displayUserBids, setupTabNavigation };
+window.initializeProfilePage = initializeProfilePage;
+
