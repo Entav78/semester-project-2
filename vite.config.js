@@ -2,6 +2,13 @@ import { defineConfig } from "vite";
 import path from "path";
 
 export default defineConfig({
+  base: process.env.BASE_PATH || "/",
+  server: {
+    hmr: true, // ✅ Enables Hot Module Replacement (if needed)
+    watch: {
+      usePolling: true, // ✅ Helps detect file changes on some systems
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -22,17 +29,13 @@ export default defineConfig({
         main: "index.html", // Home page
         item: "src/pages/item/item.html", 
         profile: "src/pages/profile/profile.html",
-        profileScript: "src/pages/profile/profile.js",
         login: "src/pages/auth/login/login.html", // ✅ Add login.html
-        loginScript: "src/pages/auth/login/login.js",
         register: "src/pages/auth/register/register.html", // ✅ Add register.html
-        registerScript: "src/pages/auth/register/register.js",
       },
       output: {
         entryFileNames: "assets/[name].js", // ✅ Keep predictable JS filenames
         assetFileNames: "assets/[name][extname]",
       },
-      //external: ["/assets/profileScript.js"], // ✅ Mark profileScript.js as external
     },
   },
 });

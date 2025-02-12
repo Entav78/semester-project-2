@@ -68,7 +68,9 @@ export async function router(pathname = window.location.pathname) {
 
         case "/profile":
           console.log("👤 Profile Page Detected");
-          loadPage("/profile", "/src/pages/profile/profile.html", "@/pages/profile/profile.js", "initializeProfilePage")
+          console.log("🔍 Importing profile script...");
+
+          loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
 
             .then(() => {
               if (window.initializeProfilePage) {
@@ -99,6 +101,9 @@ export async function router(pathname = window.location.pathname) {
   } catch (error) {
     console.error("❌ Router Error:", error.message);
   } // ✅ Properly closing try-catch block
+  console.log("🔍 Window location pathname:", window.location.pathname);
+console.log("🔍 Clean Pathname:", cleanPathname);
+
 }
 
 
