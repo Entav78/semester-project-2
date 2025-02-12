@@ -118,5 +118,5 @@ function setupTabNavigation() {
 
 }
 
-//window.initializeProfilePage = initializeProfilePage;
+window.initializeProfilePage = initializeProfilePage;
 
