@@ -68,7 +68,8 @@ export async function router(pathname = window.location.pathname) {
 
         case "/profile":
           console.log("👤 Profile Page Detected");
-          loadPage("/profile", "/src/pages/profile/profile.html", "/assets/profileScript.js", "initializeProfilePage")
+          loadPage("/profile", "/src/pages/profile/profile.html", "@/pages/profile/profile.js", "initializeProfilePage")
+
             .then(() => {
               if (window.initializeProfilePage) {
                 window.initializeProfilePage(); // ✅ Use global function

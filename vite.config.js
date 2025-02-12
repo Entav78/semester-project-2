@@ -32,6 +32,7 @@ export default defineConfig({
         entryFileNames: "assets/[name].js", // ✅ Keep predictable JS filenames
         assetFileNames: "assets/[name][extname]",
       },
+      //external: ["/assets/profileScript.js"], // ✅ Mark profileScript.js as external
     },
   },
 });

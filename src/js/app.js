@@ -2,7 +2,7 @@ import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
 import { initializeLoginPage } from "@/pages/auth/login/login.js";
-import { initializeProfilePage } from "@/pages/profile/profile.js";
+//import { initializeProfilePage } from "@/pages/profile/profile.js";
 
 import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; // ✅ FIXED PATH
@@ -55,10 +55,12 @@ if (currentPath.includes("/auth/login")) {
   initializeLoginPage();
 }
 
+/*
 if (currentPath.includes("/profile")) {
   console.log("👤 Profile Page Detected - Initializing...");
   initializeProfilePage();
 }
+*/
 
 if (currentPath.includes("/item")) {
   console.log("🛒 Item Page Detected - Initializing...");
