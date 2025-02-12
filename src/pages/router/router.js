@@ -1,9 +1,17 @@
 import { basePath } from "@/js/api/constants.js";
 //import  initializeProfilePage  from "@/pages/profile/profile.js";
-
+ 
+  
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
   console.log("📌 Detected Path:", pathname);
+
+  function clearPage() {
+    const mainContent = document.querySelector("main"); // Adjust if needed
+    if (mainContent) {
+        mainContent.innerHTML = ""; // Remove all previous content
+    }
+  }
 
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")
@@ -25,6 +33,9 @@ export async function router(pathname = window.location.pathname) {
       return;
     }
 
+    // 🧹 Clear old content before loading the new page
+    clearPage();
+
     try {
       // ✅ Fetch and update page content
       const response = await fetch(htmlPath);
@@ -39,16 +50,16 @@ export async function router(pathname = window.location.pathname) {
       console.log("🛠️ Checking module:", module);
       console.log("🛠️ Available keys:", Object.keys(module));
 
-      if (module.initializeProfilePage) {
-        module.initializeProfilePage(); // ✅ Correct way for named export
+      // Check if the imported module contains the expected initialization function
+      if (initFunction in module && typeof module[initFunction] === "function") {
+        console.log(`🚀 Calling ${initFunction}()`);
+        module[initFunction](); // ✅ Call the correct initialization function
       } else {
-        console.error("❌ Function initializeProfilePage NOT found in module.");
+        console.error(`❌ Function ${initFunction} NOT found in module.`);
       }
-      
-      
-  
+
       console.log(`✅ Successfully loaded ${path}`);
-  
+
     } catch (error) {
       console.error(`❌ Error loading page (${path}):`, error);
     }
@@ -58,17 +69,17 @@ export async function router(pathname = window.location.pathname) {
     switch (cleanPathname) {
       case "/":
         console.log("🏠 Home Page Detected");
-        loadPage("/", "/src/index.html", "@/pages/home/index.js", "initializeHomePage");
+        loadPage("/", "/src/index.html", "/src/pages/home/index.js", "initializeHomePage");
         break;
 
       case "/login":
         console.log("🔑 Login Page Detected");
-        loadPage("/login", "/src/pages/auth/login/login.html", "@/pages/auth/login/login.js", "initializeLoginPage");
+        loadPage("/login", "/src/pages/auth/login/login.html", "/src/pages/auth/login/login.js", "initializeLoginPage");
         break;
 
       case "/register":
         console.log("🆕 Register Page Detected");
-        loadPage("/register", "/src/pages/auth/register/register.html", "@/pages/auth/register/register.js", "initializeRegisterPage");
+        loadPage("/register", "/src/pages/auth/register/register.html", "/src/pages/auth/register/register.js", "initializeRegisterPage");
         break;
 
         case "/profile":
@@ -84,17 +95,17 @@ export async function router(pathname = window.location.pathname) {
 
       case "/manageListings":
         console.log("📦 Manage Listings Page Detected");
-        loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "@/pages/manageListings/manageListings.js", "initializeManageListingsPage");
+        loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
         break;
 
       case "/item":
         console.log("🛒 Item Page Detected");
-        loadPage("/item", "/src/pages/item/item.html", "@/pages/item/item.js", "initializeItemPage");
+        loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage");
         break;
 
       default:
         console.log("❓ Page Not Found - Loading 404");
-        loadPage("/404", "/src/pages/notFound.html", "@/pages/notFound.js", "initializeNotFoundPage");
+        loadPage("/404", "/src/pages/notFound.html", "/src/pages/notFound.js", "initializeNotFoundPage");
     }
   } catch (error) {
     console.error("❌ Router Error:", error.message);

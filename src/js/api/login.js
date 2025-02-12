@@ -1,4 +1,6 @@
 import { API_LOGIN } from "@/js/api/constants.js";
+import { router } from "@/pages/router/router.js";
+
 
 export class Login {
   /**
@@ -93,10 +95,13 @@ export class Login {
       successMessage.className = "text-green-600 font-bold mt-2";
       document.body.appendChild(successMessage);
 
-      // ✅ Redirect after a short delay
       setTimeout(() => {
-        window.location.href = "/src/pages/profile/profile.html";
-      }, 1500);
+        window.history.pushState({}, "", "/profile");
+        document.querySelector("main").innerHTML = ""; // 🧹 Clear main content
+        router("/profile"); // ✅ Ensure full page refresh
+      }, 500);
+      
+      
 
     } catch (error) {
       // ✅ Display error message dynamically
@@ -105,5 +110,43 @@ export class Login {
     }
   }
 
+  handleLogout() {
+    console.log("🚪 Logging out user...");
+    localStorage.removeItem("authToken");  
+    localStorage.removeItem("user");
+    localStorage.removeItem("userName");
+
+    // ✅ Remove logged-in styling class
+    document.body.classList.remove("user-logged-in");
+
+    console.log("🗑️ LocalStorage cleared!");
+
+    // ✅ Update the navigation **without refreshing**
+    if (window.mainNavigation) {
+        window.mainNavigation.updateNavbar(false);
+    }
+    if (window.sidebarNavigation) {
+        window.sidebarNavigation.updateNavbar(false);
+    }
+
+    // ✅ Redirect logic: Stay on public pages, go home if on protected page
+    const protectedPages = ["/profile", "/manageListings"];
+    if (protectedPages.some(page => window.location.pathname.includes(page))) {
+        console.log("🔄 Redirecting to Home after logout...");
+        
+        // ✅ Ensure router updates the page correctly
+        window.history.pushState({}, "", `${basePath}/`);
+        
+        // 🔧 Delay router call slightly to let the state update
+    setTimeout(() => {
+      document.querySelector("main").innerHTML = ""; // 🧹 Clear old page content
+      window.history.pushState({}, "", `${basePath}/`);
+      router("/"); // ✅ Ensure full UI reset
+    }, 200);
+
+    } else {
+        console.log("✅ Logout successful. User is now on a public page.");
+    }
+ }
 }
 
