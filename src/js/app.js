@@ -2,9 +2,9 @@ import { Navigation } from "@/components/navigation/index.js";
 import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
 import { initializeLoginPage } from "@/pages/auth/login/login.js";
-import { setupNavigation } from "@/components/navigation/index.js";
+import { Login } from "@/js/api/login.js";
 import { initializeItemPage } from "@/pages/item/item.js";
-import { initializeHomePage } from "@/pages/home/index.js"; // ✅ FIXED PATH
+import { initializeHomePage } from "@/pages/home/index.js"; 
 //import { initializeManageListingsPage } from "@/pages/manageListings/manageListings.js";
 import "../styles/main.scss";
 
@@ -19,13 +19,16 @@ const sidebarNav = document.getElementById("sidebar-nav");
 let mainNavigationInstance = null;
 let sidebarNavigationInstance = null;
 
+// ✅ Create an instance of `Login` to access handleLogout()
+const loginInstance = new Login();
+
 if (!window.navigationInitialized) {
   if (mainNav && !mainNav.dataset.navInitialized) {
-    mainNavigationInstance = new Navigation(mainNav, isLoggedIn);
+    mainNavigationInstance = new Navigation(mainNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
     mainNav.dataset.navInitialized = "true";
   }
   if (sidebarNav && !sidebarNav.dataset.navInitialized) {
-    sidebarNavigationInstance = new Navigation(sidebarNav, isLoggedIn);
+    sidebarNavigationInstance = new Navigation(sidebarNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
     sidebarNav.dataset.navInitialized = "true";
   }
   window.navigationInitialized = true;
@@ -34,8 +37,6 @@ if (!window.navigationInitialized) {
 // ✅ Make sure both instances are globally accessible
 window.mainNavigation = mainNavigationInstance;
 window.sidebarNavigation = sidebarNavigationInstance;
-
-setupNavigation();
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)
 const currentPath = window.location.pathname;

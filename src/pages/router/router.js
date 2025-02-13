@@ -11,6 +11,15 @@ export async function router(pathname = window.location.pathname) {
     if (mainContent) {
         mainContent.innerHTML = ""; // Remove all previous content
     }
+    // ✅ Clear and reinitialize navigation if needed
+    if (window.mainNavigation) {
+      console.log("🔄 Re-initializing Navigation...");
+      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+  }
+  if (window.sidebarNavigation) {
+      console.log("🔄 Re-initializing Sidebar...");
+      window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+    }
   }
 
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]

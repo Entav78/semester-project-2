@@ -5,7 +5,7 @@ const loginInstance = new Login(); // ✅ Create an instance of the Login class
 
 
 export class Navigation {
-  constructor(container, isLoggedIn) {
+  constructor(container, isLoggedIn, handleLogout) {
     if (!container) {
       console.error("❌ Navigation container not found.");
       return;
@@ -13,6 +13,7 @@ export class Navigation {
 
     this.container = container;
     this.isLoggedIn = isLoggedIn;
+    this.handleLogout = handleLogout;
 
     console.log(`🛠️ Creating Navigation for: ${this.container.id || "Unknown Element"}`);
 
@@ -26,31 +27,35 @@ export class Navigation {
 
   createNavbar(isLoggedIn) {
     this.container.innerHTML = ""; // Clear existing content
-
+  
     const nav = document.createElement("ul");
     nav.className = "navbar-nav flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6";
-
+  
     console.log("🛠️ basePath:", basePath);
-
+  
     const navItems = [
       { text: "Home", path: `${basePath}/` },
       { text: "Profile", path: `${basePath}/profile`, show: isLoggedIn },
       { text: "Manage Listings", path: `${basePath}/manageListings`, show: isLoggedIn },
       { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
       { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
-      { text: "Logout", path: "#", show: isLoggedIn, action: () => loginInstance.handleLogout() },
+       { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout }, // ✅ Use the provided handleLogout
     ];
-
+  
     navItems.forEach(({ text, path, show, action }) => {
       if (show !== undefined && !show) return;
-
+  
       const button = document.createElement("button");
       button.textContent = text;
       button.className = "nav-link text-white hover:text-gray-300 transition";
       button.dataset.path = path;
-
+  
       if (action) {
-        button.addEventListener("click", action);
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          console.log(`🚪 Logging out user...`);
+          action(); // ✅ Call handleLogout
+        });
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
@@ -59,13 +64,13 @@ export class Navigation {
           router(path);
         });
       }
-
+  
       const listItem = document.createElement("li");
       listItem.className = "nav-item";
       listItem.appendChild(button);
       nav.appendChild(listItem);
     });
-
+  
     this.container.appendChild(nav);
     console.log("✅ Navigation created:", nav);
   }
@@ -158,18 +163,8 @@ export class Navigation {
   }
 }
 
-// ✅ Move setupNavigation OUTSIDE the class!
-export function setupNavigation() {
-  console.log("🔧 Setting up navigation...");
 
-  const logoutButton = document.querySelector("#logout-button");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", handleLogout);
-    console.log("✅ Logout button event attached!");
-  } else {
-    console.warn("⚠️ Logout button not found in DOM!");
-  }
-}
+
 
 
 
