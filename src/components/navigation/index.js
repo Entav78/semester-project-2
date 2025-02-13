@@ -117,6 +117,7 @@ export class Navigation {
     });
 
     console.log("✅ Sidebar setup completed.");
+    console.log("✅ Navigation Setup:", window.navigationSetupDone);
   }
 
   updateNavbar(isLoggedIn) {

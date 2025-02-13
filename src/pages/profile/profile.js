@@ -114,7 +114,7 @@ function setupTabNavigation() {
   });
 
   console.log("✅ Tabs Initialized!");
-  
+  console.log("✅ Profile Page Loaded:", window.profilePageLoaded);
 
 }
 

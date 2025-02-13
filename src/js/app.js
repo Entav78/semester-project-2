@@ -12,6 +12,7 @@ console.log("🛠️ Initializing App...");
 
 // ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
+console.log("📌 Checking navigation initialization:", window.navigationInitialized);
 
 const mainNav = document.getElementById("main-nav");
 const sidebarNav = document.getElementById("sidebar-nav");
@@ -23,6 +24,8 @@ let sidebarNavigationInstance = null;
 const loginInstance = new Login();
 
 if (!window.navigationInitialized) {
+  console.log("🔧 Initializing Navigation...");
+
   if (mainNav && !mainNav.dataset.navInitialized) {
     mainNavigationInstance = new Navigation(mainNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
     mainNav.dataset.navInitialized = "true";
@@ -31,7 +34,11 @@ if (!window.navigationInitialized) {
     sidebarNavigationInstance = new Navigation(sidebarNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
     sidebarNav.dataset.navInitialized = "true";
   }
+
   window.navigationInitialized = true;
+  console.log("✅ Navigation Initialized!");
+} else {
+  console.log("⚠️ Navigation already initialized. Skipping...");
 }
 
 // ✅ Make sure both instances are globally accessible

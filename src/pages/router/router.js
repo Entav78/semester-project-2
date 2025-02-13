@@ -5,8 +5,8 @@ import { basePath } from "@/js/api/constants.js";
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
   console.log("📌 Detected Path:", pathname);
-
-  function clearPage() {
+/* testing new fix
+ function clearPage() {
     const mainContent = document.querySelector("main"); // Adjust if needed
     if (mainContent) {
         mainContent.innerHTML = ""; // Remove all previous content
@@ -21,6 +21,24 @@ export async function router(pathname = window.location.pathname) {
       window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
   }
+*/
+function clearPage() {
+  const mainContent = document.querySelector("main");
+  if (mainContent) {
+      mainContent.innerHTML = ""; // ✅ Clear only page content, NOT navigation
+  }
+
+  // ✅ Keep navigation intact, only update if necessary
+  if (window.mainNavigation) {
+      console.log("🔄 Re-initializing Navigation...");
+      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+  }
+  if (window.sidebarNavigation) {
+      console.log("🔄 Re-initializing Sidebar...");
+      window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+  }
+}
+
 
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")
@@ -92,13 +110,24 @@ export async function router(pathname = window.location.pathname) {
         break;
 
         case "/profile":
-          console.log("👤 Profile Page Detected");
-          console.log("🔍 Importing profile script...");
+    console.log("👤 Profile Page Detected");
 
-        loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
-        .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+    // 🔄 Prevent duplicate profile page initialization
+    if (window.profilePageLoaded) {
+        console.log("⚠️ Profile page is already initialized. Skipping duplicate execution.");
+        return; // ✅ Stops execution if already loaded
+    }
 
-        break;
+    console.log("🔍 Importing profile script...");
+    
+    // ✅ Mark the profile page as loaded to prevent duplicate execution
+    window.profilePageLoaded = true;
+
+    loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
+    .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+
+    break;
+
         
 
 

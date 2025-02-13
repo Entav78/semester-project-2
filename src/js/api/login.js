@@ -42,7 +42,7 @@ export class Login {
     }
   }
 
-  async handleLogin(event) { 
+  async handleLogin(event) {
     event.preventDefault();
     console.log("🔄 Login form submitted!");
 
@@ -59,17 +59,20 @@ export class Login {
     console.log("📩 Submitting login data:", userData);
 
     try {
-      await this.login(userData);
+      const responseData = await this.login(userData);
 
-      localStorage.setItem("authToken", user.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(user.data));
-      localStorage.setItem("userName", user.data.name); 
+      localStorage.setItem("authToken", responseData.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(responseData.data));
+      localStorage.setItem("userName", responseData.data.name); 
 
       this.updateNavigation(true); // ✅ Update navigation once
 
+      // **🔧 Fix: Remove any old success messages before adding a new one**
+      document.querySelectorAll(".login-success").forEach(msg => msg.remove());
+
       const successMessage = document.createElement("p");
       successMessage.textContent = "🎉 Login successful! Redirecting...";
-      successMessage.className = "text-green-600 font-bold mt-2";
+      successMessage.className = "text-green-600 font-bold mt-2 login-success"; // ✅ Unique class
       document.body.appendChild(successMessage);
 
       setTimeout(() => {
@@ -83,6 +86,8 @@ export class Login {
     }
   }
 
+
+
   handleLogout() {
     console.log("🚪 Logging out user...");
     localStorage.removeItem("authToken");  
@@ -95,17 +100,14 @@ export class Login {
 
     this.updateNavigation(false); // ✅ Update navigation once
 
-    const protectedPages = ["/profile", "/manageListings"];
-    if (protectedPages.some(page => window.location.pathname.includes(page))) {
-        console.log("🔄 Redirecting to Home after logout...");
-        window.history.pushState({}, "", `${basePath}/`);
-        setTimeout(() => {
-            document.querySelector("main").innerHTML = "";
-            router("/");
-        }, 200);
-    } else {
-        console.log("✅ Logout successful. User is now on a public page.");
-    }
+    // ✅ Always navigate to home after logout
+    console.log("🔄 Redirecting to Home...");
+    window.history.pushState({}, "", "/");
+
+    setTimeout(() => {
+        document.querySelector("main").innerHTML = "";
+        router("/"); // ✅ Ensure home page loads correctly
+    }, 200);
   }
 }
 
