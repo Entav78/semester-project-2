@@ -2,21 +2,42 @@ import { fetchListings } from "@/js/api/listings.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 
+/*
 export async function initializeHomePage() {
   console.log("🏠 Initializing Home Page...");
 
   await waitForListingsContainer();
   new Filtering();
   fetchAndRenderListings();
+}*/
+
+export async function initializeHomePage() {
+  console.log("🏠 Initializing Home Page...");
+
+  await waitForListingsContainer(); // ✅ Ensures the container exists before proceeding
+
+  const listingsContainer = document.getElementById("listingsContainer");
+  if (!listingsContainer) {
+    console.error("❌ listingsContainer not found!");
+    return;
+  }
+
+  // ✅ Clear old listings BEFORE fetching new ones
+  listingsContainer.innerHTML = "";
+
+  console.log("📦 Fetching and rendering listings...");
+  fetchAndRenderListings(); // ✅ Keep using this since it handles the fetching and rendering
 }
 
-// ✅ Function to wait until listings-container is added to DOM
+
+
+// ✅ Function to wait until listingsContainer is added to DOM
 async function waitForListingsContainer() {
   return new Promise((resolve) => {
     const checkExist = setInterval(() => {
-      const container = document.getElementById("listings-container");
+      const container = document.getElementById("listingsContainer");
       if (container) {
-        console.log("✅ listings-container found!");
+        console.log("✅ listingsContainer found!");
         clearInterval(checkExist);
         resolve(container);
       }
@@ -27,10 +48,10 @@ async function waitForListingsContainer() {
 // ✅ Fetch and render listings
 async function fetchAndRenderListings() {
   console.log("🏠 Fetching and rendering listings...");
-  const container = document.getElementById("listings-container");
+  const container = document.getElementById("listingsContainer");
 
   if (!container) {
-    console.error("❌ listings-container not found in the DOM!");
+    console.error("❌ listingsContainer not found in the DOM!");
     return;
   }
 

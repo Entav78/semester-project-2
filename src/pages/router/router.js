@@ -9,10 +9,10 @@ export async function router(pathname = window.location.pathname) {
   function clearPage() {
     const mainContent = document.querySelector("main");
     if (mainContent) {
-      mainContent.innerHTML = ""; // ✅ Clear only page content, NOT navigation
+      mainContent.innerHTML = ""; // ✅ Clear only the page content, NOT navigation or header
     }
   
-    // ✅ Ensure navigation isn't re-created
+    // ✅ Ensure navigation is only updated, NOT duplicated
     if (window.mainNavigation) {
       console.log("🔄 Re-initializing Navigation...");
       window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
@@ -21,10 +21,10 @@ export async function router(pathname = window.location.pathname) {
       console.log("🔄 Re-initializing Sidebar...");
       window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
+  
+    console.log("✅ Page content cleared. Header remains intact.");
   }
   
-
-
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")
     .replace("/src/pages/auth/register/register", "/register")

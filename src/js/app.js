@@ -20,25 +20,31 @@ const sidebarNav = document.getElementById("sidebar-nav");
 // ✅ Create an instance of `Login` to access handleLogout()
 const loginInstance = new Login();
 
-if (!window.navigationInitialized) {
-  if (!window.mainNavigation && mainNav) { // ✅ Prevent duplicate navigation
+if (!window.mainNavigation) {
+  const mainNav = document.getElementById("main-nav");
+  if (mainNav) {
     window.mainNavigation = new Navigation(
       mainNav,
-      isLoggedIn,
+      Boolean(localStorage.getItem("authToken")),
       loginInstance.handleLogout.bind(loginInstance)
     );
   }
+}
 
-  if (!window.sidebarNavigation && sidebarNav) { // ✅ Prevent duplicate sidebar
+if (!window.sidebarNavigation) {
+  const sidebarNav = document.getElementById("sidebar-nav");
+  if (sidebarNav) {
     window.sidebarNavigation = new Navigation(
       sidebarNav,
-      isLoggedIn,
+      Boolean(localStorage.getItem("authToken")),
       loginInstance.handleLogout.bind(loginInstance)
     );
   }
-
-  window.navigationInitialized = true;
 }
+// ✅ Mark navigation as initialized to prevent duplicate setup
+window.navigationInitialized = true;
+console.log("✅ Navigation fully initialized.");
+
 
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)
