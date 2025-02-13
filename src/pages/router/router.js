@@ -1,27 +1,11 @@
 import { basePath } from "@/js/api/constants.js";
-//import  initializeProfilePage  from "@/pages/profile/profile.js";
+//import { initializeProfilePage } from "@/pages/profile/profile.js";
  
   
 export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
   console.log("📌 Detected Path:", pathname);
-/* testing new fix
- function clearPage() {
-    const mainContent = document.querySelector("main"); // Adjust if needed
-    if (mainContent) {
-        mainContent.innerHTML = ""; // Remove all previous content
-    }
-    // ✅ Clear and reinitialize navigation if needed
-    if (window.mainNavigation) {
-      console.log("🔄 Re-initializing Navigation...");
-      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-  }
-  if (window.sidebarNavigation) {
-      console.log("🔄 Re-initializing Sidebar...");
-      window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-    }
-  }
-*/
+
 function clearPage() {
   const mainContent = document.querySelector("main");
   if (mainContent) {
@@ -109,26 +93,23 @@ function clearPage() {
         loadPage("/register", "/src/pages/auth/register/register.html", "/src/pages/auth/register/register.js", "initializeRegisterPage");
         break;
 
-        case "/profile":
-    console.log("👤 Profile Page Detected");
+      case "/profile":
+        console.log("👤 Profile Page Detected");
 
-    // 🔄 Prevent duplicate profile page initialization
-    if (window.profilePageLoaded) {
-        console.log("⚠️ Profile page is already initialized. Skipping duplicate execution.");
-        return; // ✅ Stops execution if already loaded
-    }
+        console.log("🔄 Checking if profile page is already initialized...", window.profilePageLoaded);
+        if (window.profilePageLoaded) {
+          console.log("⚠️ Skipping duplicate execution.");
+          break;
+        }
 
-    console.log("🔍 Importing profile script...");
-    
-    // ✅ Mark the profile page as loaded to prevent duplicate execution
-    window.profilePageLoaded = true;
-
-    loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
-    .catch(error => console.error(`❌ Error loading Profile Page:`, error));
-
-    break;
-
+        // ✅ Reset content before loading profile page
+        document.querySelector("main").innerHTML = "";
         
+        window.profilePageLoaded = true;
+        loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
+          .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+        
+        break;
 
 
       case "/manageListings":

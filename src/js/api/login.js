@@ -100,6 +100,9 @@ export class Login {
 
     this.updateNavigation(false); // ✅ Update navigation once
 
+    // ✅ Reset profile page initialization flag  
+    window.profilePageLoaded = false; 
+
     // ✅ Always navigate to home after logout
     console.log("🔄 Redirecting to Home...");
     window.history.pushState({}, "", "/");

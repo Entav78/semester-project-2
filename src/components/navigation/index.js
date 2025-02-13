@@ -132,7 +132,7 @@ export class Navigation {
       { text: "Manage Listings", path: `${basePath}/src/pages/manageListings/manageListings`, show: isLoggedIn },
       { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
       { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
-      { text: "Logout", path: "#", show: isLoggedIn, action: () => loginInstance.handleLogout() },
+      { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout }, // ✅ Use the correct method
     ];
 
     navItems.forEach(({ text, path, show, action }) => {
@@ -144,7 +144,11 @@ export class Navigation {
       button.dataset.path = path;
 
       if (action) {
-        button.addEventListener("click", action);
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          console.log(`🚪 Logging out user...`);
+          action(); // ✅ Call handleLogout directly
+        });
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
@@ -159,6 +163,11 @@ export class Navigation {
       listItem.appendChild(button);
       nav.appendChild(listItem);
     });
+
+    // ✅ Ensure sidebar functionality is set up correctly
+    if (this.container.id === "sidebar-nav") {
+      this.setupSidebar();
+    }
 
     console.log("🔄 Navbar updated:", nav);
   }
