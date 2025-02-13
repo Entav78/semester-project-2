@@ -13,7 +13,7 @@
     
       <button id="openSidebar" class="lg:hidden text-2xl">☰</button>
     
-      <nav class="hidden lg:flex space-x-6 navbar-nav"></nav>
+      <nav id="main-nav" class="hidden lg:flex space-x-6"></nav>
     </header>
     
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
@@ -21,10 +21,10 @@
     <aside id="sidebar"
       class="fixed top-0 right-0 h-full w-64 bg-gray-800 shadow-lg transform translate-x-full transition-transform duration-300">
       <button id="closeSidebar" class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl">✖</button>
-      <nav class="p-6 space-y-6 flex flex-col navbar-nav"></nav>
+      <nav id="sidebar-nav" class="p-6 space-y-6 flex flex-col"></nav>
     </aside>
     
-    <main id="main-container">
+    <main id="main-container" class="main-content">
 
       <form id="registerForm">
         <input type="text" id="userName" name="name" placeholder="userName (only letters, numbers, and underscores)" required />

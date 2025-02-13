@@ -17,33 +17,29 @@ console.log("📌 Checking navigation initialization:", window.navigationInitial
 const mainNav = document.getElementById("main-nav");
 const sidebarNav = document.getElementById("sidebar-nav");
 
-let mainNavigationInstance = null;
-let sidebarNavigationInstance = null;
-
 // ✅ Create an instance of `Login` to access handleLogout()
 const loginInstance = new Login();
 
 if (!window.navigationInitialized) {
-  console.log("🔧 Initializing Navigation...");
-
-  if (mainNav && !mainNav.dataset.navInitialized) {
-    mainNavigationInstance = new Navigation(mainNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
-    mainNav.dataset.navInitialized = "true";
+  if (!window.mainNavigation && mainNav) { // ✅ Prevent duplicate navigation
+    window.mainNavigation = new Navigation(
+      mainNav,
+      isLoggedIn,
+      loginInstance.handleLogout.bind(loginInstance)
+    );
   }
-  if (sidebarNav && !sidebarNav.dataset.navInitialized) {
-    sidebarNavigationInstance = new Navigation(sidebarNav, isLoggedIn, loginInstance.handleLogout.bind(loginInstance));
-    sidebarNav.dataset.navInitialized = "true";
+
+  if (!window.sidebarNavigation && sidebarNav) { // ✅ Prevent duplicate sidebar
+    window.sidebarNavigation = new Navigation(
+      sidebarNav,
+      isLoggedIn,
+      loginInstance.handleLogout.bind(loginInstance)
+    );
   }
 
   window.navigationInitialized = true;
-  console.log("✅ Navigation Initialized!");
-} else {
-  console.log("⚠️ Navigation already initialized. Skipping...");
 }
 
-// ✅ Make sure both instances are globally accessible
-window.mainNavigation = mainNavigationInstance;
-window.sidebarNavigation = sidebarNavigationInstance;
 
 // ✅ Page Initialization (APP.JS HANDLES THIS)
 const currentPath = window.location.pathname;

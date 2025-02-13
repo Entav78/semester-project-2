@@ -6,22 +6,23 @@ export async function router(pathname = window.location.pathname) {
   console.log("🚀 Router running");
   console.log("📌 Detected Path:", pathname);
 
-function clearPage() {
-  const mainContent = document.querySelector("main");
-  if (mainContent) {
+  function clearPage() {
+    const mainContent = document.querySelector("main");
+    if (mainContent) {
       mainContent.innerHTML = ""; // ✅ Clear only page content, NOT navigation
-  }
-
-  // ✅ Keep navigation intact, only update if necessary
-  if (window.mainNavigation) {
+    }
+  
+    // ✅ Ensure navigation isn't re-created
+    if (window.mainNavigation) {
       console.log("🔄 Re-initializing Navigation...");
       window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-  }
-  if (window.sidebarNavigation) {
+    }
+    if (window.sidebarNavigation) {
       console.log("🔄 Re-initializing Sidebar...");
       window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+    }
   }
-}
+  
 
 
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]

@@ -26,54 +26,56 @@ export class Navigation {
   }
 
   createNavbar(isLoggedIn) {
-    this.container.innerHTML = ""; // Clear existing content
-  
+    this.container.innerHTML = ""; // ✅ Clear only the specific navigation, not global navs
+
     const nav = document.createElement("ul");
-    nav.className = "navbar-nav flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6";
-  
-    console.log("🛠️ basePath:", basePath);
-  
+    nav.className = "flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6"; // ✅ Removed global `.navbar-nav`
+
+    console.log(`🛠️ Creating Navigation for: ${this.container.id}`);
+
     const navItems = [
-      { text: "Home", path: `${basePath}/` },
-      { text: "Profile", path: `${basePath}/profile`, show: isLoggedIn },
-      { text: "Manage Listings", path: `${basePath}/manageListings`, show: isLoggedIn },
-      { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
-      { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
-       { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout }, // ✅ Use the provided handleLogout
+        { text: "Home", path: `${basePath}/` },
+        { text: "Profile", path: `${basePath}/profile`, show: isLoggedIn },
+        { text: "Manage Listings", path: `${basePath}/manageListings`, show: isLoggedIn },
+        { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
+        { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
+        { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
     ];
-  
+
     navItems.forEach(({ text, path, show, action }) => {
-      if (show !== undefined && !show) return;
-  
-      const button = document.createElement("button");
-      button.textContent = text;
-      button.className = "nav-link text-white hover:text-gray-300 transition";
-      button.dataset.path = path;
-  
-      if (action) {
-        button.addEventListener("click", (event) => {
-          event.preventDefault();
-          console.log(`🚪 Logging out user...`);
-          action(); // ✅ Call handleLogout
-        });
-      } else {
-        button.addEventListener("click", (event) => {
-          event.preventDefault();
-          console.log(`🔍 Navigating to: ${path}`);
-          window.history.pushState({}, "", path);
-          router(path);
-        });
-      }
-  
-      const listItem = document.createElement("li");
-      listItem.className = "nav-item";
-      listItem.appendChild(button);
-      nav.appendChild(listItem);
+        if (show !== undefined && !show) return;
+
+        const button = document.createElement("button");
+        button.textContent = text;
+        button.className = "nav-link text-white hover:text-gray-300 transition";
+        button.dataset.path = path;
+
+        if (action) {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                console.log(`🚪 Logging out user...`);
+                action();
+            });
+        } else {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                console.log(`🔍 Navigating to: ${path}`);
+                window.history.pushState({}, "", path);
+                router(path);
+            });
+        }
+
+        const listItem = document.createElement("li");
+        listItem.className = "nav-item";
+        listItem.appendChild(button);
+        nav.appendChild(listItem);
     });
-  
+
+    // ✅ Append the navigation only to the specific container
     this.container.appendChild(nav);
-    console.log("✅ Navigation created:", nav);
-  }
+    console.log(`✅ Navigation created for ${this.container.id}`);
+}
+
 
   setupSidebar() {
     if (this.container.id !== "sidebar-nav") {

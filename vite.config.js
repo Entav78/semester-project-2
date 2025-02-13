@@ -13,14 +13,14 @@ export default defineConfig({
       usePolling: true, // ✅ Helps detect file changes on Windows/Mac/Linux
     },
   },
-  
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
       "@scss": path.resolve(__dirname, "src/styles"), 
     },
   },
-  
+
   css: {
     preprocessorOptions: {
       scss: {
@@ -28,28 +28,27 @@ export default defineConfig({
       },
     },
   },
+
   build: {
     rollupOptions: {
       input: {
         main: "index.html",
         item: "src/pages/item/item.html",
-        profile: "src/pages/profile/profile.html", // ✅ Ensure the HTML is built
-        "assets/profileScript": "src/pages/profile/profile.js", // ✅ Ensure the script is built
-      },
+        profile: "src/pages/profile/profile.html",
+        profileScript: "src/pages/profile/profile.js",  // ✅ Fixed duplicate folder issue
         login: "src/pages/auth/login/login.html",
         loginScript: "src/pages/auth/login/login.js",
         register: "src/pages/auth/register/register.html",
         registerScript: "src/pages/auth/register/register.js",
       },
       output: {
-        entryFileNames: "assets/[name].js", // ✅ Keep predictable JS filenames
-        assetFileNames: "assets/[name][extname]",
+        entryFileNames: "assets/[name].js", // ✅ Generates clean filenames
+        assetFileNames: "assets/[name][extname]", // ✅ Removes extra "assets/assets/"
       },
-      preserveModules: true,
-
     },
   },
-);
+});
+
 
 
 
