@@ -5,15 +5,18 @@ console.log("👤 Profile Page is running...");
 export function initializeProfilePage() {
   console.log("👤 Profile Page Initializing...");
 
-  // Remove existing event listeners (if needed)
-  document.querySelectorAll(".tab-button").forEach(tab => {
-    tab.replaceWith(tab.cloneNode(true)); // ✅ Cloning removes old event listeners
-  });
+  // ✅ Final cleanup: Remove lingering login message (even if it somehow persists)
+  setTimeout(() => {
+      document.querySelectorAll(".login-message").forEach(msg => {
+          console.log("🗑️ Removing lingering login message from profile page...");
+          msg.remove();
+      });
+  }, 100); // Small delay to ensure it happens AFTER page load
 
   const userName = localStorage.getItem("userName");
   if (!userName) {
-    console.warn("⚠️ No user logged in.");
-    return;
+      console.warn("⚠️ No user logged in.");
+      return;
   }
 
   console.log(`🔍 Fetching data for user: ${userName}`);
@@ -23,6 +26,7 @@ export function initializeProfilePage() {
 
   console.log("✅ Profile Page Setup Complete!");
 }
+
 
 
 async function displayUserListings(userName) {

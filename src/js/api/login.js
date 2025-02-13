@@ -42,7 +42,7 @@ export class Login {
     }
   }
 
-  async handleLogin(event) {
+  async handleLogin(event) { 
     event.preventDefault();
     console.log("🔄 Login form submitted!");
 
@@ -52,39 +52,58 @@ export class Login {
     const formData = new FormData(event.target);
 
     const userData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
+        email: formData.get("email"),
+        password: formData.get("password"),
     };
 
     console.log("📩 Submitting login data:", userData);
 
     try {
-      const responseData = await this.login(userData);
+        await this.login(userData);
 
-      localStorage.setItem("authToken", responseData.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(responseData.data));
-      localStorage.setItem("userName", responseData.data.name); 
+        // ✅ Remove any existing login message BEFORE adding a new one
+        document.querySelectorAll(".login-message").forEach(msg => msg.remove());
+        console.log("🗑️ Old login messages removed before adding a new one.");
 
-      this.updateNavigation(true); // ✅ Update navigation once
+        // ✅ Add a fresh success message
+        const successMessage = document.createElement("p");
+        successMessage.textContent = "🎉 Login successful! Redirecting...";
+        successMessage.className = "text-green-600 font-bold mt-2 login-message";
+        document.body.appendChild(successMessage);
 
-      // **🔧 Fix: Remove any old success messages before adding a new one**
-      document.querySelectorAll(".login-success").forEach(msg => msg.remove());
+        this.updateNavigation(true);
 
-      const successMessage = document.createElement("p");
-      successMessage.textContent = "🎉 Login successful! Redirecting...";
-      successMessage.className = "text-green-600 font-bold mt-2 login-success"; // ✅ Unique class
-      document.body.appendChild(successMessage);
-
-      setTimeout(() => {
-        window.history.pushState({}, "", "/profile");
-        document.querySelector("main").innerHTML = ""; // 🧹 Clear main content
-        router("/profile"); // ✅ Ensure full page refresh
+        setTimeout(() => {
+          console.log("🔄 Redirecting to profile...");
+          window.history.pushState({}, "", "/profile");
+      
+          // ✅ Ensure page content resets before loading new page
+          const mainContent = document.querySelector("main");
+          if (mainContent) {
+              mainContent.innerHTML = "";
+          }
+      
+          router("/profile");
+      
+          // ✅ Extra cleanup: Force remove **any lingering login messages**
+          setTimeout(() => {
+              document.querySelectorAll(".login-message").forEach(msg => {
+                  console.log("🗑️ Removing lingering login message...");
+                  msg.remove();
+              });
+              console.log("✅ Login message removed after redirect.");
+          }, 200); // Small delay to ensure it's executed **after** the page renders
+      
       }, 500);
+      
     } catch (error) {
-      errorDiv.textContent = `Login failed: ${error.message}`;
-      errorDiv.className = "text-red-600 font-bold mt-2";
+        errorDiv.textContent = `Login failed: ${error.message}`;
+        errorDiv.className = "text-red-600 font-bold mt-2";
     }
-  }
+}
+
+
+
 
 
 
