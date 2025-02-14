@@ -125,7 +125,7 @@ export class Navigation {
       { text: "Profile", path: `${basePath}/src/pages/profile/profile`, show: isLoggedIn },
       { text: "Manage Listings", path: `${basePath}/src/pages/manageListings/manageListings`, show: isLoggedIn },
       { text: "Login", path: `${basePath}/src/pages/auth/login/login`, show: !isLoggedIn },
-      { text: "Register", path: `${basePath}/src/pages/auth/register/register`, show: !isLoggedIn },
+      { text: "Register", path: `${basePath}/register`, show: !isLoggedIn },
       { text: "Logout", path: "#", show: isLoggedIn, action: this.handleLogout },
     ];
 

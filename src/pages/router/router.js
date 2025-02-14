@@ -84,61 +84,61 @@ export async function router(pathname = window.location.pathname) {
 
   try {
     switch (cleanPathname) {
-      case "/":
-        console.log("🏠 Home Page Detected");
-        clearPage();
-        loadPage("/", "/src/index.html", "/src/pages/home/index.js", "initializeHomePage");
-        break;
+        case "/":
+            console.log("🏠 Home Page Detected");
+            clearPage();
+            loadPage("/", "/src/index.html", "/src/pages/home/index.js", "initializeHomePage");
+            break;
 
-      case "/login":
-        console.log("🔑 Login Page Detected");
-        clearPage();
-        loadPage("/login", "/src/pages/auth/login/login.html", "/src/pages/auth/login/login.js", "initializeLoginPage");
-        break;
+        case "/login":
+            console.log("🔑 Login Page Detected");
+            clearPage();
+            loadPage("/login", "/src/pages/auth/login/login.html", "/src/pages/auth/login/login.js", "initializeLoginPage");
+            break;
+
+        case "/register": // ✅ Add this missing case
+            console.log("📝 Register Page Detected");
+            clearPage();
+            loadPage("/register", "/src/pages/auth/register/register.html", "/src/pages/auth/register/register.js", "initializeRegisterPage");
+            break;
 
         case "/profile":
-          console.log("👤 Profile Page Detected");
-          console.log("🔄 Checking if profile page is already initialized...", window.profilePageLoaded);
-          
-          if (window.profilePageLoaded) {
-            console.log("⚠️ Skipping duplicate execution.");
+            console.log("👤 Profile Page Detected");
+            console.log("🔄 Checking if profile page is already initialized...", window.profilePageLoaded);
+
+            if (window.profilePageLoaded) {
+                console.log("⚠️ Skipping duplicate execution.");
+                break;
+            }
+
+            clearPage();
+            window.profilePageLoaded = true;
+
+            loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
+                .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+
             break;
-          }
-  
-          // ✅ Reset content before loading profile page
-          clearPage(); // ✅ Ensure previous content is removed
-          window.profilePageLoaded = true;
-          
-          loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
-            .catch(error => console.error(`❌ Error loading Profile Page:`, error));
-          
-          break;
-        
 
+        case "/manageListings":
+            console.log("📦 Manage Listings Page Detected");
+            clearPage();
+            loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
+            break;
 
-      case "/manageListings":
-        console.log("📦 Manage Listings Page Detected");
-        clearPage();
-        loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
-        break;
+        case "/item":
+            console.log("🛒 Item Page Detected");
+            clearPage();
+            loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage");
+            break;
 
-      case "/item":
-        console.log("🛒 Item Page Detected");
-        clearPage();
-        loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage");
-        break;
-
-      default:
-        console.log("❓ Page Not Found - Loading 404");
-        clearPage();
-        loadPage("/404", "/src/pages/notFound.html", "/src/pages/notFound.js", "initializeNotFoundPage");
-    }
+        default:
+            console.log("❓ Page Not Found - Loading 404");
+            clearPage();
+            loadPage("/404", "/src/pages/notFound.html", "/src/pages/notFound.js", "initializeNotFoundPage");
+      }
   } catch (error) {
-    console.error("❌ Router Error:", error.message);
-  } // ✅ Properly closing try-catch block
-  console.log("🔍 Window location pathname:", window.location.pathname);
-console.log("🔍 Clean Pathname:", cleanPathname);
-
+      console.error("❌ Router Error:", error.message);
+  }
 }
 
 
