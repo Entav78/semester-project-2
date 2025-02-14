@@ -119,11 +119,12 @@ export async function router(pathname = window.location.pathname) {
 
             break;
 
-        case "/manageListings":
-            console.log("📦 Manage Listings Page Detected");
-            clearPage();
-            loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
-            break;
+            case "/manageListings":
+              console.log("📦 Manage Listings Page Detected");
+              clearPage();
+              loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
+              break;
+            
 
         case "/item":
             console.log("🛒 Item Page Detected");

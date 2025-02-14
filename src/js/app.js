@@ -5,7 +5,6 @@ import { initializeLoginPage } from "@/pages/auth/login/login.js";
 import { Login } from "@/js/api/login.js";
 import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; 
-//import { initializeManageListingsPage } from "@/pages/manageListings/manageListings.js";
 import "../styles/main.scss";
 
 console.log("🛠️ Initializing App...");
