@@ -7,23 +7,27 @@ export async function router(pathname = window.location.pathname) {
   console.log("📌 Detected Path:", pathname);
 
   function clearPage() {
+    console.log("🧹 Clearing page content...");
+    
     const mainContent = document.querySelector("main");
     if (mainContent) {
-      mainContent.innerHTML = ""; // ✅ Clear only the page content, NOT navigation or header
+        mainContent.innerHTML = ""; // ✅ Clear only the page content, NOT navigation or header
     }
-  
+
     // ✅ Ensure navigation is only updated, NOT duplicated
     if (window.mainNavigation) {
-      console.log("🔄 Re-initializing Navigation...");
-      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+        console.log("🔄 Updating Navigation...");
+        window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
+    
     if (window.sidebarNavigation) {
-      console.log("🔄 Re-initializing Sidebar...");
-      window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+        console.log("🔄 Updating Sidebar...");
+        window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
-  
+
     console.log("✅ Page content cleared. Header remains intact.");
-  }
+}
+
   
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")

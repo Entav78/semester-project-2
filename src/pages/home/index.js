@@ -1,55 +1,41 @@
 import { fetchListings } from "@/js/api/listings.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
+import { renderPaginationControls } from "@/js/api/listings.js"; 
 
-/*
+const ITEMS_PER_PAGE = 8; // ✅ Show 8 listings per page
+let currentPage = 1; // ✅ Define current page globally
+
+async function loadListings(page) {
+  console.log(`📦 Fetching Listings - Page ${page}`);
+
+  await fetchAndRenderListings(page); // ✅ Fetch and render everything here
+}
+
+
 export async function initializeHomePage() {
   console.log("🏠 Initializing Home Page...");
-
-  await waitForListingsContainer();
-  new Filtering();
-  fetchAndRenderListings();
-}*/
-
-export async function initializeHomePage() {
-  console.log("🏠 Initializing Home Page...");
-
-  await waitForListingsContainer(); // ✅ Ensures the container exists before proceeding
 
   const listingsContainer = document.getElementById("listingsContainer");
-  if (!listingsContainer) {
-    console.error("❌ listingsContainer not found!");
+  const paginationContainer = document.getElementById("paginationContainer");
+
+  if (!listingsContainer || !paginationContainer) {
+    console.error("❌ listingsContainer or paginationContainer not found!");
     return;
   }
 
-  // ✅ Clear old listings BEFORE fetching new ones
+  // ✅ Clear previous content
   listingsContainer.innerHTML = "";
+  paginationContainer.innerHTML = "";
 
   console.log("📦 Fetching and rendering listings...");
-  fetchAndRenderListings(); // ✅ Keep using this since it handles the fetching and rendering
+  await loadListings(currentPage);
 }
 
+async function fetchAndRenderListings(page = 1) {
+  console.log(`📦 Fetching and rendering listings - Page ${page}`);
 
-
-// ✅ Function to wait until listingsContainer is added to DOM
-async function waitForListingsContainer() {
-  return new Promise((resolve) => {
-    const checkExist = setInterval(() => {
-      const container = document.getElementById("listingsContainer");
-      if (container) {
-        console.log("✅ listingsContainer found!");
-        clearInterval(checkExist);
-        resolve(container);
-      }
-    }, 50);
-  });
-}
-
-// ✅ Fetch and render listings
-async function fetchAndRenderListings() {
-  console.log("🏠 Fetching and rendering listings...");
   const container = document.getElementById("listingsContainer");
-
   if (!container) {
     console.error("❌ listingsContainer not found in the DOM!");
     return;
@@ -57,12 +43,17 @@ async function fetchAndRenderListings() {
 
   try {
     console.log("🔍 Calling fetchListings()...");
-    const listings = await fetchListings();
+    const { listings, totalCount } = await fetchListings(page);
     console.log("✅ Listings Fetched:", listings);
 
-    if (Array.isArray(listings) && listings.length > 0) {
+    // ✅ Slice the listings array to only show the correct items per page
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedListings = listings.slice(startIndex, endIndex);
+
+    if (Array.isArray(paginatedListings) && paginatedListings.length > 0) {
       console.log("🖼️ Rendering Listings...");
-      container.innerHTML = listings
+      container.innerHTML = paginatedListings
         .map(
           (listing) => `
           <div class="listing-item border p-4 rounded-lg shadow-lg" data-category="${listing.category}">
@@ -79,7 +70,10 @@ async function fetchAndRenderListings() {
         .join("");
 
       console.log("✅ Listings rendered!");
+
+      new Filtering();
       setupListingButtons();
+      renderPaginationControls(totalCount); // ✅ Ensure pagination is updated
     } else {
       console.warn("⚠️ No listings available. Something is wrong.");
       container.innerHTML = "<p>No listings available.</p>";
@@ -88,6 +82,20 @@ async function fetchAndRenderListings() {
     console.error("❌ Error fetching listings:", error);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

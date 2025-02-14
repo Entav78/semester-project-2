@@ -77,50 +77,46 @@ export class Navigation {
 }
 
 
-  setupSidebar() {
-    if (this.container.id !== "sidebar-nav") {
-      console.log("⚠️ Skipping sidebar setup for main navigation.");
+setupSidebar() {
+  if (window.sidebarSetupDone) {
+      console.log("⚠️ Sidebar already set up. Skipping re-initialization.");
       return;
-    }
+  }
 
-    console.log("🍔 Setting up sidebar functionality...");
+  console.log("🍔 Setting up sidebar functionality...");
 
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const openButton = document.getElementById("openSidebar");
-    const closeButton = document.getElementById("closeSidebar");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const openButton = document.getElementById("openSidebar");
+  const closeButton = document.getElementById("closeSidebar");
 
-    console.log("🔍 Sidebar:", sidebar);
-    console.log("🔍 Overlay:", overlay);
-    console.log("🔍 Open Button:", openButton);
-    console.log("🔍 Close Button:", closeButton);
-
-    if (!sidebar || !overlay || !openButton || !closeButton) {
+  if (!sidebar || !overlay || !openButton || !closeButton) {
       console.warn("⚠️ Sidebar elements missing. Skipping sidebar setup.");
       return;
-    }
+  }
 
-    openButton.addEventListener("click", () => {
+  openButton.addEventListener("click", () => {
       console.log("📂 Opening sidebar...");
       sidebar.classList.remove("translate-x-full");
       overlay.classList.remove("hidden");
-    });
+  });
 
-    closeButton.addEventListener("click", () => {
+  closeButton.addEventListener("click", () => {
       console.log("📂 Closing sidebar...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
-    });
+  });
 
-    overlay.addEventListener("click", () => {
+  overlay.addEventListener("click", () => {
       console.log("📂 Closing sidebar via overlay...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
-    });
+  });
 
-    console.log("✅ Sidebar setup completed.");
-    console.log("✅ Navigation Setup:", window.navigationSetupDone);
-  }
+  window.sidebarSetupDone = true;
+  console.log("✅ Sidebar setup completed.");
+}
+
 
   updateNavbar(isLoggedIn) {
     const nav = this.container.querySelector("ul");

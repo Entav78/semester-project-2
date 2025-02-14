@@ -13,6 +13,10 @@ console.log("🛠️ Initializing App...");
 // ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 console.log("📌 Checking navigation initialization:", window.navigationInitialized);
+console.log("🔍 Checking navigation setup... ");
+console.log("🌐 window.mainNavigation:", window.mainNavigation);
+console.log("🌐 window.sidebarNavigation:", window.sidebarNavigation);
+
 
 const mainNav = document.getElementById("main-nav");
 const sidebarNav = document.getElementById("sidebar-nav");
@@ -20,30 +24,34 @@ const sidebarNav = document.getElementById("sidebar-nav");
 // ✅ Create an instance of `Login` to access handleLogout()
 const loginInstance = new Login();
 
-if (!window.mainNavigation) {
+if (!window.navigationInitialized) {
+  console.log("📌 Initializing navigation...");
+
   const mainNav = document.getElementById("main-nav");
-  if (mainNav) {
+  const sidebarNav = document.getElementById("sidebar-nav");
+
+  const loginInstance = new Login();
+
+  if (!window.mainNavigation && mainNav) {
     window.mainNavigation = new Navigation(
       mainNav,
       Boolean(localStorage.getItem("authToken")),
       loginInstance.handleLogout.bind(loginInstance)
     );
   }
-}
 
-if (!window.sidebarNavigation) {
-  const sidebarNav = document.getElementById("sidebar-nav");
-  if (sidebarNav) {
+  if (!window.sidebarNavigation && sidebarNav) {
     window.sidebarNavigation = new Navigation(
       sidebarNav,
       Boolean(localStorage.getItem("authToken")),
       loginInstance.handleLogout.bind(loginInstance)
     );
   }
+
+  window.navigationInitialized = true;
+  console.log("✅ Navigation fully initialized.");
 }
-// ✅ Mark navigation as initialized to prevent duplicate setup
-window.navigationInitialized = true;
-console.log("✅ Navigation fully initialized.");
+
 
 
 
