@@ -54,8 +54,6 @@ export class ManageListings {
           <input type="text" id="listingTags" name="tags" class="w-full p-2 border rounded" placeholder="e.g., vintage, electronics, antique" />
         </div>
 
-
-
         <!-- Deadline -->
         <div>
           <label for="listingDeadline" class="block font-semibold">Deadline</label>
@@ -81,65 +79,70 @@ export class ManageListings {
   setupEventListeners() {
     console.log("🎯 Setting up event listeners for Manage Listings...");
     const form = document.getElementById("createListingForm");
-    const mediaInput = document.getElementById("listingMedia");
+    const mediaInput = document.getElementById("listingMediaUrl"); // Make sure this matches your input ID
 
     if (form) {
-      console.log("✅ Found form. Adding submit listener...");
-      form.addEventListener("submit", (event) => this.handleCreateListing(event));
+        console.log("✅ Found form. Adding submit listener...");
+        form.addEventListener("submit", (event) => this.handleCreateListing(event));
     }
 
     if (mediaInput) {
-      console.log("✅ Found media input. Adding change listener...");
-      mediaInput.addEventListener("change", (event) => this.handleMediaPreview(event));
+        console.log("✅ Found media input. Adding change listener...");
+        mediaInput.addEventListener("change", this.handleMediaPreview.bind(this)); // ✅ Bind `this`
     }
+}
+
+
+ /**
+ * 🖼️ Handle Image Preview (Now Works with URLs)
+ */
+handleMediaPreview(event) {
+  const previewContainer = document.getElementById("mediaPreview");
+  previewContainer.innerHTML = ""; // ✅ Clear previous previews
+
+  // ✅ Get Image URL from Input Field
+  const imageUrl = event.target.value.trim();
+
+  if (!imageUrl) {
+      console.warn("⚠️ No image URL provided.");
+      return;
   }
 
-  /**
-   * 🖼️ Handle Image Preview
-   */
-  handleMediaPreview(event) {
-    const previewContainer = document.getElementById("mediaPreview");
-    previewContainer.innerHTML = ""; // Clear previous previews
-
-    const files = event.target.files;
-    if (!files.length) return;
-
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.className = "w-24 h-24 object-cover rounded-lg shadow-md";
-        previewContainer.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    console.log("✅ Media preview updated.");
+  // ✅ Validate URL Format (Basic Check)
+  if (!imageUrl.startsWith("http")) {
+      console.error("❌ Invalid image URL. Must start with http or https.");
+      return;
   }
+
+  // ✅ Create and Display Image Preview
+  const img = document.createElement("img");
+  img.src = imageUrl;
+  img.className = "w-24 h-24 object-cover rounded-lg shadow-md";
+  img.alt = "Listing Image Preview";
+  previewContainer.appendChild(img);
+
+  console.log("✅ Image preview updated with URL:", imageUrl);
+}
+
 
   /**
    * 🚀 Handle Form Submission (Create Listing)
    */
-
-async handleCreateListing(event) {
+  async handleCreateListing(event) {
     event.preventDefault();
     console.log("🚀 Creating a new listing...");
 
-    // ✅ Check Authentication Token
     const authToken = localStorage.getItem("authToken");
-
     if (!authToken) {
         console.error("❌ No Auth Token Found. Redirecting to Login...");
         this.showMessage("❌ You must be logged in to create a listing!", "red");
         return;
     }
 
-    // ✅ Collect form inputs
     const title = document.getElementById("listingTitle")?.value.trim();
     const description = document.getElementById("listingDescription")?.value.trim();
     const deadline = document.getElementById("listingDeadline")?.value;
-    const mediaInput = document.getElementById("listingMediaURL")?.value.trim(); 
+    const mediaInput = document.getElementById("listingMediaUrl")?.value.trim();
     const tagsInput = document.getElementById("listingTags")?.value.trim();
 
     if (!title || !deadline) {
@@ -148,30 +151,18 @@ async handleCreateListing(event) {
     }
 
     const endsAt = new Date(deadline).toISOString();
-
-    // ✅ Format media array properly
-    const media = mediaInput
-        ? [{ url: mediaInput, alt: title }]  // API requires `{ url: "", alt: "" }`
-        : [];
-
-    // ✅ Format tags array properly
+    const media = mediaInput ? [{ url: mediaInput, alt: title }] : [];
     const tags = tagsInput ? tagsInput.split(",").map(tag => tag.trim()) : [];
 
-    const listingData = {
-        title,
-        description,
-        tags,
-        media,
-        endsAt
-    };
+    const listingData = { title, description, tags, media, endsAt };
 
     console.log("📌 Sending data to API:", listingData);
     console.log("🛠️ Using Auth Token:", authToken);
     console.log("🛠️ Using API Key:", API_KEY);
 
     try {
-      console.log("🛠️ Using API Key:", API_KEY);
-    console.log("🔍 API Key Length:", API_KEY.length);
+        console.log("🔍 API Key Length:", API_KEY.length);
+
         const response = await fetch(API_LISTINGS, {
             method: "POST",
             headers: {
@@ -191,10 +182,14 @@ async handleCreateListing(event) {
         }
 
         console.log("✅ Listing successfully created!");
-        this.showMessage("✅ Listing created successfully!", "green");
 
+        // ✅ Clear Form & Hide It
         event.target.reset();
         document.getElementById("mediaPreview").innerHTML = "";
+        document.getElementById("createListingForm").classList.add("hidden"); // ✅ Hide the form
+
+        // ✅ Show Success Message with "View My Listings" Button
+        this.showSuccessOptions();
 
     } catch (error) {
         console.error("❌ Error creating listing:", error);
@@ -203,32 +198,23 @@ async handleCreateListing(event) {
 }
 
 
-
-
-
   /**
-   * 🖼️ Convert uploaded images to Base64 (Temporary fix since API needs URLs)
+   * 🎉 Show Success Message with "View My Listings" Button
    */
-  convertMediaToBase64(files) {
-    return Promise.all(
-      Array.from(files).map(file => {
-        return new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.readAsDataURL(file);
-        });
-      })
-    );
-  }
+  showSuccessOptions() {
+    const successMessage = document.getElementById("formMessage");
+    successMessage.innerHTML = `
+      ✅ Listing created successfully! <br>
+      <button id="goToProfile" class="bg-blue-600 text-white p-2 rounded mt-2 hover:bg-blue-700">
+        View My Listings
+      </button>
+    `;
+    successMessage.classList.remove("hidden");
 
-  /**
-   * 🎨 Show form messages (Success/Error)
-   */
-  showMessage(message, color) {
-    this.formMessage.textContent = message;
-    this.formMessage.classList.remove("text-red-500", "text-green-500");
-    this.formMessage.classList.add(`text-${color}-500`);
-    this.formMessage.classList.remove("hidden");
+    document.getElementById("goToProfile").addEventListener("click", () => {
+      window.history.pushState({}, "", "/profile");
+      router("/profile");
+    });
   }
 }
 
@@ -237,7 +223,7 @@ async handleCreateListing(event) {
  */
 export function initializeManageListingsPage() {
   console.log("📦 Initializing Manage Listings Page... ✅ FUNCTION CALLED");
-  
+
   const mainContainer = document.getElementById("main-container");
   if (!mainContainer) {
     console.error("❌ Main container not found!");
@@ -247,5 +233,5 @@ export function initializeManageListingsPage() {
   new ManageListings(mainContainer);
 }
 
-// ✅ Ensure it's available globally for debugging
 window.initializeManageListingsPage = initializeManageListingsPage;
+

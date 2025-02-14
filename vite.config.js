@@ -8,7 +8,7 @@ export default defineConfig({
     fs: {
       strict: false, // ✅ Ensures Vite serves all necessary files
     },
-    historyFallback: true, // ✅ Properly handles deep links & SPA behavior
+    historyApiFallback: true, // ✅ Properly handles deep links & SPA behavior
     watch: {
       usePolling: true, // ✅ Helps detect file changes on Windows/Mac/Linux
     },

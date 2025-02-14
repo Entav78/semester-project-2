@@ -1,4 +1,5 @@
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
+import { Filtering } from "@/components/filtering/Filtering.js";
 
 console.log("👤 Profile Page is running...");
 
@@ -23,11 +24,33 @@ export function initializeProfilePage() {
   displayUserListings(userName);
   displayUserBids(userName);
   setupTabNavigation();
+  
+  // ✅ Initialize Filtering after loading listings
+  setTimeout(() => {
+    console.log("🔍 Initializing Filtering for Profile Page...");
+    new Filtering();
+  }, 500);
 
   console.log("✅ Profile Page Setup Complete!");
 }
 
+/*
+function initializeFilter() {
+  console.log("🔍 Initializing filter...");
 
+  const filterInput = document.getElementById("filterInput"); // Adjust ID if different
+  if (!filterInput) {
+    console.error("❌ Filter input not found!");
+    return;
+  }
+
+  filterInput.addEventListener("input", (event) => {
+    const searchTerm = event.target.value.trim().toLowerCase();
+    console.log("🔍 Filtering listings for:", searchTerm);
+    applyFilter(searchTerm);
+  });
+}
+*/
 
 async function displayUserListings(userName) {
   const listingsContainer = document.getElementById("listingsContainer");
