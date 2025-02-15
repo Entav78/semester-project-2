@@ -1,11 +1,12 @@
 import { API_LISTINGS } from "./constants.js";
 import { Listing } from "../../models/Listing.js";
 
-console.log("🔍 API_LISTINGS URL:", API_LISTINGS); // Check if correct URL is used
+console.log("🔍 API_LISTINGS URL:", API_LISTINGS); 
 
-const ITEMS_PER_PAGE = 8; // Only defined here
-let currentPage = 1; // Store current page globally
+const ITEMS_PER_PAGE = 8;
+let currentPage = 1;
 
+//  Fetch Listings from API
 export async function fetchListings(page = 1) {
   console.log(`Fetching Listings - Page ${page}`);
 
@@ -28,7 +29,48 @@ export async function fetchListings(page = 1) {
   }
 }
 
+//  Fetch & Render Listings
+export async function fetchAndRenderListings(page = 1) {
+  console.log(`Fetching and rendering listings - Page ${page}`);
 
+  const container = document.getElementById("listingsContainer");
+  if (!container) {
+    console.error("listingsContainer not found in the DOM!");
+    return;
+  }
+
+  try {
+    console.log("Calling fetchListings()...");
+    const { listings, totalCount } = await fetchListings(page);
+    console.log("Listings Fetched:", listings);
+
+    if (!Array.isArray(listings) || listings.length === 0) {
+      console.warn("No listings available.");
+      container.innerHTML = "<p>No listings available.</p>";
+      return;
+    }
+
+    container.innerHTML = listings
+      .map((listing) => `
+        <div class="listing-item border p-4 rounded-lg shadow-lg" data-category="${listing.category}">
+          <h2 class="listing-title text-xl font-bold">${listing.title}</h2>
+          <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
+          <p class="listing-description text-gray-600 mt-2">${listing.description || "No description available."}</p>
+          <p class="font-bold mt-2">${listing.price} credits</p>
+          <button class="view-item bg-blue-500 text-white px-4 py-2 rounded mt-4" data-id="${listing.id}">
+            View Item
+          </button>
+        </div>
+      `)
+      .join("");
+
+    renderPaginationControls(totalCount);
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+  }
+}
+
+// Render Pagination Controls
 export function renderPaginationControls(totalCount) {
   console.log("Rendering pagination controls...");
 
@@ -38,17 +80,11 @@ export function renderPaginationControls(totalCount) {
     return;
   }
 
-  paginationContainer.innerHTML = ""; // Clear previous pagination
+  paginationContainer.innerHTML = "";
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-  console.log(`Total Pages: ${totalPages}`);
+  if (totalPages <= 1) return;
 
-  if (totalPages <= 1) {
-    console.warn("Not enough pages for pagination.");
-    return; // Hide pagination if only 1 page exists
-  }
-
-  // Create Previous Button
   const prevButton = document.createElement("button");
   prevButton.textContent = "Previous";
   prevButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`;
@@ -57,7 +93,6 @@ export function renderPaginationControls(totalCount) {
 
   paginationContainer.appendChild(prevButton);
 
-  // Create Page Numbers
   for (let i = 1; i <= totalPages; i++) {
     const pageButton = document.createElement("button");
     pageButton.textContent = i;
@@ -66,7 +101,6 @@ export function renderPaginationControls(totalCount) {
     paginationContainer.appendChild(pageButton);
   }
 
-  // Create Next Button
   const nextButton = document.createElement("button");
   nextButton.textContent = "Next";
   nextButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`;
@@ -74,24 +108,22 @@ export function renderPaginationControls(totalCount) {
   nextButton.addEventListener("click", () => changePage(currentPage + 1, totalCount));
 
   paginationContainer.appendChild(nextButton);
-
-  console.log("Pagination Controls Rendered.");
 }
 
-
-
-
-
-
+//  Change Page Function
 function changePage(newPage, totalCount) {
-  if (newPage < 1 || newPage > Math.ceil(totalCount / ITEMS_PER_PAGE)) return; // Prevent invalid pages
+  if (newPage < 1 || newPage > Math.ceil(totalCount / ITEMS_PER_PAGE)) return;
 
-  console.log(`📦 Changing to page ${newPage}`);
+  console.log(`Changing to page ${newPage}`);
   currentPage = newPage;
 
-  fetchAndRenderListings(currentPage); // Reload listings for selected page
-  renderPaginationControls(totalCount); // Update pagination UI
+  fetchAndRenderListings(currentPage);
+  renderPaginationControls(totalCount);
 }
+
+//  Ensure `fetchAndRenderListings` is globally available
+window.fetchAndRenderListings = fetchAndRenderListings;
+
 
 
 
