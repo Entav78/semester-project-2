@@ -119,19 +119,52 @@ export async function router(pathname = window.location.pathname) {
 
             break;
 
-            case "/manageListings":
-              console.log("📦 Manage Listings Page Detected");
-              clearPage();
-              loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
-              break;
+        case "/manageListings":
+          console.log("📦 Manage Listings Page Detected");
+          clearPage();
+          loadPage("/manageListings", "/src/pages/manageListings/manageListings.html", "/src/pages/manageListings/manageListings.js", "initializeManageListingsPage");
+          break;
             
 
         case "/item":
-            console.log("🛒 Item Page Detected");
-            clearPage();
-            loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage");
-            break;
-
+          console.log("🛒 Item Page Detected");
+          clearPage();
+            
+          loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage")
+              .then(() => {
+                  console.log("🔄 Re-initializing navigation on Item Page...");
+            
+                   // ✅ If navigation is missing, re-create it
+                  if (!window.mainNavigation) {
+                      console.log("⚠️ Navigation missing! Re-creating it...");
+                      const mainNav = document.getElementById("main-nav");
+                      const sidebarNav = document.getElementById("sidebar-nav");
+                      const loginInstance = new Login();
+                            
+                      if (mainNav) {
+                          window.mainNavigation = new Navigation(
+                              mainNav,
+                              Boolean(localStorage.getItem("authToken")),
+                              loginInstance.handleLogout.bind(loginInstance)
+                          );
+                      }
+            
+                      if (sidebarNav) {
+                          window.sidebarNavigation = new Navigation(
+                              sidebarNav,
+                              Boolean(localStorage.getItem("authToken")),
+                              loginInstance.handleLogout.bind(loginInstance)
+                           );
+                      }
+                  }
+            
+                        // ✅ If navigation exists, just update it
+                  if (window.mainNavigation) {
+                      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+                  }
+              }); 
+          break;
+                
         default:
             console.log("❓ Page Not Found - Loading 404");
             clearPage();
