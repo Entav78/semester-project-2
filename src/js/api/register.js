@@ -103,7 +103,7 @@ export class Register {
     }
   
     const userData = {
-      userName: name,
+      name,
       email,
       password,
       bio,
