@@ -2,50 +2,50 @@ import { API_LISTINGS } from "@/js/api/constants.js";
 import { Listing } from "@/models/listing.js"; 
 
 export function initializeItemPage() {
-  // 🛑 Prevent duplicate execution
+  // Prevent duplicate execution
   if (window.itemPageInitialized) return;
-  window.itemPageInitialized = true; // ✅ Prevents infinite loop
+  window.itemPageInitialized = true; // Prevents infinite loop
 
   
 
   if (!window.location.pathname.includes("/item")) {
-    console.warn("⚠️ Item script loaded on the wrong page, exiting...");
-    return; // ✅ Exit early to prevent running on the wrong page
+    console.warn("Item script loaded on the wrong page, exiting...");
+    return; // Exit early to prevent running on the wrong page
   }
-  console.log("🛒 Initializing Item Page...");
-  console.log("✅ Running Item script on the correct page");
+  console.log("Initializing Item Page...");
+  console.log("Running Item script on the correct page");
 
-  // ✅ Get the item ID from the URL
+  // Get the item ID from the URL
   const params = new URLSearchParams(window.location.search);
   const itemId = params.get("id");
 
   if (!itemId) {
-    console.error("❌ No item ID found in URL");
+    console.error("No item ID found in URL");
     const container = document.getElementById("item-container");
     if (container) {
       container.innerHTML = "<p class='text-red-500'>Item not found.</p>";
     }
-    return; // ⛔ Stop execution
+    return; // Stop execution
   }
 
-  console.log(`📌 Fetching item with ID: ${itemId}`);
+  console.log(`Fetching item with ID: ${itemId}`);
 
-  // ✅ Fetch and display item details
+  // Fetch and display item details
   fetch(`${API_LISTINGS}/${itemId}`)
     .then(response => {
       if (!response.ok) throw new Error(`Failed to fetch item: ${response.statusText}`);
       return response.json();
     })
     .then(data => {
-      console.log("✅ Item fetched:", data);
+      console.log("Item fetched:", data);
 
       // Convert API data into a Listing object
       const item = new Listing(data);
 
-      // ✅ Ensure `item-container` exists before updating
+      // Ensure `item-container` exists before updating
       const itemContainer = document.getElementById("item-container");
       if (!itemContainer) {
-        console.error("❌ item-container NOT found in the DOM!");
+        console.error("item-container NOT found in the DOM!");
         return;
       }
 
@@ -58,12 +58,12 @@ export function initializeItemPage() {
       `;
     })
     .catch(error => {
-      console.error("❌ Error loading item:", error);
+      console.error("Error loading item:", error);
       document.getElementById("item-container").innerHTML = `<p class="text-red-500">Error loading item details.</p>`;
     });
 }
 
-// ✅ Run initialization **ONCE**
+// Run initialization **ONCE**
 initializeItemPage();
 
 

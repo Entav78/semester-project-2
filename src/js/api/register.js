@@ -1,9 +1,9 @@
 import { API_REGISTER } from "@/js/api/constants.js";
-import { router } from "@/pages/router/router.js"; // ✅ Import the router
+import { router } from "@/pages/router/router.js"; // Import the router
 
 export class Register {
   async register(data) {
-    console.log("📤 Sending data to API:", data);
+    console.log("Sending data to API:", data);
 
     try {
         const response = await fetch(API_REGISTER, {
@@ -12,29 +12,29 @@ export class Register {
             body: JSON.stringify(data),
         });
 
-        const responseData = await response.json(); // ✅ Read JSON once
+        const responseData = await response.json(); // Read JSON once
 
         if (!response.ok) {
-          console.error("❌ API Error Response:", responseData);
+          console.error("API Error Response:", responseData);
       
           const errorMessage = responseData.errors?.[0] || responseData.message || "Registration failed.";
           
           if (errorMessage.toLowerCase().includes("email")) {
-              throw new Error("⚠️ This email is already registered. Please try logging in.");
+              throw new Error("This email is already registered. Please try logging in.");
           } else if (errorMessage.toLowerCase().includes("password")) {
-              throw new Error("⚠️ Password must be at least 8 characters.");
+              throw new Error("Password must be at least 8 characters.");
           } else if (response.status === 400 && errorMessage === "Bad Request") {
-              throw new Error("⚠️ Registration failed. The provided details might already exist.");
+              throw new Error("Registration failed. The provided details might already exist.");
           } else {
-              throw new Error(`⚠️ Registration failed: ${errorMessage}`);
+              throw new Error(`Registration failed: ${errorMessage}`);
           }
       }
       
 
-        console.log("✅ Successful registration response:", responseData);
+        console.log("Successful registration response:", responseData);
         return responseData;
     } catch (error) {
-        console.error("❌ Error during registration:", error.message);
+        console.error("Error during registration:", error.message);
         throw error;
     }
 }
@@ -42,7 +42,7 @@ export class Register {
 
   async handleRegister(event) {
     event.preventDefault();
-    console.log("🔄 Register form submitted!");
+    console.log("Register form submitted!");
   
     const errorDiv = document.getElementById("errorMessage");
     errorDiv.textContent = "";
@@ -59,44 +59,44 @@ export class Register {
     const bannerAlt = formData.get("bannerAlt")?.trim() || "";
     const venueManager = formData.get("venueManager") === "on"; // Checkbox handling
   
-    // ✅ userName validation: only letters, numbers, and underscores
+    // userName validation: only letters, numbers, and underscores
     const userNameRegex = /^[a-zA-Z0-9_]+$/;
     if (!userNameRegex.test(name)) {
       errorDiv.textContent = "userName can only contain letters, numbers, and underscores (_).";
       return;
     }
   
-    // ✅ Email validation: must end with @stud.noroff.no
+    // Email validation: must end with @stud.noroff.no
     if (!email.endsWith("@stud.noroff.no")) {
       errorDiv.textContent = "Email must be a valid @stud.noroff.no address.";
       return;
     }
   
-    // ✅ Password validation: at least 8 characters
+    // Password validation: at least 8 characters
     if (password.length < 8) {
       errorDiv.textContent = "Password must be at least 8 characters long.";
       return;
     }
   
-    // ✅ Password confirmation check
+    // Password confirmation check
     if (password !== confirmPassword) {
       errorDiv.textContent = "Passwords do not match!";
       return;
     }
   
-    // ✅ Bio length validation
+    // Bio length validation
     if (bio.length > 160) {
       errorDiv.textContent = "Bio must be less than 160 characters.";
       return;
     }
   
-    // ✅ Validate avatar URL if provided
+    // Validate avatar URL if provided
     if (avatarUrl && !isValidURL(avatarUrl)) {
       errorDiv.textContent = "Invalid avatar URL.";
       return;
     }
   
-    // ✅ Validate banner URL if provided
+    // Validate banner URL if provided
     if (bannerUrl && !isValidURL(bannerUrl)) {
       errorDiv.textContent = "Invalid banner URL.";
       return;
@@ -116,26 +116,26 @@ export class Register {
   
     try {
       const user = await this.register(userData);
-      alert("🎉 Registration successful! Redirecting to login...");
+      alert("Registration successful! Redirecting to login...");
   
-      // ✅ Store user data locally
+      // Store user data locally
       localStorage.setItem("user", JSON.stringify({
         userName: user.userName,
         email: user.email,
         credits: 1000, // Assuming the API assigns this
       }));
   
-      // ✅ Redirect to login page
+      // Redirect to login page
       window.history.pushState({}, "", "/auth/login/");
       router("/auth/login/");
     } catch (error) {
-      console.error("❌ Error during registration:", error.message);
+      console.error("Error during registration:", error.message);
       errorDiv.textContent = `Registration failed: ${error.message}`;
     }
   }
   
   /**
-   * ✅ Helper function to validate URLs
+   * Helper function to validate URLs
    */
   isValidURL(url) {
     try {

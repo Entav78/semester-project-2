@@ -1,13 +1,13 @@
 import { API_LISTINGS } from "./constants.js";
 import { Listing } from "../../models/Listing.js";
 
-console.log("🔍 API_LISTINGS URL:", API_LISTINGS); // ✅ Check if correct URL is used
+console.log("🔍 API_LISTINGS URL:", API_LISTINGS); // Check if correct URL is used
 
-const ITEMS_PER_PAGE = 8; // ✅ Only defined here
-let currentPage = 1; // ✅ Store current page globally
+const ITEMS_PER_PAGE = 8; // Only defined here
+let currentPage = 1; // Store current page globally
 
 export async function fetchListings(page = 1) {
-  console.log(`📦 Fetching Listings - Page ${page}`);
+  console.log(`Fetching Listings - Page ${page}`);
 
   try {
     const response = await fetch(`${API_LISTINGS}?_active=true`);
@@ -23,32 +23,32 @@ export async function fetchListings(page = 1) {
 
     return { listings: paginatedListings, totalCount };
   } catch (error) {
-    console.error("❌ Fetch Error:", error);
+    console.error("Fetch Error:", error);
     return { listings: [], totalCount: 0 };
   }
 }
 
 
 export function renderPaginationControls(totalCount) {
-  console.log("📌 Rendering pagination controls...");
+  console.log("Rendering pagination controls...");
 
   const paginationContainer = document.getElementById("paginationContainer");
   if (!paginationContainer) {
-    console.error("❌ paginationContainer not found in the DOM!");
+    console.error("paginationContainer not found in the DOM!");
     return;
   }
 
-  paginationContainer.innerHTML = ""; // ✅ Clear previous pagination
+  paginationContainer.innerHTML = ""; // Clear previous pagination
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-  console.log(`📊 Total Pages: ${totalPages}`);
+  console.log(`Total Pages: ${totalPages}`);
 
   if (totalPages <= 1) {
-    console.warn("⚠️ Not enough pages for pagination.");
-    return; // ✅ Hide pagination if only 1 page exists
+    console.warn("Not enough pages for pagination.");
+    return; // Hide pagination if only 1 page exists
   }
 
-  // ✅ Create Previous Button
+  // Create Previous Button
   const prevButton = document.createElement("button");
   prevButton.textContent = "Previous";
   prevButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`;
@@ -57,7 +57,7 @@ export function renderPaginationControls(totalCount) {
 
   paginationContainer.appendChild(prevButton);
 
-  // ✅ Create Page Numbers
+  // Create Page Numbers
   for (let i = 1; i <= totalPages; i++) {
     const pageButton = document.createElement("button");
     pageButton.textContent = i;
@@ -66,7 +66,7 @@ export function renderPaginationControls(totalCount) {
     paginationContainer.appendChild(pageButton);
   }
 
-  // ✅ Create Next Button
+  // Create Next Button
   const nextButton = document.createElement("button");
   nextButton.textContent = "Next";
   nextButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`;
@@ -75,7 +75,7 @@ export function renderPaginationControls(totalCount) {
 
   paginationContainer.appendChild(nextButton);
 
-  console.log("✅ Pagination Controls Rendered.");
+  console.log("Pagination Controls Rendered.");
 }
 
 
@@ -84,13 +84,13 @@ export function renderPaginationControls(totalCount) {
 
 
 function changePage(newPage, totalCount) {
-  if (newPage < 1 || newPage > Math.ceil(totalCount / ITEMS_PER_PAGE)) return; // ✅ Prevent invalid pages
+  if (newPage < 1 || newPage > Math.ceil(totalCount / ITEMS_PER_PAGE)) return; // Prevent invalid pages
 
   console.log(`📦 Changing to page ${newPage}`);
   currentPage = newPage;
 
-  fetchAndRenderListings(currentPage); // ✅ Reload listings for selected page
-  renderPaginationControls(totalCount); // ✅ Update pagination UI
+  fetchAndRenderListings(currentPage); // Reload listings for selected page
+  renderPaginationControls(totalCount); // Update pagination UI
 }
 
 

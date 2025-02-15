@@ -1,58 +1,60 @@
 import { fetchListings } from "@/js/api/listings.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
-import { renderPaginationControls } from "@/js/api/listings.js"; 
+import { renderPaginationControls } from "@/js/api/listings.js";
+//import { fetchAndRenderListings } from "@/js/api/listings.js";
 
-const ITEMS_PER_PAGE = 8; // ✅ Show 8 listings per page
-let currentPage = 1; // ✅ Define current page globally
+
+const ITEMS_PER_PAGE = 8; // Show 8 listings per page
+let currentPage = 1; // Define current page globally
 
 async function loadListings(page) {
-  console.log(`📦 Fetching Listings - Page ${page}`);
+  console.log(`Fetching Listings - Page ${page}`);
 
-  await fetchAndRenderListings(page); // ✅ Fetch and render everything here
+  await fetchAndRenderListings(page); // Fetch and render everything here
 }
 
 
 export async function initializeHomePage() {
-  console.log("🏠 Initializing Home Page...");
+  console.log("Initializing Home Page...");
 
   const listingsContainer = document.getElementById("listingsContainer");
   const paginationContainer = document.getElementById("paginationContainer");
 
   if (!listingsContainer || !paginationContainer) {
-    console.error("❌ listingsContainer or paginationContainer not found!");
+    console.error("listingsContainer or paginationContainer not found!");
     return;
   }
 
-  // ✅ Clear previous content
+  // Clear previous content
   listingsContainer.innerHTML = "";
   paginationContainer.innerHTML = "";
 
-  console.log("📦 Fetching and rendering listings...");
+  console.log("Fetching and rendering listings...");
   await loadListings(currentPage);
 }
 
 async function fetchAndRenderListings(page = 1) {
-  console.log(`📦 Fetching and rendering listings - Page ${page}`);
+  console.log(`Fetching and rendering listings - Page ${page}`);
 
   const container = document.getElementById("listingsContainer");
   if (!container) {
-    console.error("❌ listingsContainer not found in the DOM!");
+    console.error("listingsContainer not found in the DOM!");
     return;
   }
 
   try {
-    console.log("🔍 Calling fetchListings()...");
+    console.log("Calling fetchListings()...");
     const { listings, totalCount } = await fetchListings(page);
-    console.log("✅ Listings Fetched:", listings);
+    console.log("Listings Fetched:", listings);
 
-    // ✅ Slice the listings array to only show the correct items per page
+    // Slice the listings array to only show the correct items per page
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const paginatedListings = listings.slice(startIndex, endIndex);
 
     if (Array.isArray(paginatedListings) && paginatedListings.length > 0) {
-      console.log("🖼️ Rendering Listings...");
+      console.log("Rendering Listings...");
       container.innerHTML = paginatedListings
         .map(
           (listing) => `
@@ -69,17 +71,17 @@ async function fetchAndRenderListings(page = 1) {
         )
         .join("");
 
-      console.log("✅ Listings rendered!");
+      console.log("Listings rendered!");
 
       new Filtering();
       setupListingButtons();
-      renderPaginationControls(totalCount); // ✅ Ensure pagination is updated
+      renderPaginationControls(totalCount); // Ensure pagination is updated
     } else {
-      console.warn("⚠️ No listings available. Something is wrong.");
+      console.warn("No listings available. Something is wrong.");
       container.innerHTML = "<p>No listings available.</p>";
     }
   } catch (error) {
-    console.error("❌ Error fetching listings:", error);
+    console.error("Error fetching listings:", error);
   }
 }
 

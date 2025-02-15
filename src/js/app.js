@@ -7,24 +7,24 @@ import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; 
 import "../styles/main.scss";
 
-console.log("🛠️ Initializing App...");
+console.log("Initializing App...");
 
 // ✅ Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
-console.log("📌 Checking navigation initialization:", window.navigationInitialized);
-console.log("🔍 Checking navigation setup... ");
-console.log("🌐 window.mainNavigation:", window.mainNavigation);
-console.log("🌐 window.sidebarNavigation:", window.sidebarNavigation);
+console.log("Checking navigation initialization:", window.navigationInitialized);
+console.log("Checking navigation setup... ");
+console.log("window.mainNavigation:", window.mainNavigation);
+console.log("window.sidebarNavigation:", window.sidebarNavigation);
 
 
 const mainNav = document.getElementById("main-nav");
 const sidebarNav = document.getElementById("sidebar-nav");
 
-// ✅ Create an instance of `Login` to access handleLogout()
+// Create an instance of `Login` to access handleLogout()
 const loginInstance = new Login();
 
 if (!window.navigationInitialized) {
-  console.log("📌 Initializing navigation...");
+  console.log("Initializing navigation...");
 
   const mainNav = document.getElementById("main-nav");
   const sidebarNav = document.getElementById("sidebar-nav");
@@ -48,62 +48,62 @@ if (!window.navigationInitialized) {
   }
 
   window.navigationInitialized = true;
-  console.log("✅ Navigation fully initialized.");
+  console.log("Navigation fully initialized.");
 }
 
 
 
 
-// ✅ Page Initialization (APP.JS HANDLES THIS)
+// Page Initialization (APP.JS HANDLES THIS)
 const currentPath = window.location.pathname;
 
 if (currentPath === "/" || currentPath === "/index.html") {
-  console.log("🏠 Initializing Home Page...");
+  console.log("Initializing Home Page...");
   initializeHomePage();
 }
 
 if (currentPath.includes("/auth/register")) {
-  console.log("🆕 Register Page Detected - Initializing...");
+  console.log("Register Page Detected - Initializing...");
   initializeRegisterPage();
 }
 
 if (currentPath.includes("/auth/login")) {
-  console.log("🔑 Login Page Detected - Initializing...");
+  console.log("Login Page Detected - Initializing...");
   initializeLoginPage();
 }
 
 /*
 if (currentPath.includes("/profile")) {
-  console.log("👤 Profile Page Detected - Initializing...");
+  console.log("Profile Page Detected - Initializing...");
   initializeProfilePage();
 }
 */
 
 if (currentPath.includes("/item")) {
-  console.log("🛒 Item Page Detected - Initializing...");
+  console.log("Item Page Detected - Initializing...");
   initializeItemPage();
 }
 
 document.body.addEventListener("click", (event) => {
   const button = event.target.closest(".nav-link");
-  if (!button) return; // ✅ Ensure we clicked a navigation button
+  if (!button) return; // Ensure we clicked a navigation button
 
   event.preventDefault();
   const path = button.dataset.path;
 
   if (!path) {
-    console.warn("⚠️ No path found on clicked button.");
+    console.warn("No path found on clicked button.");
     return;
   }
 
-  console.log(`🔍 Navigating to: ${path}`);
+  console.log(`Navigating to: ${path}`);
   window.history.pushState({}, "", path);
   
-  router(path); // ✅ Run the router immediately without delay
+  router(path); // Run the router immediately without delay
 });
 
 
-// ✅ Ensure correct page loads on back/forward navigation
+// Ensure correct page loads on back/forward navigation
 window.addEventListener("popstate", () => {
   router();
 });

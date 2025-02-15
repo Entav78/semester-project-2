@@ -1,56 +1,39 @@
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 
-console.log("👤 Profile Page is running...");
+console.log("Profile Page is running...");
 
 export function initializeProfilePage() {
-  console.log("👤 Profile Page Initializing...");
+  console.log("Profile Page Initializing...");
 
   // ✅ Final cleanup: Remove lingering login message (even if it somehow persists)
   setTimeout(() => {
       document.querySelectorAll(".login-message").forEach(msg => {
-          console.log("🗑️ Removing lingering login message from profile page...");
+          console.log("Removing lingering login message from profile page...");
           msg.remove();
       });
   }, 100); // Small delay to ensure it happens AFTER page load
 
   const userName = localStorage.getItem("userName");
   if (!userName) {
-      console.warn("⚠️ No user logged in.");
+      console.warn("No user logged in.");
       return;
   }
 
-  console.log(`🔍 Fetching data for user: ${userName}`);
+  console.log(`Fetching data for user: ${userName}`);
   displayUserListings(userName);
   displayUserBids(userName);
   setupTabNavigation();
   
-  // ✅ Initialize Filtering after loading listings
+  // Initialize Filtering after loading listings
   setTimeout(() => {
-    console.log("🔍 Initializing Filtering for Profile Page...");
+    console.log("Initializing Filtering for Profile Page...");
     new Filtering();
   }, 500);
 
-  console.log("✅ Profile Page Setup Complete!");
+  console.log("Profile Page Setup Complete!");
 }
 
-/*
-function initializeFilter() {
-  console.log("🔍 Initializing filter...");
-
-  const filterInput = document.getElementById("filterInput"); // Adjust ID if different
-  if (!filterInput) {
-    console.error("❌ Filter input not found!");
-    return;
-  }
-
-  filterInput.addEventListener("input", (event) => {
-    const searchTerm = event.target.value.trim().toLowerCase();
-    console.log("🔍 Filtering listings for:", searchTerm);
-    applyFilter(searchTerm);
-  });
-}
-*/
 
 async function displayUserListings(userName) {
   const listingsContainer = document.getElementById("listingsContainer");
@@ -60,10 +43,9 @@ async function displayUserListings(userName) {
 
   console.log("🛠️ Listings API Response:", response); // Debugging
 
-  const listings = response.data; // ✅ Extract listings from response.data
-
+  const listings = response.data; 
   if (!Array.isArray(listings)) {
-    console.error("❌ Expected an array but got:", listings);
+    console.error("Expected an array but got:", listings);
     listingsContainer.innerHTML = "<p>Error: Unable to load listings.</p>";
     return;
   }
@@ -88,12 +70,12 @@ async function displayUserBids(userName) {
 
   const response = await fetchUserBids(userName);
 
-  console.log("🛠️ Bids API Response:", response); // Debugging
+  console.log("Bids API Response:", response); // Debugging
   
-  const bids = response.data; // ✅ Extract bids from response.data
+  const bids = response.data; // Extract bids from response.data
 
   if (!Array.isArray(bids)) {
-    console.error("❌ Expected an array but got:", bids);
+    console.error("Expected an array but got:", bids);
     bidsContainer.innerHTML = "<p>Error: Unable to load bids.</p>";
     return;
   }
@@ -113,16 +95,14 @@ async function displayUserBids(userName) {
 }
 
 
-
-// ✅ Tab Navigation Function (Replaces old `DOMContentLoaded` logic)
 function setupTabNavigation() {
-  console.log("🛠️ Setting up Profile Page Tabs...");
+  console.log("Setting up Profile Page Tabs...");
   
   const tabs = document.querySelectorAll(".tab-button");
   const tabContents = document.querySelectorAll(".tab-content");
 
   if (!tabs.length || !tabContents.length) {
-    console.warn("⚠️ No tabs found on profile page.");
+    console.warn("No tabs found on profile page.");
     return;
   }
 
@@ -140,10 +120,11 @@ function setupTabNavigation() {
     });
   });
 
-  console.log("✅ Tabs Initialized!");
-  console.log("✅ Profile Page Loaded:", window.profilePageLoaded);
+  console.log("Tabs Initialized!");
+  console.log("Profile Page Loaded:", window.profilePageLoaded);
 
 }
 
 window.initializeProfilePage = initializeProfilePage;
+
 

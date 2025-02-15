@@ -6,7 +6,7 @@ const loginInstance = new Login(); // ✅ Create an instance of the Login class
 export class Navigation {
   constructor(container, isLoggedIn, handleLogout) {
     if (!container) {
-      console.error("❌ Navigation container not found.");
+      console.error("Navigation container not found.");
       return;
     }
 
@@ -25,7 +25,7 @@ export class Navigation {
   }
 
   createNavbar(isLoggedIn) {
-    this.container.innerHTML = ""; // ✅ Clear only the specific navigation
+    this.container.innerHTML = ""; // Clear only the specific navigation
 
     const nav = document.createElement("ul");
     nav.className = "flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6";
@@ -71,16 +71,16 @@ export class Navigation {
     });
 
     this.container.appendChild(nav);
-    console.log(`✅ Navigation created for ${this.container.id}`);
+    console.log(`Navigation created for ${this.container.id}`);
   }
 
   setupSidebar() {
     if (window.sidebarSetupDone) {
-      console.log("⚠️ Sidebar already set up. Skipping re-initialization.");
+      console.log("Sidebar already set up. Skipping re-initialization.");
       return;
     }
 
-    console.log("🍔 Setting up sidebar functionality...");
+    console.log("Setting up sidebar functionality...");
 
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
@@ -93,25 +93,25 @@ export class Navigation {
     }
 
     openButton.addEventListener("click", () => {
-      console.log("📂 Opening sidebar...");
+      console.log("Opening sidebar...");
       sidebar.classList.remove("translate-x-full");
       overlay.classList.remove("hidden");
     });
 
     closeButton.addEventListener("click", () => {
-      console.log("📂 Closing sidebar...");
+      console.log("Closing sidebar...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
     });
 
     overlay.addEventListener("click", () => {
-      console.log("📂 Closing sidebar via overlay...");
+      console.log("Closing sidebar via overlay...");
       sidebar.classList.add("translate-x-full");
       overlay.classList.add("hidden");
     });
 
     window.sidebarSetupDone = true;
-    console.log("✅ Sidebar setup completed.");
+    console.log("Sidebar setup completed.");
   }
 
   updateNavbar(isLoggedIn) {
@@ -140,7 +140,7 @@ export class Navigation {
       if (action) {
         button.addEventListener("click", (event) => {
           event.preventDefault();
-          console.log(`🚪 Logging out user...`);
+          console.log(`Logging out user...`);
           action();
         });
       } else {
@@ -162,18 +162,18 @@ export class Navigation {
       this.setupSidebar();
     }
 
-    console.log("🔄 Navbar updated:", nav);
+    console.log("Navbar updated:", nav);
   }
 }
 
 /**
- * ✅ Function to dynamically load navigation from `navigation/index.html`
+ * Function to dynamically load navigation from `navigation/index.html`
  */
 export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
 
   if (!navContainer) {
-    console.error("❌ Navigation container not found in the DOM!");
+    console.error("Navigation container not found in the DOM!");
     return;
   }
 
@@ -183,7 +183,7 @@ export async function loadNavigation() {
 
     const navHTML = await response.text();
     navContainer.innerHTML = navHTML;
-    console.log("✅ Navigation loaded successfully!");
+    console.log("Navigation loaded successfully!");
 
     const mainNav = document.getElementById("main-nav");
     const sidebarNav = document.getElementById("sidebar-nav");
@@ -204,11 +204,11 @@ export async function loadNavigation() {
       );
     }
   } catch (error) {
-    console.error("❌ Error loading navigation:", error);
+    console.error("Error loading navigation:", error);
   }
 }
 
-// ✅ Run `loadNavigation()` Immediately
+// Run `loadNavigation()` Immediately
 loadNavigation();
 
 
