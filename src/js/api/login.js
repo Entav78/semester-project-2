@@ -77,11 +77,13 @@ export class Login {
           console.log("Redirecting to profile...");
           window.history.pushState({}, "", "/profile");
       
-          // Ensure page content resets before loading new page
-          const mainContent = document.querySelector("main");
-          if (mainContent) {
-              mainContent.innerHTML = "";
-          }
+        const mainContainer = document.getElementById("main-container");
+        if (mainContainer) {
+            mainContainer.innerHTML = "";
+        } else {
+            console.error("❌ #main-container not found!");
+        }
+
       
           router("/profile");
       
@@ -122,7 +124,7 @@ export class Login {
     window.history.pushState({}, "", "/");
 
     setTimeout(() => {
-        document.querySelector("main").innerHTML = "";
+      document.getElementById("main-container").innerHTML = "";
         router("/"); // Ensure home page loads correctly
     }, 200);
   }

@@ -44,7 +44,7 @@ export function initializeLoginPage() {
 
       setTimeout(() => {
         window.history.pushState({}, "", "/profile");
-        document.querySelector("main").innerHTML = "";
+        document.getElementById("main-container").innerHTML = "";
         router("/profile"); // Ensure profile page loads properly
       }, 500);
 

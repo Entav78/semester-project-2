@@ -8,26 +8,33 @@ export async function router(pathname = window.location.pathname) {
 
   function clearPage() {
     console.log("Clearing page content...");
-    
-    const mainContent = document.querySelector("main");
-    if (mainContent) {
-        mainContent.innerHTML = ""; // Clear only the page content, NOT navigation or header
+  
+    const mainContainer = document.getElementById("main-container");
+    if (mainContainer) {
+      mainContainer.innerHTML = ""; // Clears all content inside <main>
+    } else {
+      console.error("No <main> container found to clear!");
     }
-
-    // ✅ Ensure navigation is only updated, NOT duplicated
+  
+    // Ensure navigation doesn't get duplicated
     if (window.mainNavigation) {
-        console.log("Updating Navigation...");
-        window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+      console.log("Updating Navigation...");
+      window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
-    
+  
     if (window.sidebarNavigation) {
-        console.log("Updating Sidebar...");
-        window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+      console.log("Updating Sidebar...");
+      window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
-
-    console.log("Page content cleared. Header remains intact.");
-}
-
+  
+    //  Prevent duplicate `<main>` elements (optional)
+    document.querySelectorAll("#main-container + #main-container").forEach(duplicate => {
+      console.warn("Duplicate #main-container detected, removing...");
+      duplicate.remove();
+    });
+  
+    console.log("Page content cleared, navigation intact.");
+  }
   
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")
@@ -43,11 +50,13 @@ export async function router(pathname = window.location.pathname) {
     console.clear();
     console.log(`Loading Page: ${path}`);
   
-    const mainContainer = document.querySelector("main");
-    if (!mainContainer) {
-      console.error("<main> container not found. Ensure your HTML has a <main> element.");
-      return;
-    }
+    const mainContainer = document.getElementById("main-container");
+if (mainContainer) {
+    mainContainer.innerHTML = "";
+} else {
+    console.error("❌ #main-container not found!");
+}
+
   
     // Clear old content **before loading the new page**
     clearPage(); // This ensures every page starts fresh
