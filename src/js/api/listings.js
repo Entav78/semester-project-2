@@ -1,5 +1,7 @@
 import { API_LISTINGS } from "./constants.js";
 import { Listing } from "../../models/Listing.js";
+import { setupListingButtons } from "@/components/buttons/index.js";
+
 
 console.log("🔍 API_LISTINGS URL:", API_LISTINGS); 
 
@@ -64,6 +66,7 @@ export async function fetchAndRenderListings(page = 1) {
       `)
       .join("");
 
+    setupListingButtons();  
     renderPaginationControls(totalCount);
   } catch (error) {
     console.error("Error fetching listings:", error);

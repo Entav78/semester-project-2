@@ -13,7 +13,7 @@ export function setupListingButtons() {
       }
 
       const itemPagePath = `/item?id=${itemId}`; // Use clean route
-      console.log(`🛒 Navigating to Item Page: ${itemPagePath}`);
+      console.log(`Navigating to Item Page: ${itemPagePath}`);
 
       // Use `router()` instead of reloading the page
       window.history.pushState({}, "", itemPagePath);

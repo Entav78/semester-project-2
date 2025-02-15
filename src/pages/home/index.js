@@ -1,4 +1,6 @@
 import { fetchAndRenderListings } from "@/js/api/listings.js"; 
+import { setupListingButtons } from "@/components/buttons/index.js";
+
 
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
@@ -21,6 +23,7 @@ export async function initializeHomePage() {
   await fetchAndRenderListings(currentPage); // Call function directly
 
   console.log("Home Page Initialized!");
+
 }
 
 
