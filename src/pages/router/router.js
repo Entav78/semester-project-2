@@ -112,11 +112,10 @@ export async function router(pathname = window.location.pathname) {
             }
 
             clearPage();
-            window.profilePageLoaded = true;
+            //window.profilePageLoaded = true;
 
             loadPage("/profile", "/src/pages/profile/profile.html", "/src/pages/profile/profile.js", "initializeProfilePage")
                 .catch(error => console.error(`❌ Error loading Profile Page:`, error));
-
             break;
 
         case "/manageListings":
