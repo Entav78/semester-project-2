@@ -138,11 +138,14 @@ function setupSidebar() {
 /**
  * Function to dynamically load navigation from `navigation/index.html`
  */
+/**
+ * Function to dynamically load navigation from `navigation/index.html`
+ */
 export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
 
   if (!navContainer) {
-    console.error("Navigation container not found in the DOM!");
+    console.error("❌ Navigation container not found in the DOM!");
     return;
   }
 
@@ -151,9 +154,21 @@ export async function loadNavigation() {
     if (!response.ok) throw new Error("Failed to load navigation");
 
     const navHTML = await response.text();
-    navContainer.innerHTML = navHTML;
-    console.log("✅ Navigation loaded successfully!");
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = navHTML;
 
+    // Extract the correct content inside `navigation-container`
+    const importedNav = tempDiv.querySelector("#navigation-container");
+    
+    if (importedNav) {
+      navContainer.innerHTML = importedNav.innerHTML; // Only inject the inner content
+      console.log("✅ Navigation loaded successfully!");
+    } else {
+      console.error("❌ Navigation container not found in imported HTML!");
+      return;
+    }
+
+    // Initialize navigation
     const mainNav = document.getElementById("main-nav");
     const sidebarNav = document.getElementById("sidebar-nav");
 
@@ -178,12 +193,13 @@ export async function loadNavigation() {
     }, 300);
 
   } catch (error) {
-    console.error("Error loading navigation:", error);
+    console.error("❌ Error loading navigation:", error);
   }
 }
 
 // Load navigation after defining all functions
 loadNavigation();
+
 
 
 
