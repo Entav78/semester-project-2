@@ -1,0 +1,7 @@
+sticky footer
+links 
+page headings 
+default images for missing images
+loading indicator in every page
+don't use innerHTML -> use createElement
+profile name->title

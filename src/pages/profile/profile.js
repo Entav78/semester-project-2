@@ -1,38 +1,76 @@
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
-
-console.log("Profile Page is running...");
+import { Avatar } from "@/js/api/Avatar.js";
 
 export function initializeProfilePage() {
   console.log("Profile Page Initializing...");
 
-  // ✅ Final cleanup: Remove lingering login message (even if it somehow persists)
   setTimeout(() => {
-      document.querySelectorAll(".login-message").forEach(msg => {
-          console.log("Removing lingering login message from profile page...");
-          msg.remove();
-      });
-  }, 100); // Small delay to ensure it happens AFTER page load
+      const authToken = localStorage.getItem("authToken");
 
-  const userName = localStorage.getItem("userName");
-  if (!userName) {
-      console.warn("No user logged in.");
-      return;
-  }
+      if (!authToken) {
+          console.warn("❌ No auth token found. User may not be logged in.");
+          return;
+      }
 
-  console.log(`Fetching data for user: ${userName}`);
-  displayUserListings(userName);
-  displayUserBids(userName);
-  setupTabNavigation();
-  
-  // Initialize Filtering after loading listings
-  setTimeout(() => {
-    console.log("Initializing Filtering for Profile Page...");
-    new Filtering();
-  }, 500);
+      // ✅ Extract `name` from JWT token
+      const payloadBase64 = authToken.split(".")[1];
+      const payloadJSON = JSON.parse(atob(payloadBase64));
+      const userName = payloadJSON.name; // ✅ Extracted userName from token
 
-  console.log("Profile Page Setup Complete!");
+      if (!userName) {
+          console.error("❌ No user name found in token.");
+          return;
+      }
+
+      console.log(`🔍 Correct user name extracted: ${userName}`);
+
+      const avatarImg = document.getElementById("avatar-img");
+      const avatarInput = document.getElementById("avatar-url");
+      const updateAvatarBtn = document.getElementById("update-avatar-btn");
+      const editProfileBtn = document.getElementById("edit-profile-btn");
+      const editProfileContainer = document.getElementById("edit-profile-container");
+
+      // ❌ Initially hide avatar update fields
+      if (avatarInput) avatarInput.classList.add("hidden");
+      if (updateAvatarBtn) updateAvatarBtn.classList.add("hidden");
+
+      if (avatarImg && avatarInput && updateAvatarBtn) {
+          console.log("✅ Avatar elements found! Initializing Avatar class...");
+          new Avatar(avatarImg, avatarInput, updateAvatarBtn);
+      } else {
+          console.error("❌ Avatar elements not found! Check profile.html IDs.");
+      }
+
+      if (editProfileBtn && editProfileContainer) {
+          editProfileBtn.addEventListener("click", () => {
+              editProfileContainer.classList.toggle("hidden"); // ✅ Toggle edit section visibility
+              
+              // ✅ Show avatar update fields when editing profile
+              avatarInput.classList.toggle("hidden");
+              updateAvatarBtn.classList.toggle("hidden");
+
+              console.log("🛠 Edit Profile button clicked - Toggling edit fields");
+          });
+      } else {
+          console.error("❌ Edit Profile button or container not found!");
+      }
+
+      console.log(`Fetching data for user: ${userName}`);
+      
+      // ✅ Now `userName` is properly defined before these calls!
+      displayUserListings(userName);
+      displayUserBids(userName);
+
+      console.log("✅ Profile Page Setup Complete!");
+  }, 300); // Small delay to ensure elements are available
 }
+
+// ✅ Ensure the function is executed when the profile page loads
+initializeProfilePage();
+
+
+
 
 
 async function displayUserListings(userName) {
@@ -123,6 +161,16 @@ function setupTabNavigation() {
   console.log("Tabs Initialized!");
   console.log("Profile Page Loaded:", window.profilePageLoaded);
 
+}
+
+const avatarImg = document.getElementById("avatar-img");
+const avatarInput = document.getElementById("avatar-url");
+const updateAvatarBtn = document.getElementById("update-avatar-btn");
+
+if (avatarImg && avatarInput && updateAvatarBtn) {
+  new Avatar(avatarImg, avatarInput, updateAvatarBtn);
+} else {
+  console.error("❌ Avatar elements not found!");
 }
 
 window.initializeProfilePage = initializeProfilePage;

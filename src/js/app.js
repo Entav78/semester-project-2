@@ -5,6 +5,7 @@ import { initializeLoginPage } from "@/pages/auth/login/login.js";
 import { Login } from "@/js/api/login.js";
 import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; 
+import { Avatar } from "@/js/api/Avatar.js";
 import "../styles/main.scss";
 
 console.log("Initializing App...");
@@ -72,13 +73,6 @@ if (currentPath.includes("/auth/login")) {
   initializeLoginPage();
 }
 
-/*
-if (currentPath.includes("/profile")) {
-  console.log("Profile Page Detected - Initializing...");
-  initializeProfilePage();
-}
-*/
-
 if (currentPath.includes("/item")) {
   console.log("Item Page Detected - Initializing...");
   initializeItemPage();
@@ -102,6 +96,18 @@ document.body.addEventListener("click", (event) => {
   router(path); // Run the router immediately without delay
 });
 
+
+document.addEventListener("readystatechange", () => {
+  if (document.readyState === "complete") {
+    const avatarImg = document.getElementById("avatar-img");
+    const avatarInput = document.getElementById("avatar-url");
+    const updateAvatarBtn = document.getElementById("update-avatar-btn");
+
+    if (avatarImg && avatarInput && updateAvatarBtn) {
+      new Avatar(avatarImg, avatarInput, updateAvatarBtn);
+    }
+  }
+});
 
 // Ensure correct page loads on back/forward navigation
 window.addEventListener("popstate", () => {
