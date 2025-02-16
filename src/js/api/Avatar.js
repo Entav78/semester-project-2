@@ -34,6 +34,7 @@ export class Avatar {
     }
 
     console.log(`🔍 Fetching profile for user: ${userName}`);
+    console.log(`🔑 Using token: ${authToken.substring(0, 10)}...`);
     
     try {
       const response = await fetch(`${API_PROFILES}/${userName}`, {
@@ -69,15 +70,18 @@ export class Avatar {
         this.bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
       }
 
-      // ✅ Display user credits
-      if (this.creditsContainer) {
-        this.creditsContainer.textContent = `Credits: ${userData.data.credits} 💰`;
+      // ✅ Update Credits
+      const creditsContainer = document.getElementById("user-credits");
+      if (creditsContainer) {
+          creditsContainer.textContent = `Credits: ${userData.data.credits} 💰`;
+      } else {
+          console.warn("⚠️ Credits container not found!");
       }
 
-    } catch (error) {
+  } catch (error) {
       console.error("❌ Error fetching profile:", error);
-    }
   }
+}
 
   async updateAvatar() {
     const newAvatar = this.inputElement.value.trim();
