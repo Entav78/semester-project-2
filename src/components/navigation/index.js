@@ -2,31 +2,31 @@ import { router } from "@/pages/router/router.js";
 import { basePath } from "@/js/api/constants.js";
 import { Login } from "@/js/api/login.js";
 
-const loginInstance = new Login(); // ✅ Create an instance of the Login class
+const loginInstance = new Login(); // Create an instance of the Login class
 
 export class Navigation {
   constructor(container, isLoggedIn) {
     if (!container) {
-      console.error("❌ Navigation container not found.");
+      console.error("Navigation container not found.");
       return;
     }
 
     this.container = container;
     this.isLoggedIn = isLoggedIn;
 
-    console.log(`✅ Creating Navigation for: ${this.container.id || "Unknown Element"}`);
+    console.log(`Creating Navigation for: ${this.container.id || "Unknown Element"}`);
     this.createNavbar(isLoggedIn);
   }
 
   handleLogout() {
     console.log("🚪 Logging out...");
 
-    // ✅ Clear all user-related data from localStorage
+    // Clear all user-related data from localStorage
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
     localStorage.removeItem("userName");
 
-    console.log("🔄 Updating navigation after logout...");
+    console.log("Updating navigation after logout...");
     if (window.mainNavigation) window.mainNavigation.updateNavbar(false);
     if (window.sidebarNavigation) window.sidebarNavigation.updateNavbar(false);
 
@@ -35,7 +35,7 @@ export class Navigation {
     router("/");
 
     setTimeout(() => {
-      console.log("🔄 Reloading navigation...");
+      console.log("Reloading navigation...");
       loadNavigation();
     }, 200);
   }
@@ -68,7 +68,7 @@ export class Navigation {
       if (action) {
         button.addEventListener("click", (event) => {
           event.preventDefault();
-          console.log(`🚪 Logging out user...`);
+          console.log(`Logging out user...`);
           action();
         });
       } else {
@@ -87,22 +87,22 @@ export class Navigation {
     });
 
     this.container.appendChild(nav);
-    console.log(`✅ Navigation created for ${this.container.id}`);
+    console.log(`Navigation created for ${this.container.id}`);
   }
 
   updateNavbar(isLoggedIn) {
-    console.log(`🔄 Updating navbar... (isLoggedIn: ${isLoggedIn})`);
+    console.log(`Updating navbar... (isLoggedIn: ${isLoggedIn})`);
     isLoggedIn = Boolean(localStorage.getItem("authToken"));
-    console.log(`✅ isLoggedIn detected: ${isLoggedIn}`);
+    console.log(`isLoggedIn detected: ${isLoggedIn}`);
     this.createNavbar(isLoggedIn);
   }
 }
 
 /**
- * ✅ Function to set up sidebar functionality
+ * Function to set up sidebar functionality
  */
 function setupSidebar() {
-  console.log("🛠️ Setting up sidebar functionality...");
+  console.log("Setting up sidebar functionality...");
 
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
@@ -110,29 +110,29 @@ function setupSidebar() {
   const closeButton = document.getElementById("closeSidebar");
 
   if (!sidebar || !overlay || !openButton || !closeButton) {
-    console.warn("⚠️ Sidebar elements missing. Skipping setup.");
+    console.warn("Sidebar elements missing. Skipping setup.");
     return;
   }
 
   openButton.addEventListener("click", () => {
-    console.log("🍔 Opening sidebar...");
+    console.log("Opening sidebar...");
     sidebar.classList.remove("translate-x-full");
     overlay.classList.remove("hidden");
   });
 
   closeButton.addEventListener("click", () => {
-    console.log("❌ Closing sidebar...");
+    console.log("Closing sidebar...");
     sidebar.classList.add("translate-x-full");
     overlay.classList.add("hidden");
   });
 
   overlay.addEventListener("click", () => {
-    console.log("🛑 Closing sidebar via overlay...");
+    console.log("Closing sidebar via overlay...");
     sidebar.classList.add("translate-x-full");
     overlay.classList.add("hidden");
   });
 
-  console.log("✅ Sidebar setup completed.");
+  console.log("Sidebar setup completed.");
 }
 
 /**
@@ -142,13 +142,13 @@ export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
 
   if (!navContainer) {
-    console.error("❌ Navigation container not found in the DOM!");
+    console.error("Navigation container not found in the DOM!");
     return;
   }
 
   try {
     const response = await fetch("/src/components/navigation/index.html");
-    if (!response.ok) throw new Error("❌ Failed to load navigation");
+    if (!response.ok) throw new Error("Failed to load navigation");
 
     const navHTML = await response.text();
     navContainer.innerHTML = navHTML;
@@ -178,11 +178,11 @@ export async function loadNavigation() {
     }, 300);
 
   } catch (error) {
-    console.error("❌ Error loading navigation:", error);
+    console.error("Error loading navigation:", error);
   }
 }
 
-// ✅ Load navigation after defining all functions
+// Load navigation after defining all functions
 loadNavigation();
 
 
