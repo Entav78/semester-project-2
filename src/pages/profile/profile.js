@@ -6,102 +6,77 @@ export function initializeProfilePage() {
   console.log("Profile Page Initializing...");
 
   setTimeout(() => {
-    const authToken = localStorage.getItem("authToken");
+      const authToken = localStorage.getItem("authToken");
 
-    if (!authToken) {
-      console.warn("❌ No auth token found. User may not be logged in.");
-      return;
-    }
+      if (!authToken) {
+          console.warn("❌ No auth token found. User may not be logged in.");
+          return;
+      }
 
-    // ✅ Extract `name` from JWT token
-    const payloadBase64 = authToken.split(".")[1];
-    const payloadJSON = JSON.parse(atob(payloadBase64));
-    const userName = payloadJSON.name; // ✅ Extracted userName from token
+      // ✅ Extract `name` from JWT token
+      const payloadBase64 = authToken.split(".")[1];
+      const payloadJSON = JSON.parse(atob(payloadBase64));
+      const userName = payloadJSON.name;
 
-    if (!userName) {
-      console.error("❌ No user name found in token.");
-      return;
-    }
+      if (!userName) {
+          console.error("❌ No user name found in token.");
+          return;
+      }
 
-    console.log(`🔍 Correct user name extracted: ${userName}`);
+      console.log(`🔍 Correct user name extracted: ${userName}`);
 
-    // 🎨 UI Elements
-    const avatarImg = document.getElementById("avatar-img");
-    const avatarInput = document.getElementById("avatar-url");
-    const updateAvatarBtn = document.getElementById("update-avatar-btn");
-    const editProfileBtn = document.getElementById("edit-profile-btn");
-    const editProfileContainer = document.getElementById("edit-profile-container");
+      // 🎨 UI Elements
+      const avatarImg = document.getElementById("avatar-img");
+      const avatarInput = document.getElementById("avatar-url");
+      const updateAvatarBtn = document.getElementById("update-avatar-btn");
+      const editProfileBtn = document.getElementById("edit-profile-btn");
+      const editProfileContainer = document.getElementById("edit-profile-container");
 
-    const bioInput = document.getElementById("bio");
-    const bannerInput = document.getElementById("banner-url");
-    const saveProfileBtn = document.getElementById("save-profile-btn");
+      const bioContainer = document.getElementById("bio-container");  // ✅ NEW
+      const bannerContainer = document.getElementById("banner-img");  // ✅ NEW
 
-    const bioContainer = document.getElementById("bio-container");
-    const bannerContainer = document.getElementById("banner-container");
+      // ❌ Initially hide profile editing fields
+      if (avatarInput) avatarInput.classList.add("hidden");
+      if (updateAvatarBtn) updateAvatarBtn.classList.add("hidden");
 
-    // ✅ FIX: Ensure listings container exists before calling functions
-    const listingsContainer = document.getElementById("listingsContainer");
-    if (!listingsContainer) {
-      console.error("❌ Listings container not found!");
-      return;
-    }
+      // ✅ Initialize Avatar Class (handles fetching profile data)
+      if (avatarImg && avatarInput && updateAvatarBtn) {
+          console.log("✅ Avatar elements found! Initializing Avatar class...");
+          new Avatar(avatarImg, avatarInput, updateAvatarBtn, bioContainer, bannerContainer);
+      } else {
+          console.error("❌ Avatar elements not found! Check profile.html IDs.");
+      }
 
-    // ❌ Initially hide profile editing fields
-    if (avatarInput) avatarInput.classList.add("hidden");
-    if (updateAvatarBtn) updateAvatarBtn.classList.add("hidden");
-    if (bioInput) bioInput.classList.add("hidden");
-    if (bannerInput) bannerInput.classList.add("hidden");
-    if (saveProfileBtn) saveProfileBtn.classList.add("hidden");
+      if (editProfileBtn && editProfileContainer) {
+          editProfileBtn.addEventListener("click", () => {
+              editProfileContainer.classList.toggle("hidden");
 
-    if (avatarImg && avatarInput && updateAvatarBtn) {
-      console.log("✅ Avatar elements found! Initializing Avatar class...");
-      new Avatar(avatarImg, avatarInput, updateAvatarBtn, bioContainer, bannerContainer);
-    } else {
-      console.error("❌ Avatar elements not found! Check profile.html IDs.");
-    }
+              avatarInput.classList.toggle("hidden");
+              updateAvatarBtn.classList.toggle("hidden");
 
-    if (editProfileBtn && editProfileContainer) {
-      editProfileBtn.addEventListener("click", () => {
-        editProfileContainer.classList.toggle("hidden");
+              console.log("🛠 Edit Profile button clicked - Toggling edit fields");
+          });
+      } else {
+          console.error("❌ Edit Profile button or container not found!");
+      }
 
-        avatarInput.classList.toggle("hidden");
-        updateAvatarBtn.classList.toggle("hidden");
-        bioInput.classList.toggle("hidden");
-        bannerInput.classList.toggle("hidden");
-        saveProfileBtn.classList.toggle("hidden");
+      console.log(`Fetching listings and bids for user: ${userName}`);
 
-        console.log("🛠 Edit Profile button clicked - Toggling edit fields");
-      });
-    } else {
-      console.error("❌ Edit Profile button or container not found!");
-    }
+      setTimeout(() => {
+          displayUserListings(userName);
+          displayUserBids(userName);
+      }, 500);
 
-    // ✅ FIX: Ensure `userName` exists before fetching listings
-    if (!userName) {
-      console.error("❌ No username found, skipping listings fetch.");
-      return;
-    }
-
-    console.log(`Fetching listings and bids for user: ${userName}`);
-
-    // ✅ FIX: Use a longer delay for listings if needed
-    setTimeout(() => {
-      displayUserListings(userName);
-      displayUserBids(userName);
-    }, 500);
-
-    console.log("✅ Profile Page Setup Complete!");
-  }, 300); // Small delay to ensure elements are available
+      console.log("✅ Profile Page Setup Complete!");
+  }, 300);
 }
+
+
 
 
 
 // ✅ Ensure the function is executed when the profile page loads
 initializeProfilePage();
-
-
-
-
 
 async function displayUserListings(userName) {
   const listingsContainer = document.getElementById("listingsContainer");

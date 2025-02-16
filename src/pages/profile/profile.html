@@ -13,6 +13,7 @@
     <h1 class="text-xl font-bold">This is the profile page</h1>
     <div class="avatar-section">
       <img id="avatar-img" src="/src/img/Sasha.jpg" alt="User Avatar" />
+      <p id="user-credits" class="text-lg font-bold text-green-500">Loading credits...</p>
       <input type="url" id="avatar-url" placeholder="Enter avatar URL" />
       <button id="update-avatar-btn">Update Avatar</button>
     </div>
@@ -54,6 +55,9 @@
   <div id="edit-profile-container" class="hidden">
   <label for="avatar-url">Avatar URL:</label>
   <input type="text" id="avatar-url" class="form-input">
+  <img id="banner-img" class="w-full h-40 object-cover rounded-lg" src="/img/default-banner.jpg" alt="User Banner">
+  <p id="bio-container" class="text-gray-600 italic">Loading bio...</p>
+
   
   <label for="bio">Bio:</label>
   <textarea id="bio" class="form-textarea"></textarea>

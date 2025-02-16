@@ -2,23 +2,26 @@ import { API_PROFILES } from "@/js/api/constants.js";
 import { API_KEY } from "./constants";
 
 export class Avatar {
-  constructor(imgElement, inputElement, buttonElement, bioElement, bannerElement) {
+  constructor(imgElement, inputElement, buttonElement, bioContainer, bannerContainer, creditsContainer) {
     this.imgElement = imgElement;
     this.inputElement = inputElement;
     this.buttonElement = buttonElement;
-    this.bioElement = bioElement; // ✅ New
-    this.bannerElement = bannerElement; // ✅ New
+    this.bioContainer = bioContainer;
+    this.bannerContainer = bannerContainer;
+    this.creditsContainer = creditsContainer;
 
     this.buttonElement.addEventListener("click", () => this.updateAvatar());
-    this.fetchUserProfile(); // ✅ Fetch all profile data on instantiation
+    
+    // ✅ Fetch all user profile data on instantiation
+    this.fetchUserProfile();
   }
 
   async fetchUserProfile() {
     const authToken = localStorage.getItem("authToken");
 
     if (!authToken) {
-        console.error("❌ No auth token found. User may not be logged in.");
-        return;
+      console.error("❌ No auth token found. User may not be logged in.");
+      return;
     }
 
     const payloadBase64 = authToken.split(".")[1];
@@ -26,56 +29,60 @@ export class Avatar {
     const userName = payloadJSON.name;
 
     if (!userName) {
-        console.error("❌ No user name found in token.");
-        return;
+      console.error("❌ No user name found in token.");
+      return;
     }
 
     console.log(`🔍 Fetching profile for user: ${userName}`);
-    console.log(`🔑 Using token: ${authToken.substring(0, 10)}...`);
-
+    
     try {
-        const response = await fetch(`${API_PROFILES}/${userName}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken.trim()}`, // ✅ Ensure token is sent
-                "X-Noroff-API-Key": API_KEY // ✅ Add API Key (same as listings)
-            },
-        });
+      const response = await fetch(`${API_PROFILES}/${userName}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken.trim()}`,
+          "X-Noroff-API-Key": API_KEY,
+        },
+      });
 
-        console.log("📡 API Response Status:", response.status);
+      console.log("📡 API Response Status:", response.status);
 
-        if (!response.ok) {
-            console.error(`❌ Failed to fetch profile - Status: ${response.status}`);
-            throw new Error(`Failed to fetch profile - ${response.statusText}`);
-        }
+      if (!response.ok) {
+        console.error(`❌ Failed to fetch profile - Status: ${response.status}`);
+        throw new Error(`Failed to fetch profile - ${response.statusText}`);
+      }
 
-        const userData = await response.json();
-        console.log("✅ Profile Data:", userData);
+      const userData = await response.json();
+      console.log("✅ Profile Data:", userData);
 
-        // ✅ Use a default avatar if none exists
-        const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150"; 
-        this.imgElement.src = avatarUrl;
+      // ✅ Set Avatar (fallback if none exists)
+      const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150";
+      this.imgElement.src = avatarUrl;
 
-        // ✅ Set Bio if available
-        if (this.bioElement) {
-            this.bioElement.textContent = userData.data.bio || "No bio available.";
-        }
+      // ✅ Set Bio if available
+      if (this.bioContainer) {
+        this.bioContainer.textContent = userData.data.bio || "No bio available.";
+      }
 
-        // ✅ Set Banner if available
-        if (this.bannerElement) {
-            this.bannerElement.src = userData.data.banner?.url || "/img/default-banner.jpg"; // Provide a default image
-        }
+      // ✅ Set Banner if available
+      if (this.bannerContainer) {
+        this.bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
+      }
+
+      // ✅ Display user credits
+      if (this.creditsContainer) {
+        this.creditsContainer.textContent = `Credits: ${userData.data.credits} 💰`;
+      }
 
     } catch (error) {
-        console.error("❌ Error fetching profile:", error);
+      console.error("❌ Error fetching profile:", error);
     }
   }
 
   async updateAvatar() {
     const newAvatar = this.inputElement.value.trim();
     const authToken = localStorage.getItem("authToken");
-    const userName = localStorage.getItem("userName"); // Fetch username
+    const userName = localStorage.getItem("userName");
 
     if (!newAvatar) {
       alert("Please enter a valid avatar URL!");
@@ -93,12 +100,10 @@ export class Avatar {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
+          "X-Noroff-API-Key": API_KEY,
         },
         body: JSON.stringify({
-          avatar: {
-            url: newAvatar,
-            alt: "", // Optional alt description
-          },
+          avatar: { url: newAvatar, alt: "" },
         }),
       });
 
@@ -113,3 +118,4 @@ export class Avatar {
     }
   }
 }
+
