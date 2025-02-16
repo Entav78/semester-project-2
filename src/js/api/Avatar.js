@@ -2,16 +2,18 @@ import { API_PROFILES } from "@/js/api/constants.js";
 import { API_KEY } from "./constants";
 
 export class Avatar {
-  constructor(imgElement, inputElement, buttonElement) {
+  constructor(imgElement, inputElement, buttonElement, bioElement, bannerElement) {
     this.imgElement = imgElement;
     this.inputElement = inputElement;
     this.buttonElement = buttonElement;
+    this.bioElement = bioElement; // ✅ New
+    this.bannerElement = bannerElement; // ✅ New
 
     this.buttonElement.addEventListener("click", () => this.updateAvatar());
-    this.fetchUserAvatar(); // Load avatar on instantiation
+    this.fetchUserProfile(); // ✅ Fetch all profile data on instantiation
   }
 
-  async fetchUserAvatar() {
+  async fetchUserProfile() {
     const authToken = localStorage.getItem("authToken");
 
     if (!authToken) {
@@ -53,19 +55,22 @@ export class Avatar {
 
         // ✅ Use a default avatar if none exists
         const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150"; 
-
         this.imgElement.src = avatarUrl;
 
+        // ✅ Set Bio if available
+        if (this.bioElement) {
+            this.bioElement.textContent = userData.data.bio || "No bio available.";
+        }
+
+        // ✅ Set Banner if available
+        if (this.bannerElement) {
+            this.bannerElement.src = userData.data.banner?.url || "/img/default-banner.jpg"; // Provide a default image
+        }
+
     } catch (error) {
-        console.error("❌ Error fetching avatar:", error);
+        console.error("❌ Error fetching profile:", error);
     }
-}
-
-
-
-
-
-
+  }
 
   async updateAvatar() {
     const newAvatar = this.inputElement.value.trim();
