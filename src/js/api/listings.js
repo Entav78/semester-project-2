@@ -68,7 +68,10 @@ export async function fetchAndRenderListings(page = 1) {
 
       // ✅ Handle Image (Ensure correct format)
       const image = document.createElement("img");
-      const imageUrl = listing.media?.[0]?.url || listing.media?.[0] || "/img/default.jpg";
+      const imageUrl = (Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === 'object') 
+  ? listing.media[0].url 
+  : "/img/default.jpg";
+
       console.log("✅ Image URL:", imageUrl);
       image.src = imageUrl;
       image.alt = listing.title || "No image available";
@@ -80,12 +83,36 @@ export async function fetchAndRenderListings(page = 1) {
 
       const price = document.createElement("p");
       price.classList.add("font-bold", "mt-2");
-      price.textContent = `${listing.price} credits`;
+      price.textContent = `${listing.price ?? "No price set"} credits`;
+
 
       // ✅ Format Auction End Date
       const auctionEnd = document.createElement("p");
-      auctionEnd.classList.add("text-red-500", "mt-2");
-      auctionEnd.textContent = `Auction Ends: ${listing.endsAt ? new Date(listing.endsAt).toLocaleString() : "No deadline set"}`;
+      auctionEnd.classList.add("mt-2", "font-bold");
+
+      // ✅ Check if auction has ended
+      if (listing.endsAt) {
+        const now = new Date();
+        console.log("🔎 Auction End Date Raw:", listing.endsAt);
+        const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
+        if (auctionEndTime && isNaN(auctionEndTime)) {
+          console.warn("⚠️ Invalid Auction End Date:", listing.endsAt);
+        }
+        
+
+        const isAuctionOver = auctionEndTime < now;
+
+        if (isAuctionOver) {
+          auctionEnd.textContent = "🛑 SOLD / AUCTION ENDED";
+          auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
+        } else {
+          auctionEnd.textContent = `Auction Ends: ${auctionEndTime.toLocaleString()}`;
+          auctionEnd.classList.add("text-red-500");
+        }
+      } else {
+        auctionEnd.textContent = "No deadline set";
+        auctionEnd.classList.add("text-gray-500");
+      }
 
       // ✅ View Item Button
       const viewButton = document.createElement("button");

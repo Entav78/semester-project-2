@@ -100,7 +100,6 @@ async function displayUserListings(userName) {
   console.log(`📄 Fetching listings for user: ${userName}`);
 
   const listingsContainer = document.getElementById("user-listings");
-
   if (!listingsContainer) {
     console.error("❌ Listings container not found!");
     return;
@@ -126,7 +125,7 @@ async function displayUserListings(userName) {
     title.textContent = listing.title;
 
     const image = document.createElement("img");
-    image.src = listing.media?.[0]?.url || "/img/default.jpg"; // ✅ Use a placeholder if no image
+    image.src = listing.media?.[0]?.url || "/img/default.jpg";
     image.alt = listing.title;
     image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 
@@ -134,45 +133,37 @@ async function displayUserListings(userName) {
     description.classList.add("text-gray-600", "mt-2");
     description.textContent = listing.description || "No description available.";
 
-    const price = document.createElement("p");
-    price.classList.add("font-bold", "mt-2");
-    price.textContent = `Starting Price: ${listing.price || "0"} credits`;
+    const auctionStatus = document.createElement("p");
+    auctionStatus.classList.add("font-bold", "mt-2");
 
-    // ✅ NEW: Display Auction End Date
-    const auctionEnd = document.createElement("p");
-    auctionEnd.classList.add("text-red-500", "mt-2");
-    auctionEnd.textContent = `Auction Ends: ${listing.endsAt ? new Date(listing.endsAt).toLocaleString() : "No deadline set"}`;
+    const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
+    const now = new Date();
 
-    const currentBid = document.createElement("p");
-    currentBid.classList.add("text-green-500", "mt-2");
-
-    // ✅ Check if bids exist before accessing them
-    if (listing.bids && listing.bids.length > 0) {
-      currentBid.textContent = `Current Highest Bid: ${listing.bids[0].amount} credits`;
+    if (auctionEndTime && auctionEndTime < now) {
+      auctionStatus.textContent = "🛑 SOLD / AUCTION ENDED";
+      auctionStatus.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
     } else {
-      currentBid.textContent = "Current Highest Bid: No bids yet";
+      auctionStatus.textContent = `Auction Ends: ${auctionEndTime?.toLocaleString() || "No deadline set"}`;
+      auctionStatus.classList.add("text-red-500");
     }
 
-
-    // ✅ Create "View Item" button
     const viewButton = document.createElement("button");
     viewButton.textContent = "View Item";
     viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
     viewButton.dataset.id = listing.id;
-
     viewButton.addEventListener("click", () => {
       console.log(`🛒 Navigating to item: ${listing.id}`);
       window.history.pushState({}, "", `/item?id=${listing.id}`);
-      router(`/item?id=${listing.id}`); // ✅ Use router to navigate
+      router(`/item?id=${listing.id}`); 
     });
 
-    // ✅ Append elements to listing item
-    listingItem.append(title, image, description, price, auctionEnd, currentBid, viewButton);
+    listingItem.append(title, image, description, auctionStatus, viewButton);
     listingsContainer.appendChild(listingItem);
   });
 
   console.log("✅ User listings displayed successfully!");
 }
+
 
 
 

@@ -30,7 +30,13 @@ export function initializeItemPage() {
   })
   .then(data => {
     console.log("Item fetched:", data);
-    console.log("Media Data:", data.media);
+
+    // ✅ Extract correct item data
+    const itemData = data.data || data; 
+    console.log("🔍 Corrected Item Data:", itemData);
+    console.log("🔍 Media Data:", itemData.media);
+    console.log("🔍 First Image URL:", itemData.media?.[0]?.url);
+
 
     const item = new Listing(data);
     const itemContainer = document.getElementById("item-container");
@@ -52,8 +58,9 @@ export function initializeItemPage() {
     console.log("🔍 Media Data:", data.media);
     console.log("🔍 First Image URL:", data.media?.[0]?.url);
 
-    image.src = data.media?.[0]?.url || "/src/img/Sasha.jpg"; 
-    image.src = imageUrl; // ✅ Assign image source
+    image.src = itemData.media?.[0]?.url || "/src/img/Sasha.jpg";  
+ // ✅ Correct line
+
     image.alt = item.title || "No image available";
     image.classList.add("w-full", "max-w-md", "rounded-lg", "shadow-md");
 
