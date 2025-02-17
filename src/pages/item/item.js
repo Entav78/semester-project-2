@@ -70,22 +70,51 @@ export function initializeItemPage() {
     description.classList.add("text-gray-600", "mt-2");
     description.textContent = item.description || "No description available.";
 
-    //  Seller Credits (Fetch from `_seller`)
-    const sellerCredits = data.seller?.credits ?? "Unknown";
-    const credits = document.createElement("p");
-    credits.classList.add("font-bold", "mt-4");
-    credits.textContent = `Seller Credits: ${sellerCredits}`;
+    //  Get User Credits from Local Storage
+const user = JSON.parse(localStorage.getItem("user")) || {};
+const userCredits = user.credits ?? 0; // Default to 0 if missing
 
-    //  Price Display Fix
-    const price = document.createElement("p");
-    price.classList.add("font-bold", "mt-4");
-    price.textContent = `Price: ${item.formatPrice()}`;
+const userCreditsElement = document.createElement("p");
+userCreditsElement.classList.add("font-bold", "mt-4");
+userCreditsElement.textContent = `Your Credits: ${userCredits} credits`;
 
-    //  Append Elements to Page
-    itemContainer.innerHTML = ""; //  Clear old content
-    itemContainer.append(title, image, description, credits, price);
+// ✅ Find the Highest Bid (If Any)
+const highestBid = data.bids?.length ? Math.max(...data.bids.map(bid => bid.amount)) : "No bids yet";
 
-    //  Ensure only one bid input field exists
+const currentBidElement = document.createElement("p");
+currentBidElement.classList.add("font-bold", "mt-4");
+currentBidElement.textContent = `Current Highest Bid: ${highestBid} credits`;
+
+// ✅ Auction Status (Ended or Active)
+const auctionEnd = document.createElement("p");
+auctionEnd.classList.add("mt-2", "font-bold");
+
+// Check if auction has ended
+if (data.endsAt) {
+  const now = new Date();
+  const auctionEndTime = new Date(data.endsAt);
+
+  if (auctionEndTime < now) {
+    auctionEnd.textContent = "SOLD / AUCTION ENDED";
+    auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
+  } else {
+    auctionEnd.textContent = `Auction Ends: ${auctionEndTime.toLocaleString()}`;
+    auctionEnd.classList.add("text-red-500");
+  }
+} else {
+  auctionEnd.textContent = "No deadline set";
+  auctionEnd.classList.add("text-gray-500");
+}
+
+// ✅ Clear old content FIRST
+itemContainer.innerHTML = ""; 
+
+// ✅ Append elements in the correct order
+itemContainer.append(title, image, description, currentBidElement, auctionEnd, userCreditsElement);
+
+
+
+//  Ensure only one bid input field exists
 let bidInput = document.getElementById("bid-input");
 
 if (!bidInput) {
@@ -94,24 +123,25 @@ if (!bidInput) {
   bidInput.placeholder = "Enter your bid";
   bidInput.id = "bid-input"; //  Unique ID
   bidInput.classList.add("form-input", "mt-4", "border", "p-2", "rounded");
-  itemContainer.append(bidInput); //  Append only if it's missing
+  itemContainer.append(bidInput); // Append only if it's missing
 }
 
+//  Check if a bid button already exists in the item container
+let bidButton = document.getElementById("place-bid-btn");
 
-    //  Check if a bid button already exists in the item container
-    let bidButton = document.getElementById("place-bid-btn");
+if (!bidButton) {
+  bidButton = document.createElement("button");
+  bidButton.textContent = "Place Bid";
+  bidButton.classList.add("btn", "btn-primary", "mt-2");
+  bidButton.id = "place-bid-btn"; // Add ID to prevent duplicates
+  itemContainer.append(bidButton); //  Add the button only if it's missing
+}
 
-    if (!bidButton) {
-      bidButton = document.createElement("button");
-      bidButton.textContent = "Place Bid";
-      bidButton.classList.add("btn", "btn-primary", "mt-2");
-      bidButton.id = "place-bid-btn"; // Add ID to prevent duplicates
-      itemContainer.append(bidButton); //  Add the button only if it's missing
-    }
-    console.log("Listing ends at:", data.endsAt);
+console.log("Listing ends at:", data.endsAt);
 
-    //  Initialize Bidding system with the input field
-    new Bidding(itemId, bidButton, bidInput);
+// Initialize Bidding system with the input field
+new Bidding(itemId, bidButton, bidInput);
+
 
   })
   .catch(error => {
