@@ -36,55 +36,83 @@ export async function fetchListings(page = 1) {
 
 
 
-//  Fetch & Render Listings
 export async function fetchAndRenderListings(page = 1) {
   console.log(`Fetching and rendering listings - Page ${page}`);
 
   const container = document.getElementById("listingsContainer");
   if (!container) {
-    console.error("listingsContainer not found in the DOM!");
+    console.error("❌ listingsContainer not found in the DOM!");
     return;
   }
 
+  container.innerHTML = ""; // ✅ Clear previous listings before rendering
+
   try {
-    console.log("Calling fetchListings()...");
+    console.log("📡 Calling fetchListings()...");
     const { listings, totalCount } = await fetchListings(page);
-    console.log("Listings Fetched:", listings);
+    console.log("📡 Listings Fetched:", listings);
 
     if (!Array.isArray(listings) || listings.length === 0) {
-      console.warn("No listings available.");
+      console.warn("⚠️ No listings available.");
       container.innerHTML = "<p>No listings available.</p>";
       return;
     }
 
-    container.innerHTML = listings
-      .map((listing) => {
-        // ✅ Format Auction End Date
-        const auctionEnd = listing.endsAt
-          ? new Date(listing.endsAt).toLocaleString()
-          : "No deadline set";
+    listings.forEach((listing) => {
+      const listingItem = document.createElement("div");
+      listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
 
-        return `
-          <div class="listing-item border p-4 rounded-lg shadow-lg" data-category="${listing.category}">
-            <h2 class="listing-title text-xl font-bold">${listing.title}</h2>
-            <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
-            <p class="listing-description text-gray-600 mt-2">${listing.description || "No description available."}</p>
-            <p class="font-bold mt-2">${listing.price} credits</p>
-            <p class="text-red-500 mt-2">Auction Ends: ${auctionEnd}</p>
-            <button class="view-item bg-blue-500 text-white px-4 py-2 rounded mt-4" data-id="${listing.id}">
-              View Item
-            </button>
-          </div>
-        `;
-      })
-      .join("");
+      const title = document.createElement("h2");
+      title.classList.add("listing-title", "text-xl", "font-bold");
+      title.textContent = listing.title;
 
-    setupListingButtons();  
+      // ✅ Handle Image (Ensure correct format)
+      const image = document.createElement("img");
+      const imageUrl = listing.media?.[0]?.url || listing.media?.[0] || "/img/default.jpg";
+      console.log("✅ Image URL:", imageUrl);
+      image.src = imageUrl;
+      image.alt = listing.title || "No image available";
+      image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
+
+      const description = document.createElement("p");
+      description.classList.add("listing-description", "text-gray-600", "mt-2");
+      description.textContent = listing.description || "No description available.";
+
+      const price = document.createElement("p");
+      price.classList.add("font-bold", "mt-2");
+      price.textContent = `${listing.price} credits`;
+
+      // ✅ Format Auction End Date
+      const auctionEnd = document.createElement("p");
+      auctionEnd.classList.add("text-red-500", "mt-2");
+      auctionEnd.textContent = `Auction Ends: ${listing.endsAt ? new Date(listing.endsAt).toLocaleString() : "No deadline set"}`;
+
+      // ✅ View Item Button
+      const viewButton = document.createElement("button");
+      viewButton.textContent = "View Item";
+      viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
+      viewButton.dataset.id = listing.id;
+      viewButton.addEventListener("click", () => {
+        console.log(`🛒 Navigating to item: ${listing.id}`);
+        window.history.pushState({}, "", `/item?id=${listing.id}`);
+        router(`/item?id=${listing.id}`); // ✅ Use router to navigate
+      });
+
+      // ✅ Append elements to listing item
+      listingItem.append(title, image, description, price, auctionEnd, viewButton);
+      container.appendChild(listingItem);
+
+      console.log("✅ Listing appended to container:", listingItem);
+    });
+
+    setupListingButtons();
     renderPaginationControls(totalCount);
   } catch (error) {
-    console.error("Error fetching listings:", error);
+    console.error("❌ Error fetching listings:", error);
   }
 }
+
+
 
 
 // Render Pagination Controls

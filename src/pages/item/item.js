@@ -30,6 +30,7 @@ export function initializeItemPage() {
   })
   .then(data => {
     console.log("Item fetched:", data);
+    console.log("Media Data:", data.media);
 
     const item = new Listing(data);
     const itemContainer = document.getElementById("item-container");
@@ -47,7 +48,11 @@ export function initializeItemPage() {
 
     // ✅ Image Handling Fix
     const image = document.createElement("img");
-    const imageUrl = data.media?.[0]?.url || "/src/img/Sasha.jpg"; 
+    console.log("🔍 Full Item Data:", data);
+    console.log("🔍 Media Data:", data.media);
+    console.log("🔍 First Image URL:", data.media?.[0]?.url);
+
+    image.src = data.media?.[0]?.url || "/src/img/Sasha.jpg"; 
     image.src = imageUrl; // ✅ Assign image source
     image.alt = item.title || "No image available";
     image.classList.add("w-full", "max-w-md", "rounded-lg", "shadow-md");
