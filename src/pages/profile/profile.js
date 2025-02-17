@@ -96,8 +96,6 @@ export function initializeProfilePage() {
 
 
 // ✅ Ensure the function is executed when the profile page loads
-initializeProfilePage();
-
 async function displayUserListings(userName) {
   console.log(`📄 Fetching listings for user: ${userName}`);
 
@@ -110,8 +108,7 @@ async function displayUserListings(userName) {
 
   listingsContainer.innerHTML = "<p>Loading listings...</p>";
 
-  const data = await fetchUserListings(user.userName);
-
+  const data = await fetchUserListings(userName);
 
   if (!data || !data.data || data.data.length === 0) {
     listingsContainer.innerHTML = "<p>No listings found.</p>";
@@ -139,7 +136,23 @@ async function displayUserListings(userName) {
 
     const price = document.createElement("p");
     price.classList.add("font-bold", "mt-2");
-    price.textContent = `${listing.price || "0"} credits`;
+    price.textContent = `Starting Price: ${listing.price || "0"} credits`;
+
+    // ✅ NEW: Display Auction End Date
+    const auctionEnd = document.createElement("p");
+    auctionEnd.classList.add("text-red-500", "mt-2");
+    auctionEnd.textContent = `Auction Ends: ${listing.endsAt ? new Date(listing.endsAt).toLocaleString() : "No deadline set"}`;
+
+    const currentBid = document.createElement("p");
+    currentBid.classList.add("text-green-500", "mt-2");
+
+    // ✅ Check if bids exist before accessing them
+    if (listing.bids && listing.bids.length > 0) {
+      currentBid.textContent = `Current Highest Bid: ${listing.bids[0].amount} credits`;
+    } else {
+      currentBid.textContent = "Current Highest Bid: No bids yet";
+    }
+
 
     // ✅ Create "View Item" button
     const viewButton = document.createElement("button");
@@ -154,12 +167,13 @@ async function displayUserListings(userName) {
     });
 
     // ✅ Append elements to listing item
-    listingItem.append(title, image, description, price, viewButton);
+    listingItem.append(title, image, description, price, auctionEnd, currentBid, viewButton);
     listingsContainer.appendChild(listingItem);
   });
 
   console.log("✅ User listings displayed successfully!");
 }
+
 
 
 async function displayUserBids(userName) {
