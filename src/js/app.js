@@ -10,7 +10,7 @@ import "../styles/main.scss";
 
 console.log("Initializing App...");
 
-// ✅ Prevent multiple navigation instances
+// Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
 console.log("Checking navigation initialization:", window.navigationInitialized);
 console.log("Checking navigation setup... ");

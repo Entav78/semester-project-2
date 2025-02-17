@@ -7,7 +7,7 @@ export function setupListingButtons() {
     btn.addEventListener("click", (event) => {
       event.preventDefault();
       const itemId = btn.dataset.id;
-      console.log("🆔 Extracted Item ID:", itemId);
+      console.log("Extracted Item ID:", itemId);
       if (!itemId) {
         console.error("No item ID found on button.");
         return;
@@ -24,9 +24,4 @@ export function setupListingButtons() {
     });
   });
 }
-
-
-
-
-
 

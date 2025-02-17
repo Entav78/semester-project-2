@@ -19,7 +19,7 @@ export async function fetchListings(page = 1) {
     const json = await response.json();
     const { data } = json;
 
-    // ✅ Apply Listing class to each listing
+    // Apply Listing class to each listing
     const processedListings = data.map(listing => new Listing(listing));
 
     const totalCount = processedListings.length;
@@ -41,11 +41,11 @@ export async function fetchAndRenderListings(page = 1) {
 
   const container = document.getElementById("listingsContainer");
   if (!container) {
-    console.error("❌ listingsContainer not found in the DOM!");
+    console.error("listingsContainer not found in the DOM!");
     return;
   }
 
-  container.innerHTML = ""; // ✅ Clear previous listings before rendering
+  container.innerHTML = ""; // Clear previous listings before rendering
 
   try {
     console.log("📡 Calling fetchListings()...");
@@ -53,7 +53,7 @@ export async function fetchAndRenderListings(page = 1) {
     console.log("📡 Listings Fetched:", listings);
 
     if (!Array.isArray(listings) || listings.length === 0) {
-      console.warn("⚠️ No listings available.");
+      console.warn("No listings available.");
       container.innerHTML = "<p>No listings available.</p>";
       return;
     }
@@ -66,13 +66,13 @@ export async function fetchAndRenderListings(page = 1) {
       title.classList.add("listing-title", "text-xl", "font-bold");
       title.textContent = listing.title;
 
-      // ✅ Handle Image (Ensure correct format)
+      // Handle Image (Ensure correct format)
       const image = document.createElement("img");
       const imageUrl = (Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === 'object') 
   ? listing.media[0].url 
   : "/img/default.jpg";
 
-      console.log("✅ Image URL:", imageUrl);
+      console.log("Image URL:", imageUrl);
       image.src = imageUrl;
       image.alt = listing.title || "No image available";
       image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
@@ -86,24 +86,24 @@ export async function fetchAndRenderListings(page = 1) {
       price.textContent = `${listing.price ?? "No price set"} credits`;
 
 
-      // ✅ Format Auction End Date
+      // Format Auction End Date
       const auctionEnd = document.createElement("p");
       auctionEnd.classList.add("mt-2", "font-bold");
 
-      // ✅ Check if auction has ended
+      // Check if auction has ended
       if (listing.endsAt) {
         const now = new Date();
         console.log("🔎 Auction End Date Raw:", listing.endsAt);
         const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
         if (auctionEndTime && isNaN(auctionEndTime)) {
-          console.warn("⚠️ Invalid Auction End Date:", listing.endsAt);
+          console.warn("Invalid Auction End Date:", listing.endsAt);
         }
         
 
         const isAuctionOver = auctionEndTime < now;
 
         if (isAuctionOver) {
-          auctionEnd.textContent = "🛑 SOLD / AUCTION ENDED";
+          auctionEnd.textContent = "SOLD / AUCTION ENDED";
           auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
         } else {
           auctionEnd.textContent = `Auction Ends: ${auctionEndTime.toLocaleString()}`;
@@ -114,7 +114,7 @@ export async function fetchAndRenderListings(page = 1) {
         auctionEnd.classList.add("text-gray-500");
       }
 
-      // ✅ View Item Button
+      // View Item Button
       const viewButton = document.createElement("button");
       viewButton.textContent = "View Item";
       viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
@@ -122,20 +122,20 @@ export async function fetchAndRenderListings(page = 1) {
       viewButton.addEventListener("click", () => {
         console.log(`🛒 Navigating to item: ${listing.id}`);
         window.history.pushState({}, "", `/item?id=${listing.id}`);
-        router(`/item?id=${listing.id}`); // ✅ Use router to navigate
+        router(`/item?id=${listing.id}`); // Use router to navigate
       });
 
-      // ✅ Append elements to listing item
+      // Append elements to listing item
       listingItem.append(title, image, description, price, auctionEnd, viewButton);
       container.appendChild(listingItem);
 
-      console.log("✅ Listing appended to container:", listingItem);
+      console.log("Listing appended to container:", listingItem);
     });
 
     setupListingButtons();
     renderPaginationControls(totalCount);
   } catch (error) {
-    console.error("❌ Error fetching listings:", error);
+    console.error("Error fetching listings:", error);
   }
 }
 

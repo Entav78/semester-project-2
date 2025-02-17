@@ -25,19 +25,19 @@ export class ManageListings {
   }
 
   renderForm() {
-    this.container.innerHTML = ""; // ✅ Clear old content
+    this.container.innerHTML = ""; // Clear old content
 
-    // ✅ Create Title
+    // Create Title
     const title = document.createElement("h1");
     title.classList.add("text-xl", "font-bold", "mb-4");
     title.textContent = "Manage Your Listings";
 
-    // ✅ Create Form
+    // Create Form
     const form = document.createElement("form");
     form.id = "createListingForm";
     form.classList.add("space-y-4", "bg-gray-100", "p-6", "rounded-lg", "shadow-lg");
 
-    // ✅ Helper function to create input fields
+    // Helper function to create input fields
     const createInputField = (labelText, id, type = "text", isRequired = false) => {
         const wrapper = document.createElement("div");
         const label = document.createElement("label");
@@ -56,7 +56,7 @@ export class ManageListings {
         return wrapper;
     };
 
-    // ✅ Add fields using createInputField
+    // Add fields using createInputField
     form.append(
         createInputField("Title", "listingTitle", "text", true),
         createInputField("Upload Image URL", "listingMediaUrl"),
@@ -64,7 +64,7 @@ export class ManageListings {
         createInputField("Deadline", "listingDeadline", "datetime-local", true)
     );
 
-    // ✅ Description Field
+    // Description Field
     const descWrapper = document.createElement("div");
     const descLabel = document.createElement("label");
     descLabel.textContent = "Description";
@@ -80,7 +80,7 @@ export class ManageListings {
     descWrapper.append(descLabel, descInput);
     form.append(descWrapper);
 
-    // ✅ Submit Button
+    // Submit Button
     const submitButton = document.createElement("button");
     submitButton.type = "submit";
     submitButton.textContent = "Create Listing";
@@ -88,7 +88,7 @@ export class ManageListings {
 
     form.append(submitButton);
 
-    // ✅ Append form & success message container
+    // Append form & success message container
     this.formMessage = document.createElement("p");
     this.formMessage.id = "formMessage";
     this.formMessage.classList.add("mt-4", "text-center", "text-red-500", "hidden");
@@ -204,7 +204,7 @@ handleMediaPreview(event) {
             throw new Error("Failed to create listing");
         }
 
-        console.log("✅ Listing successfully created!");
+        console.log("Listing successfully created!");
 
         // Clear Form & Hide It
         event.target.reset();
@@ -222,7 +222,7 @@ handleMediaPreview(event) {
 
 
 showSuccessOptions() {
-  this.formMessage.textContent = "Listing created successfully!"; // ✅ Set text content safely
+  this.formMessage.textContent = "Listing created successfully!"; // Set text content safely
   this.formMessage.classList.remove("hidden");
 
   const viewListingsButton = document.createElement("button");

@@ -3,7 +3,7 @@ export function getUser() {
 }
 
 export function logout() {
-  console.log("🚪 Logging out... (Placeholder)");
+  console.log("Logging out... (Placeholder)");
   // In the future, clear user session here
 }
 

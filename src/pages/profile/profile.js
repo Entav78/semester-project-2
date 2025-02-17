@@ -13,11 +13,11 @@ export function initializeProfilePage() {
       const authToken = localStorage.getItem("authToken");
       let user = JSON.parse(localStorage.getItem("user")); 
 
-      // ✅ Handle missing user data in localStorage
+      //  Handle missing user data in localStorage
       if (!user || !user.userName) {
           console.warn("⚠️ User not found in localStorage. Checking token...");
 
-          // ✅ Extract `name` from JWT token as a fallback
+          //  Extract `name` from JWT token as a fallback
           if (authToken) {
               try {
                   const payloadBase64 = authToken.split(".")[1];
@@ -25,15 +25,15 @@ export function initializeProfilePage() {
                   if (payloadJSON.name) {
                       user = { userName: payloadJSON.name }; // Set user manually
                       localStorage.setItem("user", JSON.stringify(user)); // Store user in localStorage
-                      console.log("✅ Extracted username from token:", user.userName);
+                      console.log(" Extracted username from token:", user.userName);
                   }
               } catch (error) {
-                  console.error("❌ Failed to decode JWT token. Redirecting to login...");
+                  console.error("Failed to decode JWT token. Redirecting to login...");
                   window.location.href = "/login";
                   return;
               }
           } else {
-              console.error("❌ No auth token found. Redirecting to login...");
+              console.error("No auth token found. Redirecting to login...");
               window.location.href = "/login";
               return;
           }
@@ -42,7 +42,7 @@ export function initializeProfilePage() {
       console.log("🔍 Final username extracted:", user.userName);
       const userName = user.userName;
 
-      // 🎨 UI Elements
+      //  UI Elements
       const avatarImg = document.getElementById("avatar-img");
       const avatarInput = document.getElementById("avatar-url");
       const updateAvatarBtn = document.getElementById("update-avatar-btn");
@@ -52,16 +52,16 @@ export function initializeProfilePage() {
       const bioContainer = document.getElementById("bio-container");
       const bannerContainer = document.getElementById("banner-img");
 
-      // ❌ Initially hide profile editing fields
+      //  Initially hide profile editing fields
       if (avatarInput) avatarInput.classList.add("hidden");
       if (updateAvatarBtn) updateAvatarBtn.classList.add("hidden");
 
-      // ✅ Initialize Avatar Class
+      //  Initialize Avatar Class
       if (avatarImg && avatarInput && updateAvatarBtn) {
-          console.log("✅ Avatar elements found! Initializing Avatar class...");
+          console.log("Avatar elements found! Initializing Avatar class...");
           new Avatar(avatarImg, avatarInput, updateAvatarBtn, bioContainer, bannerContainer);
       } else {
-          console.error("❌ Avatar elements not found! Check profile.html IDs.");
+          console.error("Avatar elements not found! Check profile.html IDs.");
       }
 
       if (editProfileBtn && editProfileContainer) {
@@ -73,10 +73,10 @@ export function initializeProfilePage() {
               console.log("🛠 Edit Profile button clicked - Toggling edit fields");
           });
       } else {
-          console.error("❌ Edit Profile button or container not found!");
+          console.error("Edit Profile button or container not found!");
       }
 
-      console.log(`📄 Fetching listings and bids for user: ${userName}`);
+      console.log(`Fetching listings and bids for user: ${userName}`);
 
       setTimeout(() => {
           displayUserListings(userName);
@@ -84,7 +84,7 @@ export function initializeProfilePage() {
           setupTabNavigation();
       }, 500);
 
-      console.log("✅ Profile Page Setup Complete!");
+      console.log("Profile Page Setup Complete!");
   }, 300);
 }
 

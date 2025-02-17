@@ -12,7 +12,7 @@ export class Avatar {
 
     this.buttonElement.addEventListener("click", () => this.updateAvatar());
     
-    // ✅ Fetch all user profile data on instantiation
+    // Fetch all user profile data on instantiation
     this.fetchUserProfile();
   }
 
@@ -20,7 +20,7 @@ export class Avatar {
     const authToken = localStorage.getItem("authToken");
 
     if (!authToken) {
-      console.error("❌ No auth token found. User may not be logged in.");
+      console.error("No auth token found. User may not be logged in.");
       return;
     }
 
@@ -29,12 +29,12 @@ export class Avatar {
     const userName = payloadJSON.name;
 
     if (!userName) {
-      console.error("❌ No user name found in token.");
+      console.error("No user name found in token.");
       return;
     }
 
-    console.log(`🔍 Fetching profile for user: ${userName}`);
-    console.log(`🔑 Using token: ${authToken.substring(0, 10)}...`);
+    console.log(`Fetching profile for user: ${userName}`);
+    console.log(`Using token: ${authToken.substring(0, 10)}...`);
     
     try {
       const response = await fetch(`${API_PROFILES}/${userName}`, {
@@ -49,37 +49,37 @@ export class Avatar {
       console.log("📡 API Response Status:", response.status);
 
       if (!response.ok) {
-        console.error(`❌ Failed to fetch profile - Status: ${response.status}`);
+        console.error(`Failed to fetch profile - Status: ${response.status}`);
         throw new Error(`Failed to fetch profile - ${response.statusText}`);
       }
 
       const userData = await response.json();
-      console.log("✅ Profile Data:", userData);
+      console.log("Profile Data:", userData);
 
-      // ✅ Set Avatar (fallback if none exists)
+      // Set Avatar (fallback if none exists)
       const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150";
       this.imgElement.src = avatarUrl;
 
-      // ✅ Set Bio if available
+      // Set Bio if available
       if (this.bioContainer) {
         this.bioContainer.textContent = userData.data.bio || "No bio available.";
       }
 
-      // ✅ Set Banner if available
+      // Set Banner if available
       if (this.bannerContainer) {
         this.bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
       }
 
-      // ✅ Update Credits
+      // Update Credits
       const creditsContainer = document.getElementById("user-credits");
       if (creditsContainer) {
-          creditsContainer.textContent = `Credits: ${userData.data.credits} 💰`;
+          creditsContainer.textContent = `Credits: ${userData.data.credits}`;
       } else {
-          console.warn("⚠️ Credits container not found!");
+          console.warn("Credits container not found!");
       }
 
   } catch (error) {
-      console.error("❌ Error fetching profile:", error);
+      console.error("Error fetching profile:", error);
   }
 }
 
@@ -118,7 +118,7 @@ export class Avatar {
       alert("✅ Avatar updated successfully!");
     } catch (error) {
       console.error("Error updating avatar:", error);
-      alert("❌ Failed to update avatar");
+      alert("Failed to update avatar");
     }
   }
 }
