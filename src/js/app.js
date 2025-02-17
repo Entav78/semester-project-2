@@ -75,7 +75,7 @@ if (currentPath.includes("/auth/login")) {
 
 if (currentPath.includes("/item")) {
   console.log("Item Page Detected - Initializing...");
-  initializeItemPage();
+ // initializeItemPage();
 }
 
 document.body.addEventListener("click", (event) => {

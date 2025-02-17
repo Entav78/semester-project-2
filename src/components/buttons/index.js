@@ -7,6 +7,7 @@ export function setupListingButtons() {
     btn.addEventListener("click", (event) => {
       event.preventDefault();
       const itemId = btn.dataset.id;
+      console.log("🆔 Extracted Item ID:", itemId);
       if (!itemId) {
         console.error("No item ID found on button.");
         return;
@@ -14,6 +15,8 @@ export function setupListingButtons() {
 
       const itemPagePath = `/item?id=${itemId}`; // Use clean route
       console.log(`Navigating to Item Page: ${itemPagePath}`);
+      
+
 
       // Use `router()` instead of reloading the page
       window.history.pushState({}, "", itemPagePath);
