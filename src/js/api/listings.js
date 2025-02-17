@@ -1,4 +1,4 @@
-import { API_LISTINGS } from "./constants.js";
+import { API_LISTINGS, API_KEY } from "./constants.js";
 import { Listing } from "../../models/Listing.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 
@@ -19,10 +19,13 @@ export async function fetchListings(page = 1) {
     const json = await response.json();
     const { data } = json;
 
-    const totalCount = data.length;
+    // ✅ Apply Listing class to each listing
+    const processedListings = data.map(listing => new Listing(listing));
+
+    const totalCount = processedListings.length;
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedListings = data.slice(startIndex, endIndex);
+    const paginatedListings = processedListings.slice(startIndex, endIndex);
 
     return { listings: paginatedListings, totalCount };
   } catch (error) {
@@ -30,6 +33,8 @@ export async function fetchListings(page = 1) {
     return { listings: [], totalCount: 0 };
   }
 }
+
+
 
 //  Fetch & Render Listings
 export async function fetchAndRenderListings(page = 1) {
@@ -53,17 +58,25 @@ export async function fetchAndRenderListings(page = 1) {
     }
 
     container.innerHTML = listings
-      .map((listing) => `
-        <div class="listing-item border p-4 rounded-lg shadow-lg" data-category="${listing.category}">
-          <h2 class="listing-title text-xl font-bold">${listing.title}</h2>
-          <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
-          <p class="listing-description text-gray-600 mt-2">${listing.description || "No description available."}</p>
-          <p class="font-bold mt-2">${listing.price} credits</p>
-          <button class="view-item bg-blue-500 text-white px-4 py-2 rounded mt-4" data-id="${listing.id}">
-            View Item
-          </button>
-        </div>
-      `)
+      .map((listing) => {
+        // ✅ Format Auction End Date
+        const auctionEnd = listing.endsAt
+          ? new Date(listing.endsAt).toLocaleString()
+          : "No deadline set";
+
+        return `
+          <div class="listing-item border p-4 rounded-lg shadow-lg" data-category="${listing.category}">
+            <h2 class="listing-title text-xl font-bold">${listing.title}</h2>
+            <img src="${listing.media?.[0] || 'default.jpg'}" alt="${listing.title}" class="w-full h-48 object-cover rounded-lg"/>
+            <p class="listing-description text-gray-600 mt-2">${listing.description || "No description available."}</p>
+            <p class="font-bold mt-2">${listing.price} credits</p>
+            <p class="text-red-500 mt-2">Auction Ends: ${auctionEnd}</p>
+            <button class="view-item bg-blue-500 text-white px-4 py-2 rounded mt-4" data-id="${listing.id}">
+              View Item
+            </button>
+          </div>
+        `;
+      })
       .join("");
 
     setupListingButtons();  
@@ -72,6 +85,7 @@ export async function fetchAndRenderListings(page = 1) {
     console.error("Error fetching listings:", error);
   }
 }
+
 
 // Render Pagination Controls
 export function renderPaginationControls(totalCount) {
