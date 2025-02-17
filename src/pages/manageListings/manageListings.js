@@ -24,56 +24,78 @@ export class ManageListings {
     this.setupEventListeners();
   }
 
-  /**
-   * Render the Listing Form
-   */
   renderForm() {
-    this.container.innerHTML = `
-      <h1 class="text-xl font-bold mb-4">Manage Your Listings</h1>
-      <form id="createListingForm" class="space-y-4 bg-gray-100 p-6 rounded-lg shadow-lg">
-        <!-- Title -->
-        <div>
-          <label for="listingTitle" class="block font-semibold">Title</label>
-          <input type="text" id="listingTitle" name="title" class="w-full p-2 border rounded" required />
-        </div>
+    this.container.innerHTML = ""; // ✅ Clear old content
 
-        <!-- Description -->
-        <div>
-          <label for="listingDescription" class="block font-semibold">Description</label>
-          <textarea id="listingDescription" name="description" class="w-full p-2 border rounded" rows="4"></textarea>
-        </div>
+    // ✅ Create Title
+    const title = document.createElement("h1");
+    title.classList.add("text-xl", "font-bold", "mb-4");
+    title.textContent = "Manage Your Listings";
 
-        <!-- Media Upload -->
-        <div>
-          <label for="listingMedia" class="block font-semibold">Upload Image(s)</label>
-          <input type="text" id="listingMediaUrl" name="mediaUrl" class="w-full p-2 border rounded" placeholder="Paste image URL here" />
-          <div id="mediaPreview" class="flex flex-wrap gap-2 mt-2"></div>
-        </div>
+    // ✅ Create Form
+    const form = document.createElement("form");
+    form.id = "createListingForm";
+    form.classList.add("space-y-4", "bg-gray-100", "p-6", "rounded-lg", "shadow-lg");
 
-        <!-- Tags -->
-        <div>
-          <label for="listingTags" class="block font-semibold">Tags (comma-separated)</label>
-          <input type="text" id="listingTags" name="tags" class="w-full p-2 border rounded" placeholder="e.g., vintage, electronics, antique" />
-        </div>
+    // ✅ Helper function to create input fields
+    const createInputField = (labelText, id, type = "text", isRequired = false) => {
+        const wrapper = document.createElement("div");
+        const label = document.createElement("label");
+        label.textContent = labelText;
+        label.setAttribute("for", id);
+        label.classList.add("block", "font-semibold");
 
-        <!-- Deadline -->
-        <div>
-          <label for="listingDeadline" class="block font-semibold">Deadline</label>
-          <input type="datetime-local" id="listingDeadline" name="deadline" class="w-full p-2 border rounded" required />
-        </div>
+        const input = document.createElement("input");
+        input.id = id;
+        input.name = id;
+        input.type = type;
+        input.classList.add("w-full", "p-2", "border", "rounded");
+        if (isRequired) input.required = true;
 
-        <!-- Submit Button -->
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-          Create Listing
-        </button>
-      </form>
+        wrapper.append(label, input);
+        return wrapper;
+    };
 
-      <!-- Success/Error Message -->
-      <p id="formMessage" class="mt-4 text-center text-red-500 hidden"></p>
-    `;
+    // ✅ Add fields using createInputField
+    form.append(
+        createInputField("Title", "listingTitle", "text", true),
+        createInputField("Upload Image URL", "listingMediaUrl"),
+        createInputField("Tags (comma-separated)", "listingTags"),
+        createInputField("Deadline", "listingDeadline", "datetime-local", true)
+    );
 
-    this.formMessage = document.getElementById("formMessage");
-  }
+    // ✅ Description Field
+    const descWrapper = document.createElement("div");
+    const descLabel = document.createElement("label");
+    descLabel.textContent = "Description";
+    descLabel.setAttribute("for", "listingDescription");
+    descLabel.classList.add("block", "font-semibold");
+
+    const descInput = document.createElement("textarea");
+    descInput.id = "listingDescription";
+    descInput.name = "description";
+    descInput.classList.add("w-full", "p-2", "border", "rounded");
+    descInput.rows = 4;
+
+    descWrapper.append(descLabel, descInput);
+    form.append(descWrapper);
+
+    // ✅ Submit Button
+    const submitButton = document.createElement("button");
+    submitButton.type = "submit";
+    submitButton.textContent = "Create Listing";
+    submitButton.classList.add("w-full", "bg-blue-600", "text-white", "py-2", "rounded", "hover:bg-blue-700", "transition");
+
+    form.append(submitButton);
+
+    // ✅ Append form & success message container
+    this.formMessage = document.createElement("p");
+    this.formMessage.id = "formMessage";
+    this.formMessage.classList.add("mt-4", "text-center", "text-red-500", "hidden");
+
+    this.container.append(title, form, this.formMessage);
+}
+
 
   /**
    * Set up event listeners
@@ -199,24 +221,23 @@ handleMediaPreview(event) {
 }
 
 
-  /**
-   * Show Success Message with "View My Listings" Button
-   */
-  showSuccessOptions() {
-    const successMessage = document.getElementById("formMessage");
-    successMessage.innerHTML = `
-      Listing created successfully! <br>
-      <button id="goToProfile" class="bg-blue-600 text-white p-2 rounded mt-2 hover:bg-blue-700">
-        View My Listings
-      </button>
-    `;
-    successMessage.classList.remove("hidden");
+showSuccessOptions() {
+  this.formMessage.textContent = "Listing created successfully!"; // ✅ Set text content safely
+  this.formMessage.classList.remove("hidden");
 
-    document.getElementById("goToProfile").addEventListener("click", () => {
+  const viewListingsButton = document.createElement("button");
+  viewListingsButton.textContent = "View My Listings";
+  viewListingsButton.classList.add("bg-blue-600", "text-white", "p-2", "rounded", "mt-2", "hover:bg-blue-700");
+  viewListingsButton.id = "goToProfile";
+
+  this.formMessage.appendChild(viewListingsButton);
+
+  viewListingsButton.addEventListener("click", () => {
       window.history.pushState({}, "", "/profile");
       router("/profile");
-    });
-  }
+  });
+}
+
 }
 
 /**
