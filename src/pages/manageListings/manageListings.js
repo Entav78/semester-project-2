@@ -155,21 +155,18 @@ export class ManageListings {
     console.log("Image preview updated with URL:", imageUrl);
   }
 
-  /**
-   * Handle Form Submission (Create Listing)
-   */
   async handleCreateListing(event) {
     event.preventDefault();
-    console.log("Creating a new listing...");
+    console.log("📡 Creating a new listing...");
 
-    showLoader(); // Show loader before submission
+    showLoader();
 
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      console.error("No Auth Token Found. Redirecting to Login...");
-      this.showMessage("You must be logged in to create a listing!", "red");
-      hideLoader();
-      return;
+        console.error("No Auth Token Found. Redirecting to Login...");
+        this.showMessage("You must be logged in to create a listing!", "red");
+        hideLoader();
+        return;
     }
 
     const title = document.getElementById("listingTitle")?.value.trim();
@@ -179,9 +176,9 @@ export class ManageListings {
     const tagsInput = document.getElementById("listingTags")?.value.trim();
 
     if (!title || !deadline) {
-      this.showMessage("Title and Deadline are required!", "red");
-      hideLoader();
-      return;
+        this.showMessage("Title and Deadline are required!", "red");
+        hideLoader();
+        return;
     }
 
     const endsAt = new Date(deadline).toISOString();
@@ -190,34 +187,46 @@ export class ManageListings {
 
     const listingData = { title, description, tags, media, endsAt };
 
+    console.log("Sending data to API:", listingData);
+
     try {
-      const response = await fetch(API_LISTINGS, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken.trim()}`,
-          "X-Noroff-API-Key": API_KEY
-        },
-        body: JSON.stringify(listingData)
-      });
+        const response = await fetch(API_LISTINGS, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authToken.trim()}`,
+                "X-Noroff-API-Key": API_KEY
+            },
+            body: JSON.stringify(listingData)
+        });
 
-      if (!response.ok) throw new Error("Failed to create listing");
+        if (!response.ok) {
+            throw new Error("Failed to create listing");
+        }
 
-      console.log("Listing successfully created!");
+        console.log(" Listing successfully created!");
 
-      // Clear Form & Hide It
-      event.target.reset();
-      document.getElementById("mediaPreview").innerHTML = "";
-      document.getElementById("createListingForm").classList.add("hidden");
+        //  Clear Form & Hide It
+        event.target.reset();
+        document.getElementById("mediaPreview").innerHTML = "";
+        document.getElementById("createListingForm").classList.add("hidden");
 
-      this.showSuccessOptions();
+        this.showSuccessOptions(); //  Show success message
+
+        // Refresh Home Page Listings
+        console.log("Refreshing home page listings...");
+        window.history.pushState({}, "", "/"); // Navigate to home page
+        router("/"); // Reload home page
+
     } catch (error) {
-      console.error("Error creating listing:", error);
-      this.showMessage("Failed to create listing!", "red");
+        console.error("Error creating listing:", error);
+        this.showMessage("Failed to create listing!", "red");
     }
 
     hideLoader();
-  }
+}
+
+
 
   /**
    * Show success message and redirect button

@@ -1,9 +1,11 @@
+
+
 import { API_LISTINGS, API_KEY } from "./constants.js";
 import { Listing } from "../../models/Listing.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 
 
-console.log("🔍 API_LISTINGS URL:", API_LISTINGS); 
+console.log("API_LISTINGS URL:", API_LISTINGS); 
 
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
@@ -17,7 +19,10 @@ export async function fetchListings(page = 1) {
     if (!response.ok) throw new Error("Failed to fetch listings");
 
     const json = await response.json();
+    console.log("API Response Data:", json);
+
     const { data } = json;
+    console.log("Processed Listings:", data);
 
     // Apply Listing class to each listing
     const processedListings = data.map(listing => new Listing(listing));
@@ -36,7 +41,44 @@ export async function fetchListings(page = 1) {
 
 
 
-export async function fetchAndRenderListings(page = 1) {
+
+
+let allListings = []; // Store all fetched listings
+
+export async function fetchAllListings() {
+  console.log("Fetching ALL listings...");
+
+  let allFetchedListings = [];
+  let page = 1;
+  let hasMoreData = true;
+
+  try {
+    while (hasMoreData) {
+      const response = await fetch(`${API_LISTINGS}?_active=true&page=${page}`);
+      if (!response.ok) throw new Error("Failed to fetch listings");
+
+      const json = await response.json();
+      const listings = json.data.map(listing => new Listing(listing));
+
+      if (listings.length === 0) {
+        hasMoreData = false; // Stop if no more listings
+      } else {
+        allFetchedListings = [...allFetchedListings, ...listings];
+        page++; // Move to the next page
+      }
+    }
+
+    allListings = allFetchedListings;
+    console.log(`✅ Fetched a total of ${allListings.length} listings.`);
+    return allListings;
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    return [];
+  }
+}
+
+
+export async function fetchAndRenderListings(page = 1, filterQuery = "") {
   console.log(`Fetching and rendering listings - Page ${page}`);
 
   const container = document.getElementById("listingsContainer");
@@ -48,17 +90,38 @@ export async function fetchAndRenderListings(page = 1) {
   container.innerHTML = ""; // Clear previous listings before rendering
 
   try {
-    console.log("📡 Calling fetchListings()...");
-    const { listings, totalCount } = await fetchListings(page);
-    console.log("📡 Listings Fetched:", listings);
+    // ✅ Ensure we fetch all listings before filtering
+    if (allListings.length === 0) {
+      console.log("All listings array is empty. Fetching now...");
+      await fetchAllListings();
+    }
 
-    if (!Array.isArray(listings) || listings.length === 0) {
-      console.warn("No listings available.");
-      container.innerHTML = "<p>No listings available.</p>";
+    console.log("✅ All Listings Fetched:", allListings); // <-- CHECK THIS IN BROWSER CONSOLE
+
+    // ✅ Apply search filtering
+    let filteredListings = allListings.filter(listing => {
+      return (
+        listing.title.toLowerCase().includes(filterQuery.toLowerCase()) ||
+        listing.description.toLowerCase().includes(filterQuery.toLowerCase())
+      );
+    });
+
+    console.log(`🔎 Filtered Listings Count: ${filteredListings.length}`);
+
+    // ✅ Apply pagination AFTER filtering
+    const totalCount = filteredListings.length;
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const paginatedListings = filteredListings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    console.log("📄 Paginated Listings:", paginatedListings);
+
+    if (paginatedListings.length === 0) {
+      container.innerHTML = "<p>No listings found.</p>";
       return;
     }
 
-    listings.forEach((listing) => {
+    // ✅ Render listings
+    paginatedListings.forEach(listing => {
       const listingItem = document.createElement("div");
       listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
 
@@ -66,13 +129,12 @@ export async function fetchAndRenderListings(page = 1) {
       title.classList.add("listing-title", "text-xl", "font-bold");
       title.textContent = listing.title;
 
-      // Handle Image (Ensure correct format)
+      // Handle Image
       const image = document.createElement("img");
-      const imageUrl = (Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === 'object') 
-  ? listing.media[0].url 
-  : "/img/default.jpg";
-
-      console.log("Image URL:", imageUrl);
+      const imageUrl =
+        Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
+          ? listing.media[0].url
+          : "/img/default.jpg";
       image.src = imageUrl;
       image.alt = listing.title || "No image available";
       image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
@@ -81,37 +143,16 @@ export async function fetchAndRenderListings(page = 1) {
       description.classList.add("listing-description", "text-gray-600", "mt-2");
       description.textContent = listing.description || "No description available.";
 
-      const price = document.createElement("p");
-      price.classList.add("font-bold", "mt-2");
-      price.textContent = `${listing.price ?? "No price set"} credits`;
-
-
-      // Format Auction End Date
       const auctionEnd = document.createElement("p");
       auctionEnd.classList.add("mt-2", "font-bold");
 
-      // Check if auction has ended
       if (listing.endsAt) {
         const now = new Date();
-        console.log("🔎 Auction End Date Raw:", listing.endsAt);
-        const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
-        if (auctionEndTime && isNaN(auctionEndTime)) {
-          console.warn("Invalid Auction End Date:", listing.endsAt);
-        }
-        
-
-        const isAuctionOver = auctionEndTime < now;
-
-        if (isAuctionOver) {
-          auctionEnd.textContent = "SOLD / AUCTION ENDED";
-          auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
-        } else {
-          auctionEnd.textContent = `Auction Ends: ${auctionEndTime.toLocaleString()}`;
-          auctionEnd.classList.add("text-red-500");
-        }
+        const auctionEndTime = new Date(listing.endsAt);
+        auctionEnd.textContent = auctionEndTime < now ? "SOLD / AUCTION ENDED" : `Auction Ends: ${auctionEndTime.toLocaleString()}`;
+        auctionEnd.classList.add(auctionEndTime < now ? "text-gray-700 bg-yellow-300 p-2 rounded-lg" : "text-red-500");
       } else {
         auctionEnd.textContent = "No deadline set";
-        auctionEnd.classList.add("text-gray-500");
       }
 
       // View Item Button
@@ -120,25 +161,19 @@ export async function fetchAndRenderListings(page = 1) {
       viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
       viewButton.dataset.id = listing.id;
       viewButton.addEventListener("click", () => {
-        console.log(`🛒 Navigating to item: ${listing.id}`);
         window.history.pushState({}, "", `/item?id=${listing.id}`);
-        router(`/item?id=${listing.id}`); // Use router to navigate
+        router(`/item?id=${listing.id}`);
       });
 
-      // Append elements to listing item
-      listingItem.append(title, image, description, price, auctionEnd, viewButton);
+      listingItem.append(title, image, description, auctionEnd, viewButton);
       container.appendChild(listingItem);
-
-      console.log("Listing appended to container:", listingItem);
     });
 
-    setupListingButtons();
     renderPaginationControls(totalCount);
   } catch (error) {
-    console.error("Error fetching listings:", error);
+    console.error("❌ Error fetching listings:", error);
   }
 }
-
 
 
 

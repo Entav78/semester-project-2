@@ -1,4 +1,4 @@
-import { fetchAndRenderListings } from "@/js/api/listings.js"; 
+import { fetchAndRenderListings } from "@/js/api/listings.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 
@@ -16,7 +16,7 @@ export async function initializeHomePage() {
     return;
   }
 
-  showLoader(mainContainer); 
+  showLoader(mainContainer);
 
   try {
     const listingsContainer = document.getElementById("listingsContainer");
@@ -31,19 +31,22 @@ export async function initializeHomePage() {
     paginationContainer.innerHTML = "";
 
     console.log("Fetching and rendering listings...");
-    await fetchAndRenderListings(currentPage); // Fetch Listings
+    await fetchAndRenderListings(currentPage); // ✅ Fetch Listings
 
-    console.log("Initializing Filtering...");
+    // Initialize Filtering after listings are loaded
     new Filtering();
 
   } catch (error) {
     console.error("Error loading home page:", error);
   } finally {
-    hideLoader(mainContainer); // Hide Loader when done
+    hideLoader(mainContainer);
   }
 
   console.log("Home Page Initialized!");
 }
+
+
+
 
 
 

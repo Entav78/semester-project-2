@@ -4,7 +4,7 @@ export class Listing {
     this.title = data.title || "Untitled";
     this.description = data.description || "No description available.";
     this.price = data.price || 0;
-    this.media = data.media || []; 
+    this.media = Array.isArray(data.media) ? data.media : []; // Ensure it's always an array
     this.seller = data.seller || { userName: "Unknown" }; 
     this.createdAt = data.created || new Date().toISOString();
   }
@@ -14,11 +14,13 @@ export class Listing {
   }
 
   getImage() {
-    return this.media.length > 0 ? this.media[0] : "/images/placeholder.jpg";
+    // Ensure media[0] exists and has a `url` property
+    return this.media.length > 0 && this.media[0].url ? this.media[0].url : "/images/placeholder.jpg";
   }
 
   getDetails() {
-    return `${this.title} - ${this.formatPrice()} by ${this.seller.name}`;
+    return `${this.title} - ${this.formatPrice()} by ${this.seller.userName}`;
   }
 }
+
 
