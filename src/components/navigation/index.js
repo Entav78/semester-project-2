@@ -74,7 +74,7 @@ export class Navigation {
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
-          console.log(`🔍 Navigating to: ${path}`);
+          console.log(`Navigating to: ${path}`);
           window.history.pushState({}, "", path);
           router(path);
         });

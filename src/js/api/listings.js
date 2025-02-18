@@ -39,14 +39,10 @@ export async function fetchListings(page = 1) {
   }
 }
 
-
-
-
-
-let allListings = []; // Store all fetched listings
+let allListings = []; // Store all fetched listings globally
 
 export async function fetchAllListings() {
-  console.log("Fetching ALL listings...");
+  console.log("🔄 Fetching ALL listings...");
 
   let allFetchedListings = [];
   let page = 1;
@@ -58,28 +54,79 @@ export async function fetchAllListings() {
       if (!response.ok) throw new Error("Failed to fetch listings");
 
       const json = await response.json();
-      const listings = json.data.map(listing => new Listing(listing));
+
+      // ✅ Debug raw data
+      console.log(`🟢 Raw API Response (Page ${page}):`, json);
+
+      // ✅ Log first 5 fetched listings
+      console.log(
+        "🟡 First 5 Raw Listings Before Processing:",
+        json.data.slice(0, 5).map(listing => ({
+          id: listing.id,
+          title: listing.title,
+          endsAt: listing.endsAt || "❌ Missing endsAt"
+        }))
+      );
+
+      // ✅ Ensure `endsAt` is included when creating `Listing` instances
+      const listings = json.data.map(listing => new Listing({
+        ...listing, // Spread existing properties
+        endsAt: listing.endsAt ?? null // Ensure `endsAt` is at least `null` if missing
+      }));
 
       if (listings.length === 0) {
-        hasMoreData = false; // Stop if no more listings
+        hasMoreData = false;
       } else {
         allFetchedListings = [...allFetchedListings, ...listings];
-        page++; // Move to the next page
+        page++;
       }
     }
 
-    allListings = allFetchedListings;
-    console.log(`✅ Fetched a total of ${allListings.length} listings.`);
-    return allListings;
+    console.log("✅ Fetch Complete. Total Listings:", allFetchedListings.length);
+
+    // ✅ Log first 5 listings AFTER creating Listing instances
+    console.log(
+      "🔵 First 5 Listings After Processing:",
+      allFetchedListings.slice(0, 5).map(listing => ({
+        title: listing.title,
+        endsAt: listing.endsAt || "❌ Missing endsAt"
+      }))
+    );
+
+    return allFetchedListings;
   } catch (error) {
-    console.error("Fetch Error:", error);
+    console.error("❌ Fetch Error:", error);
     return [];
   }
 }
 
 
+
+
+
+
+// ✅ Wrap in an async function
+async function logListings() {
+  const listings = await fetchAllListings();
+  
+
+  const filteredListings = listings
+    .filter(listing => listing.title && listing.tags.length > 0)
+    .map(listing => ({
+      Title: listing.title,
+      Tags: listing.tags.join(", ")
+    }));
+
+  console.table(filteredListings);
+}
+
+// ✅ Call the function
+logListings();
+
+
 export async function fetchAndRenderListings(page = 1, filterQuery = "") {
-  console.log(`Fetching and rendering listings - Page ${page}`);
+  //console.log(`Fetching and rendering listings - Page ${page}`);
+  
 
   const container = document.getElementById("listingsContainer");
   if (!container) {
@@ -96,7 +143,12 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       await fetchAllListings();
     }
 
-    console.log("✅ All Listings Fetched:", allListings); // <-- CHECK THIS IN BROWSER CONSOLE
+    //console.log("✅ All Listings Fetched:", allListings); // <-- CHECK THIS IN BROWSER CONSOLE
+    //console.log("Fetched Listings:", allListings);
+//allListings.forEach((listing) => {
+ // console.log(`Listing: ${listing.title}, Tags: ${listing.tags}`);
+//});
+
 
     // ✅ Apply search filtering
     let filteredListings = allListings.filter(listing => {

@@ -12,6 +12,14 @@
   <div id="navigation-container"></div> <!-- Navigation loads here -->
   <main id="main-container" class="main-content"> <!-- Added class for easy targeting -->
     <div id="filter-container">
+      <label for="sort-dropdown">Sort By:</label>
+        <select id="sort-dropdown">
+          <option value="endingSoon">Ending Soon</option>
+          <option value="newest">Newest Listings</option>
+          <option value="highestBid">Highest Bid</option>
+          <option value="lowestBid">Lowest Bid</option>
+        </select>
+
       <label for="search-bar" class="block text-lg font-bold mb-2">Search Listings</label>
       <div class="flex gap-2">
         <input type="text" id="search-bar" placeholder="Search for items..." class="p-3 border rounded-lg shadow-sm w-full">

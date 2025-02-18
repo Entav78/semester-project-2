@@ -5,7 +5,9 @@ export class Listing {
     this.description = data.description || "No description available.";
     this.price = data.price || 0;
     this.media = Array.isArray(data.media) ? data.media : []; // Ensure it's always an array
+    this.tags = Array.isArray(data.tags) ? data.tags : [];
     this.seller = data.seller || { userName: "Unknown" }; 
+    this.endsAt = data.endsAt;
     this.createdAt = data.created || new Date().toISOString();
   }
 
