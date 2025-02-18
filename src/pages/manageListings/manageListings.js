@@ -19,12 +19,12 @@ export class ManageListings {
     }
 
     console.log("Initializing Manage Listings...");
-    showLoader(); // ✅ Show loader during initialization
+    showLoader(); //Show loader during initialization
 
     this.renderForm();
     this.setupEventListeners();
 
-    hideLoader(); // ✅ Hide loader once form is ready
+    hideLoader(); // Hide loader once form is ready
   }
 
   /**
@@ -145,7 +145,7 @@ export class ManageListings {
       return;
     }
 
-    // ✅ Create and Display Image Preview
+    // Create and Display Image Preview
     const img = document.createElement("img");
     img.src = imageUrl;
     img.className = "w-24 h-24 object-cover rounded-lg shadow-md";

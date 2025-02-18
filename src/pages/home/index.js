@@ -12,7 +12,7 @@ export async function initializeHomePage() {
 
   const mainContainer = document.getElementById("main-container");
   if (!mainContainer) {
-    console.error("❌ main-container not found!");
+    console.error("main-container not found!");
     return;
   }
 
@@ -23,23 +23,26 @@ export async function initializeHomePage() {
     const paginationContainer = document.getElementById("paginationContainer");
 
     if (!listingsContainer || !paginationContainer) {
-      console.error("❌ listingsContainer or paginationContainer not found!");
+      console.error("listingsContainer or paginationContainer not found!");
       return;
     }
 
     listingsContainer.innerHTML = "";
     paginationContainer.innerHTML = "";
 
-    console.log("📡 Fetching and rendering listings...");
-    await fetchAndRenderListings(currentPage); // ✅ Fetch Listings
+    console.log("Fetching and rendering listings...");
+    await fetchAndRenderListings(currentPage); // Fetch Listings
+
+    console.log("Initializing Filtering...");
+    new Filtering();
 
   } catch (error) {
-    console.error("❌ Error loading home page:", error);
+    console.error("Error loading home page:", error);
   } finally {
-    hideLoader(mainContainer); // ✅ Hide Loader when done
+    hideLoader(mainContainer); // Hide Loader when done
   }
 
-  console.log("✅ Home Page Initialized!");
+  console.log("Home Page Initialized!");
 }
 
 
