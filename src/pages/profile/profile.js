@@ -1,4 +1,6 @@
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
+import { showLoader, hideLoader } from "@/components/loader/loader.js";
+
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
@@ -9,6 +11,8 @@ let user = JSON.parse(localStorage.getItem("user")) || null;
 
 export function initializeProfilePage() {
   console.log("Profile Page Initializing...");
+   
+  showLoader();
 
   setTimeout(() => {
       const authToken = localStorage.getItem("authToken");
@@ -23,6 +27,7 @@ export function initializeProfilePage() {
               try {
                   const payloadBase64 = authToken.split(".")[1];
                   const payloadJSON = JSON.parse(atob(payloadBase64));
+
                   if (payloadJSON.name) {
                       user = { userName: payloadJSON.name }; // Set user manually
                       localStorage.setItem("user", JSON.stringify(user)); // Store user in localStorage
@@ -39,9 +44,16 @@ export function initializeProfilePage() {
               return;
           }
       }
-
+      
       console.log("🔍 Final username extracted:", user.userName);
       const userName = user.userName;
+
+      const mainContainer = document.getElementById("main-container");
+    if (!mainContainer) {
+      console.error("❌ Main container not found! Profile page may not render correctly.");
+      hideLoader(); // Ensure loader is removed even in case of failure
+      return;
+    }
 
       //  UI Elements
       const avatarImg = document.getElementById("avatar-img");
@@ -49,7 +61,6 @@ export function initializeProfilePage() {
       const updateAvatarBtn = document.getElementById("update-avatar-btn");
       const editProfileBtn = document.getElementById("edit-profile-btn");
       const editProfileContainer = document.getElementById("edit-profile-container");
-
       const bioContainer = document.getElementById("bio-container");
       const bannerContainer = document.getElementById("banner-img");
 
@@ -79,22 +90,27 @@ export function initializeProfilePage() {
 
       console.log(`Fetching listings and bids for user: ${userName}`);
 
-      setTimeout(() => {
-          displayUserListings(userName);
-          displayUserBids(userName);
-          setupTabNavigation();
-      }, 500);
+      // ✅ Fetch Listings & Bids Simultaneously with `Promise.all`
+    Promise.all([
+      displayUserListings(userName),
+      displayUserBids(userName)
+    ])
+    .then(() => {
+      console.log("✅ Profile Data Loaded Successfully");
+    })
+    .catch(error => {
+      console.error("❌ Error loading profile data:", error);
+    })
+    .finally(() => {
+      hideLoader(); // ✅ Hide loader after all data has loaded
+      console.log("🔽 Loader Hidden After Profile Data Loaded");
+    });
 
-      console.log("Profile Page Setup Complete!");
+    setupTabNavigation();
+
+    console.log("✅ Profile Page Setup Complete!");
   }, 300);
 }
-
-
-
-
-
-
-
 
 // ✅ Ensure the function is executed when the profile page loads
 async function displayUserListings(userName) {
@@ -153,7 +169,7 @@ async function displayUserListings(userName) {
     viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
     viewButton.dataset.id = listing.id;
     viewButton.addEventListener("click", () => {
-      console.log(`🛒 Navigating to item: ${listing.id}`);
+      console.log(`Navigating to item: ${listing.id}`);
       window.history.pushState({}, "", `/item?id=${listing.id}`);
       router(`/item?id=${listing.id}`); 
     });
@@ -247,12 +263,6 @@ async function displayUserBids(userName) {
     console.error("Error fetching listings:", error);
   }
 }
-
-
-
-
-
-
 
 function setupTabNavigation() {
   console.log("Setting up Profile Page Tabs...");
