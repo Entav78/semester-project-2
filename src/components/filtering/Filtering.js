@@ -39,18 +39,24 @@ export class Filtering {
   setupEventListeners() {
     this.categoryFilter.addEventListener("change", () => {
       if (this.categoryFilter.value === "multiple") {
-        this.advancedFilters.classList.remove("hidden");
+        this.advancedFilters.classList.remove("hidden"); // Show checkboxes
       } else {
-        this.advancedFilters.classList.add("hidden");
-        this.clearCheckboxes();
+        this.advancedFilters.classList.add("hidden"); // Hide checkboxes
+        this.clearCheckboxes(); // Clear selected checkboxes when switching
       }
-      this.applyFilters();
+      this.applyFilters(); // Apply filters immediately when category changes
     });
-
+  
     this.searchBar.addEventListener("input", () => this.applyFilters());
     this.searchBtn.addEventListener("click", () => this.applyFilters());
-    this.applyFiltersBtn.addEventListener("click", () => this.applyFilters());
+  
+    // ✅ Make sure Apply Filters button works!
+    this.applyFiltersBtn.addEventListener("click", () => {
+      console.log("✅ Apply Filters button clicked!");
+      this.applyFilters();
+    });
   }
+  
 
   clearCheckboxes() {
     document.querySelectorAll("input[name='category']:checked").forEach((checkbox) => {
@@ -64,31 +70,53 @@ export class Filtering {
       console.warn("No listings available for filtering.");
       return;
     }
-
+  
     const query = this.searchBar.value.toLowerCase();
-    console.log("Search Query:", query);
-
-    const selectedCategories = Array.from(document.querySelectorAll("input[name='category']:checked"))
-      .map((checkbox) => checkbox.value);
-
-    console.log("Selected Categories:", selectedCategories);
-
-    // Apply filtering
-    this.filteredListings = this.listings.filter((listing) => {
+    console.log("🔍 Search Query:", query);
+  
+    const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
+      .map(checkbox => checkbox.value.toLowerCase());
+  
+    console.log("Selected Tags:", selectedTags);
+  
+    this.listingsContainer.innerHTML = ""; // Clear current listings display
+  
+    const filteredListings = this.listings.filter((listing) => {
       const title = listing.title.toLowerCase();
       const description = listing.description.toLowerCase();
-      const category = listing.category || "";
-
+      const tags = listing.tags ? listing.tags.map(tag => tag.toLowerCase()) : [];
+  
       const matchesSearch = query === "" || title.includes(query) || description.includes(query);
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(category);
-
-      return matchesSearch && matchesCategory;
+      const matchesTags = selectedTags.length === 0 || tags.some(tag => selectedTags.includes(tag));
+  
+      return matchesSearch && matchesTags;
     });
-
-    this.currentPage = 1; // Reset to first page after filtering
-    this.renderFilteredListings();
-    this.renderPaginationControls();
+  
+    if (filteredListings.length === 0) {
+      this.listingsContainer.innerHTML = "<p>No matching listings found.</p>";
+    } else {
+      filteredListings.forEach((listing) => {
+        const listingItem = document.createElement("div");
+        listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
+  
+        const title = document.createElement("h2");
+        title.classList.add("listing-title", "text-xl", "font-bold");
+        title.textContent = listing.title;
+  
+        const description = document.createElement("p");
+        description.classList.add("listing-description", "text-gray-600", "mt-2");
+        description.textContent = listing.description || "No description available.";
+  
+        listingItem.append(title, description);
+        this.listingsContainer.appendChild(listingItem);
+      });
+    }
+  
+    console.log(`Filtered ${filteredListings.length} listings.`);
   }
+  
+  
+  
 
   renderFilteredListings() {
     this.listingsContainer.innerHTML = ""; // Clear previous results
