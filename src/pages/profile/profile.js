@@ -16,7 +16,7 @@ export function initializeProfilePage() {
 
       //  Handle missing user data in localStorage
       if (!user || !user.userName) {
-          console.warn("⚠️ User not found in localStorage. Checking token...");
+          console.warn("User not found in localStorage. Checking token...");
 
           //  Extract `name` from JWT token as a fallback
           if (authToken) {
@@ -98,11 +98,11 @@ export function initializeProfilePage() {
 
 // ✅ Ensure the function is executed when the profile page loads
 async function displayUserListings(userName) {
-  console.log(`📄 Fetching listings for user: ${userName}`);
+  console.log(`Fetching listings for user: ${userName}`);
 
   const listingsContainer = document.getElementById("user-listings");
   if (!listingsContainer) {
-    console.error("❌ Listings container not found!");
+    console.error("Listings container not found!");
     return;
   }
 
@@ -115,7 +115,7 @@ async function displayUserListings(userName) {
     return;
   }
 
-  listingsContainer.innerHTML = ""; // ✅ Clear old content
+  listingsContainer.innerHTML = ""; // Clear old content
 
   data.data.forEach(listing => {
     const listingItem = document.createElement("div");
@@ -141,7 +141,7 @@ async function displayUserListings(userName) {
     const now = new Date();
 
     if (auctionEndTime && auctionEndTime < now) {
-      auctionStatus.textContent = "🛑 SOLD / AUCTION ENDED";
+      auctionStatus.textContent = "SOLD / AUCTION ENDED";
       auctionStatus.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
     } else {
       auctionStatus.textContent = `Auction Ends: ${auctionEndTime?.toLocaleString() || "No deadline set"}`;
@@ -162,7 +162,7 @@ async function displayUserListings(userName) {
     listingsContainer.appendChild(listingItem);
   });
 
-  console.log("✅ User listings displayed successfully!");
+  console.log("User listings displayed successfully!");
 }
 
 
@@ -180,16 +180,16 @@ async function displayUserBids(userName) {
     return;
   }
 
-  bidsContainer.innerHTML = ""; // ✅ Clear old content
+  bidsContainer.innerHTML = ""; // Clear old content
 
   try {
-    // ✅ Fetch all active listings with _bids=true to find corresponding items
+    // Fetch all active listings with _bids=true to find corresponding items
     const listingsResponse = await fetch(`${API_LISTINGS}?_bids=true`);
     if (!listingsResponse.ok) throw new Error("Failed to fetch listings");
 
     const listingsData = await listingsResponse.json();
     const listings = listingsData.data;
-    console.log("✅ All Listings Fetched:", listings);
+    console.log("All Listings Fetched:", listings);
 
     // 🔍 Process each bid
     bids.forEach((bid) => {
@@ -221,7 +221,7 @@ async function displayUserBids(userName) {
       );
 
       if (matchingListing) {
-        console.log("✅ Matched Listing:", matchingListing);
+        console.log("Matched Listing:", matchingListing);
 
         title.textContent = matchingListing.title || "Unknown Item";
         listingEnds.textContent = matchingListing.endsAt
@@ -236,7 +236,7 @@ async function displayUserBids(userName) {
           router(`/item?id=${matchingListing.id}`);
         });
       } else {
-        console.warn(`⚠️ No listing found for bid: ${bid.id}`);
+        console.warn(`No listing found for bid: ${bid.id}`);
       }
 
       // ✅ Append elements
@@ -244,7 +244,7 @@ async function displayUserBids(userName) {
       bidsContainer.appendChild(bidItem);
     });
   } catch (error) {
-    console.error("❌ Error fetching listings:", error);
+    console.error("Error fetching listings:", error);
   }
 }
 

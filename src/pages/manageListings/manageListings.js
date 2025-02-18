@@ -64,7 +64,7 @@ export class ManageListings {
         createInputField("Deadline", "listingDeadline", "datetime-local", true)
     );
 
-    // Description Field
+    // ✅ Description Field
     const descWrapper = document.createElement("div");
     const descLabel = document.createElement("label");
     descLabel.textContent = "Description";
@@ -79,6 +79,12 @@ export class ManageListings {
 
     descWrapper.append(descLabel, descInput);
     form.append(descWrapper);
+
+    // Ensure mediaPreview container exists
+    const mediaPreview = document.createElement("div");
+    mediaPreview.id = "mediaPreview";
+    mediaPreview.classList.add("mt-2", "flex", "gap-2");
+    form.appendChild(mediaPreview);
 
     // Submit Button
     const submitButton = document.createElement("button");
@@ -95,6 +101,7 @@ export class ManageListings {
 
     this.container.append(title, form, this.formMessage);
 }
+
 
 
   /**

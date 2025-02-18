@@ -12,7 +12,7 @@ export function initializeLoginPage() {
     return;
   }
 
-  // Clear any previous success or error messages on page load
+  // Remove old login messages (but DO NOT clear main-container yet)
   document.querySelectorAll(".login-message").forEach(msg => msg.remove());
 
   loginForm.addEventListener("submit", async (event) => {
@@ -32,20 +32,30 @@ export function initializeLoginPage() {
     console.log("Submitting login data:", userData);
 
     try {
-      const user = await loginInstance.login(userData); // Ensure loginInstance is used
+      const user = await loginInstance.login(userData);
 
-      // Remove old messages before showing success message
+      // Remove old messages before adding a new one
       document.querySelectorAll(".login-message").forEach(msg => msg.remove());
 
+      // Create success message **inside** main-container
       const successMessage = document.createElement("p");
-      successMessage.textContent = "🎉 Login successful! Redirecting...";
-      successMessage.className = "login-message text-green-600 font-bold mt-2";
-      document.body.appendChild(successMessage);
+      successMessage.textContent = "Login successful! Redirecting...";
+      successMessage.className = "login-message text-green-600 font-bold mt-2 text-center";
+
+      const mainContainer = document.getElementById("main-container");
+      if (mainContainer) {
+        mainContainer.appendChild(successMessage); // Now inside main-container
+      }
 
       setTimeout(() => {
         window.history.pushState({}, "", "/profile");
-        document.getElementById("main-container").innerHTML = "";
-        router("/profile"); // Ensure profile page loads properly
+
+        // NOW clear the main-container before routing
+        if (mainContainer) {
+          mainContainer.innerHTML = "";
+        }
+
+        router("/profile");
       }, 500);
 
     } catch (error) {
@@ -54,5 +64,7 @@ export function initializeLoginPage() {
     }
   });
 }
+
+
 
 
