@@ -1,6 +1,6 @@
 import { API_LISTINGS, API_KEY } from "@/js/api/constants.js";
 import { router } from "@/pages/router/router.js";
-
+import { showLoader, hideLoader } from "@/components/loader/loader.js";
 
 export class ManageListings {
   constructor(container) {
@@ -19,11 +19,17 @@ export class ManageListings {
     }
 
     console.log("Initializing Manage Listings...");
+    showLoader(); // ✅ Show loader during initialization
 
     this.renderForm();
     this.setupEventListeners();
+
+    hideLoader(); // ✅ Hide loader once form is ready
   }
 
+  /**
+   * Render Form
+   */
   renderForm() {
     this.container.innerHTML = ""; // Clear old content
 
@@ -39,32 +45,32 @@ export class ManageListings {
 
     // Helper function to create input fields
     const createInputField = (labelText, id, type = "text", isRequired = false) => {
-        const wrapper = document.createElement("div");
-        const label = document.createElement("label");
-        label.textContent = labelText;
-        label.setAttribute("for", id);
-        label.classList.add("block", "font-semibold");
+      const wrapper = document.createElement("div");
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      label.setAttribute("for", id);
+      label.classList.add("block", "font-semibold");
 
-        const input = document.createElement("input");
-        input.id = id;
-        input.name = id;
-        input.type = type;
-        input.classList.add("w-full", "p-2", "border", "rounded");
-        if (isRequired) input.required = true;
+      const input = document.createElement("input");
+      input.id = id;
+      input.name = id;
+      input.type = type;
+      input.classList.add("w-full", "p-2", "border", "rounded");
+      if (isRequired) input.required = true;
 
-        wrapper.append(label, input);
-        return wrapper;
+      wrapper.append(label, input);
+      return wrapper;
     };
 
     // Add fields using createInputField
     form.append(
-        createInputField("Title", "listingTitle", "text", true),
-        createInputField("Upload Image URL", "listingMediaUrl"),
-        createInputField("Tags (comma-separated)", "listingTags"),
-        createInputField("Deadline", "listingDeadline", "datetime-local", true)
+      createInputField("Title", "listingTitle", "text", true),
+      createInputField("Upload Image URL", "listingMediaUrl"),
+      createInputField("Tags (comma-separated)", "listingTags"),
+      createInputField("Deadline", "listingDeadline", "datetime-local", true)
     );
 
-    // ✅ Description Field
+    // Description Field
     const descWrapper = document.createElement("div");
     const descLabel = document.createElement("label");
     descLabel.textContent = "Description";
@@ -100,9 +106,7 @@ export class ManageListings {
     this.formMessage.classList.add("mt-4", "text-center", "text-red-500", "hidden");
 
     this.container.append(title, form, this.formMessage);
-}
-
-
+  }
 
   /**
    * Set up event listeners
@@ -110,50 +114,46 @@ export class ManageListings {
   setupEventListeners() {
     console.log("Setting up event listeners for Manage Listings...");
     const form = document.getElementById("createListingForm");
-    const mediaInput = document.getElementById("listingMediaUrl"); // Make sure this matches your input ID
+    const mediaInput = document.getElementById("listingMediaUrl");
 
     if (form) {
-        console.log("Found form. Adding submit listener...");
-        form.addEventListener("submit", (event) => this.handleCreateListing(event));
+      console.log("Found form. Adding submit listener...");
+      form.addEventListener("submit", (event) => this.handleCreateListing(event));
     }
 
     if (mediaInput) {
-        console.log("Found media input. Adding change listener...");
-        mediaInput.addEventListener("change", this.handleMediaPreview.bind(this)); 
+      console.log("Found media input. Adding change listener...");
+      mediaInput.addEventListener("change", this.handleMediaPreview.bind(this));
     }
-}
+  }
 
+  /**
+   * Handle Image Preview (Now Works with URLs)
+   */
+  handleMediaPreview(event) {
+    const previewContainer = document.getElementById("mediaPreview");
+    previewContainer.innerHTML = ""; 
 
- /**
- * Handle Image Preview (Now Works with URLs)
- */
-handleMediaPreview(event) {
-  const previewContainer = document.getElementById("mediaPreview");
-  previewContainer.innerHTML = ""; 
-  // Get Image URL from Input Field
-  const imageUrl = event.target.value.trim();
-
-  if (!imageUrl) {
+    const imageUrl = event.target.value.trim();
+    if (!imageUrl) {
       console.warn("No image URL provided.");
       return;
-  }
+    }
 
-  // Validate URL Format (Basic Check)
-  if (!imageUrl.startsWith("http")) {
+    if (!imageUrl.startsWith("http")) {
       console.error("Invalid image URL. Must start with http or https.");
       return;
+    }
+
+    // ✅ Create and Display Image Preview
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.className = "w-24 h-24 object-cover rounded-lg shadow-md";
+    img.alt = "Listing Image Preview";
+    previewContainer.appendChild(img);
+
+    console.log("Image preview updated with URL:", imageUrl);
   }
-
-  // Create and Display Image Preview
-  const img = document.createElement("img");
-  img.src = imageUrl;
-  img.className = "w-24 h-24 object-cover rounded-lg shadow-md";
-  img.alt = "Listing Image Preview";
-  previewContainer.appendChild(img);
-
-  console.log("Image preview updated with URL:", imageUrl);
-}
-
 
   /**
    * Handle Form Submission (Create Listing)
@@ -162,11 +162,14 @@ handleMediaPreview(event) {
     event.preventDefault();
     console.log("Creating a new listing...");
 
+    showLoader(); // Show loader before submission
+
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-        console.error("No Auth Token Found. Redirecting to Login...");
-        this.showMessage("You must be logged in to create a listing!", "red");
-        return;
+      console.error("No Auth Token Found. Redirecting to Login...");
+      this.showMessage("You must be logged in to create a listing!", "red");
+      hideLoader();
+      return;
     }
 
     const title = document.getElementById("listingTitle")?.value.trim();
@@ -176,8 +179,9 @@ handleMediaPreview(event) {
     const tagsInput = document.getElementById("listingTags")?.value.trim();
 
     if (!title || !deadline) {
-        this.showMessage("Title and Deadline are required!", "red");
-        return;
+      this.showMessage("Title and Deadline are required!", "red");
+      hideLoader();
+      return;
     }
 
     const endsAt = new Date(deadline).toISOString();
@@ -186,81 +190,66 @@ handleMediaPreview(event) {
 
     const listingData = { title, description, tags, media, endsAt };
 
-    console.log("Sending data to API:", listingData);
-    console.log("Using Auth Token:", authToken);
-    console.log("Using API Key:", API_KEY);
-
     try {
-        console.log("🔍 API Key Length:", API_KEY.length);
+      const response = await fetch(API_LISTINGS, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken.trim()}`,
+          "X-Noroff-API-Key": API_KEY
+        },
+        body: JSON.stringify(listingData)
+      });
 
-        const response = await fetch(API_LISTINGS, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken.trim()}`,
-                "X-Noroff-API-Key": API_KEY
-            },
-            body: JSON.stringify(listingData)
-        });
+      if (!response.ok) throw new Error("Failed to create listing");
 
-        if (!response.ok) {
-            const errorResponse = await response.json();
-            console.error(`API Error: ${response.status} - ${response.statusText}`, errorResponse);
-            console.error("API Error Message:", errorResponse.errors?.[0]?.message || "Unknown error");
+      console.log("Listing successfully created!");
 
-            throw new Error("Failed to create listing");
-        }
+      // Clear Form & Hide It
+      event.target.reset();
+      document.getElementById("mediaPreview").innerHTML = "";
+      document.getElementById("createListingForm").classList.add("hidden");
 
-        console.log("Listing successfully created!");
-
-        // Clear Form & Hide It
-        event.target.reset();
-        document.getElementById("mediaPreview").innerHTML = "";
-        document.getElementById("createListingForm").classList.add("hidden"); // Hide the form
-
-        // Show Success Message with "View My Listings" Button
-        this.showSuccessOptions();
-
+      this.showSuccessOptions();
     } catch (error) {
-        console.error("Error creating listing:", error);
-        this.showMessage("Failed to create listing!", "red");
+      console.error("Error creating listing:", error);
+      this.showMessage("Failed to create listing!", "red");
     }
-}
 
+    hideLoader();
+  }
 
-showSuccessOptions() {
-  this.formMessage.textContent = "Listing created successfully!"; // Set text content safely
-  this.formMessage.classList.remove("hidden");
+  /**
+   * Show success message and redirect button
+   */
+  showSuccessOptions() {
+    this.formMessage.textContent = "Listing created successfully!";
+    this.formMessage.classList.remove("hidden", "text-red-500");
+    this.formMessage.classList.add("text-green-600");
 
-  const viewListingsButton = document.createElement("button");
-  viewListingsButton.textContent = "View My Listings";
-  viewListingsButton.classList.add("bg-blue-600", "text-white", "p-2", "rounded", "mt-2", "hover:bg-blue-700");
-  viewListingsButton.id = "goToProfile";
+    const viewListingsButton = document.createElement("button");
+    viewListingsButton.textContent = "View My Listings";
+    viewListingsButton.classList.add("bg-blue-600", "text-white", "p-2", "rounded", "mt-2", "hover:bg-blue-700");
 
-  this.formMessage.appendChild(viewListingsButton);
-
-  viewListingsButton.addEventListener("click", () => {
+    this.formMessage.appendChild(viewListingsButton);
+    viewListingsButton.addEventListener("click", () => {
       window.history.pushState({}, "", "/profile");
       router("/profile");
-  });
-}
-
+    });
+  }
 }
 
 /**
- * Function to initialize the Manage Listings Page
+ * Ensure correct function name for router
  */
 export function initializeManageListingsPage() {
-  console.log("Initializing Manage Listings Page... FUNCTION CALLED");
-
+  console.log("Initializing Manage Listings Page...");
   const mainContainer = document.getElementById("main-container");
-  if (!mainContainer) {
-    console.error("Main container not found!");
-    return;
-  }
-
+  if (!mainContainer) return;
   new ManageListings(mainContainer);
 }
 
-window.initializeManageListingsPage = initializeManageListingsPage;
+
+
+
 

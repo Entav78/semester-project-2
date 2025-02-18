@@ -54,7 +54,7 @@ export async function router(pathname = window.location.pathname) {
 if (mainContainer) {
     mainContainer.innerHTML = "";
 } else {
-    console.error("❌ #main-container not found!");
+    console.error("#main-container not found!");
 }
 
   
