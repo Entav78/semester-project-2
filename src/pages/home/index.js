@@ -1,5 +1,6 @@
 import { fetchAndRenderListings } from "@/js/api/listings.js"; 
 import { setupListingButtons } from "@/components/buttons/index.js";
+import { Filtering } from "@/components/filtering/Filtering.js";
 
 
 const ITEMS_PER_PAGE = 8;
@@ -22,6 +23,8 @@ export async function initializeHomePage() {
   console.log("Fetching and rendering listings...");
   await fetchAndRenderListings(currentPage); // Call function directly
 
+  new Filtering(); 
+  
   console.log("Home Page Initialized!");
 
 }
