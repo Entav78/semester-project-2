@@ -8,15 +8,27 @@ export async function router(pathname = window.location.pathname) {
 
   function clearPage() {
     console.log("Clearing page content...");
+    
+    let mainContainer = document.getElementById("main-container");
   
-    const mainContainer = document.getElementById("main-container");
     if (mainContainer) {
-      mainContainer.innerHTML = ""; // Clears all content inside <main>
+      const newMain = document.createElement("main");
+      newMain.id = "main-container";
+      newMain.classList.add("main-content"); // Maintain styles
+  
+      mainContainer.replaceWith(newMain); //  This ensures NO duplication
+      console.log("Replaced #main-container to prevent duplication.");
     } else {
-      console.error("No <main> container found to clear!");
+      console.error("No <main> container found! Creating a new one...");
+      
+      // If #main-container is missing, create it
+      mainContainer = document.createElement("main");
+      mainContainer.id = "main-container";
+      mainContainer.classList.add("main-content");
+      document.body.appendChild(mainContainer);
     }
   
-    // Ensure navigation doesn't get duplicated
+    // Update navigation if it exists
     if (window.mainNavigation) {
       console.log("Updating Navigation...");
       window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
@@ -27,14 +39,9 @@ export async function router(pathname = window.location.pathname) {
       window.sidebarNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
     }
   
-    //  Prevent duplicate `<main>` elements (optional)
-    document.querySelectorAll("#main-container + #main-container").forEach(duplicate => {
-      console.warn("Duplicate #main-container detected, removing...");
-      duplicate.remove();
-    });
-  
-    console.log("Page content cleared, navigation intact.");
+    console.log("Page content cleared and main-container reset.");
   }
+  
   
   const cleanPathname = pathname.replace(basePath, "").split("?")[0]
     .replace("/src/pages/auth/login/login", "/login")
@@ -50,45 +57,46 @@ export async function router(pathname = window.location.pathname) {
     console.clear();
     console.log(`Loading Page: ${path}`);
   
-    const mainContainer = document.getElementById("main-container");
-if (mainContainer) {
-    mainContainer.innerHTML = "";
-} else {
-    console.error("#main-container not found!");
-}
-
-  
-    // Clear old content **before loading the new page**
-    clearPage(); // This ensures every page starts fresh
+    clearPage(); // Clears and replaces `main-container`
   
     try {
-      // Fetch and update page content
       const response = await fetch(htmlPath);
       if (!response.ok) throw new Error(`Failed to load ${htmlPath}: ${response.statusText}`);
   
-      mainContainer.innerHTML = await response.text();
+      const htmlText = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, "text/html");
   
-      // Dynamically import and initialize the JavaScript module
+      const newMainContent = doc.querySelector("#main-container");
+      if (!newMainContent) {
+        console.error("No #main-container found in the response!");
+        return;
+      }
+  
+      const currentMain = document.getElementById("main-container");
+      if (currentMain) {
+        currentMain.replaceWith(newMainContent);
+        console.log("Successfully replaced #main-container");
+      }
+  
+      // Dynamically Import and Initialize Page Script
       const module = await import(/* @vite-ignore */ jsModule);
-  
       console.log("Loaded Module:", module);
-      console.log("Checking module:", module);
-      console.log("Available keys:", Object.keys(module));
   
-      // Check if the imported module contains the expected initialization function
       if (initFunction in module && typeof module[initFunction] === "function") {
         console.log(`Calling ${initFunction}()`);
-        module[initFunction](); // Call the correct initialization function
+        module[initFunction]();
       } else {
         console.error(`Function ${initFunction} NOT found in module.`);
       }
   
       console.log(`Successfully loaded ${path}`);
-  
+      
     } catch (error) {
       console.error(`Error loading page (${path}):`, error);
     }
   }
+  
   
 
   try {

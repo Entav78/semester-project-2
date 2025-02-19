@@ -71,12 +71,12 @@ export function initializeItemPage() {
     description.textContent = item.description || "No description available.";
 
     //  Get User Credits from Local Storage
-const user = JSON.parse(localStorage.getItem("user")) || {};
-const userCredits = user.credits ?? 0; // Default to 0 if missing
+//const user = JSON.parse(localStorage.getItem("user")) || {};
+//const userCredits = user.credits ?? 0; // Default to 0 if missing
 
-const userCreditsElement = document.createElement("p");
-userCreditsElement.classList.add("font-bold", "mt-4");
-userCreditsElement.textContent = `Your Credits: ${userCredits} credits`;
+//const userCreditsElement = document.createElement("p");
+//userCreditsElement.classList.add("font-bold", "mt-4");
+//userCreditsElement.textContent = `Your Credits: ${userCredits} credits`;
 
 // ✅ Find the Highest Bid (If Any)
 const highestBid = data.bids?.length ? Math.max(...data.bids.map(bid => bid.amount)) : "No bids yet";
@@ -110,7 +110,7 @@ if (data.endsAt) {
 itemContainer.innerHTML = ""; 
 
 // ✅ Append elements in the correct order
-itemContainer.append(title, image, description, currentBidElement, auctionEnd, userCreditsElement);
+itemContainer.append(title, image, description, currentBidElement, auctionEnd);
 
 
 
