@@ -9,6 +9,12 @@ import { router } from "@/pages/router/router.js";
 let user = JSON.parse(localStorage.getItem("user")) || null; 
 
 export function initializeProfilePage() {
+  if (window.profilePageInitialized) {
+    console.warn("Profile Page is already initialized. Skipping...");
+    return;
+  }
+  window.profilePageInitialized = true;
+
   console.log("Profile Page Initializing...");
    
   showLoader();
