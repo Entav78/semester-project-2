@@ -1,10 +1,9 @@
+import { API_LISTINGS, API_KEY } from "@/js/api/constants.js";
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
-
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
-import { API_LISTINGS } from "@/js/api/constants.js";
 
 
 let user = JSON.parse(localStorage.getItem("user")) || null; 
@@ -113,6 +112,7 @@ export function initializeProfilePage() {
 }
 
 // ✅ Ensure the function is executed when the profile page loads
+// ✅ 1. Function to display user listings
 async function displayUserListings(userName) {
   console.log(`Fetching listings for user: ${userName}`);
 
@@ -164,6 +164,7 @@ async function displayUserListings(userName) {
       auctionStatus.classList.add("text-red-500");
     }
 
+    // ✅ View Item Button
     const viewButton = document.createElement("button");
     viewButton.textContent = "View Item";
     viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
@@ -171,17 +172,71 @@ async function displayUserListings(userName) {
     viewButton.addEventListener("click", () => {
       console.log(`Navigating to item: ${listing.id}`);
       window.history.pushState({}, "", `/item?id=${listing.id}`);
-      router(`/item?id=${listing.id}`); 
+      router(`/item?id=${listing.id}`);
     });
 
-    listingItem.append(title, image, description, auctionStatus, viewButton);
+    // ✅ Edit Listing Button
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.classList.add("bg-yellow-500", "text-white", "px-4", "py-2", "rounded", "mt-4", "ml-2");
+    editButton.addEventListener("click", () => {
+      console.log(`Editing listing: ${listing.id}`);
+      window.history.pushState({}, "", `/manageListings?id=${listing.id}`);
+      router(`/manageListings?id=${listing.id}`);
+    });
+
+    // ✅ Delete Listing Button
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add("bg-red-500", "text-white", "px-4", "py-2", "rounded", "mt-4", "ml-2");
+    deleteButton.addEventListener("click", () => handleDeleteListing(listing.id));
+
+    listingItem.append(title, image, description, auctionStatus, viewButton, editButton, deleteButton);
     listingsContainer.appendChild(listingItem);
   });
 
   console.log("User listings displayed successfully!");
 }
 
+// ✅ 2. Function to DELETE a listing
+async function handleDeleteListing(listingId) {
+  if (!confirm("Are you sure you want to delete this listing? This action cannot be undone.")) return;
 
+  console.log("Deleting listing:", listingId);
+  showLoader();
+
+  const authToken = localStorage.getItem("authToken");
+  if (!authToken) {
+    console.error("No Auth Token Found.");
+    alert("You must be logged in to delete a listing!");
+    hideLoader();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_LISTINGS}/${listingId}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${authToken.trim()}`,
+        "X-Noroff-API-Key": API_KEY
+      }
+    });
+
+    if (!response.ok) throw new Error("Failed to delete listing");
+
+    console.log("Listing successfully deleted!");
+    alert("Listing deleted successfully!");
+    
+    await displayUserListings(user.userName); // Refresh listings after delete
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    alert("Failed to delete listing!");
+  }
+
+  hideLoader();
+}
+
+// ✅ 3. Function to display user bids (no changes here)
 async function displayUserBids(userName) {
   const bidsContainer = document.getElementById("bidsContainer");
   bidsContainer.innerHTML = "<p>Loading your bids...</p>";
@@ -199,7 +254,6 @@ async function displayUserBids(userName) {
   bidsContainer.innerHTML = ""; // Clear old content
 
   try {
-    // Fetch all active listings with _bids=true to find corresponding items
     const listingsResponse = await fetch(`${API_LISTINGS}?_bids=true`);
     if (!listingsResponse.ok) throw new Error("Failed to fetch listings");
 
@@ -207,7 +261,6 @@ async function displayUserBids(userName) {
     const listings = listingsData.data;
     console.log("All Listings Fetched:", listings);
 
-    // 🔍 Process each bid
     bids.forEach((bid) => {
       console.log("🔍 Processing bid:", bid);
 
@@ -216,7 +269,7 @@ async function displayUserBids(userName) {
 
       const title = document.createElement("h3");
       title.classList.add("text-lg", "font-semibold");
-      title.textContent = "Unknown Item"; // Default text if we can't fetch listing data
+      title.textContent = "Unknown Item"; 
 
       const bidAmount = document.createElement("p");
       bidAmount.classList.add("text-gray-600");
@@ -224,14 +277,13 @@ async function displayUserBids(userName) {
 
       const listingEnds = document.createElement("p");
       listingEnds.classList.add("text-sm", "text-gray-500");
-      listingEnds.textContent = "Listing ends: N/A"; // Default value
+      listingEnds.textContent = "Listing ends: N/A";
 
       const viewButton = document.createElement("button");
       viewButton.textContent = "View Item";
       viewButton.classList.add("bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
-      viewButton.style.display = "none"; // Hide button until we verify listing exists
+      viewButton.style.display = "none";
 
-      // 🔍 Find the correct listing for this bid
       const matchingListing = listings.find((listing) =>
         listing.bids.some((b) => b.id === bid.id)
       );
@@ -244,9 +296,8 @@ async function displayUserBids(userName) {
           ? `Listing ends: ${new Date(matchingListing.endsAt).toLocaleString()}`
           : "No deadline set";
 
-        viewButton.style.display = "block"; // Show button only if listing exists
+        viewButton.style.display = "block"; 
 
-        // ✅ Use the actual listing ID for navigation
         viewButton.addEventListener("click", () => {
           window.history.pushState({}, "", `/item?id=${matchingListing.id}`);
           router(`/item?id=${matchingListing.id}`);
@@ -255,7 +306,6 @@ async function displayUserBids(userName) {
         console.warn(`No listing found for bid: ${bid.id}`);
       }
 
-      // ✅ Append elements
       bidItem.append(title, bidAmount, listingEnds, viewButton);
       bidsContainer.appendChild(bidItem);
     });

@@ -1,49 +1,52 @@
 import { API_LISTINGS, API_KEY } from "@/js/api/constants.js";
 import { router } from "@/pages/router/router.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
+import { createListingButton, createManageListingButtons } from "@/components/buttons/index.js";
 
 export class ManageListings {
   constructor(container) {
     this.container = container;
     this.formMessage = null;
+    this.listings = []; // Store user listings
     this.init();
   }
 
   /**
    * Initialize the Manage Listings Page
    */
-  init() {
+  async init() {
     if (!this.container) {
       console.error("Manage Listings container not found.");
       return;
     }
 
     console.log("Initializing Manage Listings...");
-    showLoader(); //Show loader during initialization
+    showLoader();
 
     this.renderForm();
     this.setupEventListeners();
+    await this.fetchUserListings(); // Fetch existing listings
 
-    hideLoader(); // Hide loader once form is ready
+    hideLoader();
   }
 
   /**
-   * Render Form
+   * Render the Create Listing Form
    */
   renderForm() {
-    this.container.innerHTML = ""; // Clear old content
+    this.container.innerHTML = ""; 
 
-    // Create Title
+    // Title
     const title = document.createElement("h1");
     title.classList.add("text-xl", "font-bold", "mb-4");
     title.textContent = "Manage Your Listings";
 
-    // Create Form
+    // Form
     const form = document.createElement("form");
     form.id = "createListingForm";
     form.classList.add("space-y-4", "bg-gray-100", "p-6", "rounded-lg", "shadow-lg");
 
-    // Helper function to create input fields
+    // Helper function for input fields
     const createInputField = (labelText, id, type = "text", isRequired = false) => {
       const wrapper = document.createElement("div");
       const label = document.createElement("label");
@@ -62,7 +65,7 @@ export class ManageListings {
       return wrapper;
     };
 
-    // Add fields using createInputField
+    // Add fields
     form.append(
       createInputField("Title", "listingTitle", "text", true),
       createInputField("Upload Image URL", "listingMediaUrl"),
@@ -86,21 +89,16 @@ export class ManageListings {
     descWrapper.append(descLabel, descInput);
     form.append(descWrapper);
 
-    // Ensure mediaPreview container exists
+    // Media Preview
     const mediaPreview = document.createElement("div");
     mediaPreview.id = "mediaPreview";
     mediaPreview.classList.add("mt-2", "flex", "gap-2");
     form.appendChild(mediaPreview);
 
-    // Submit Button
-    const submitButton = document.createElement("button");
-    submitButton.type = "submit";
-    submitButton.textContent = "Create Listing";
-    submitButton.classList.add("w-full", "bg-blue-600", "text-white", "py-2", "rounded", "hover:bg-blue-700", "transition");
+    // ✅ Use the imported Create Listing button
+    form.append(createListingButton());
 
-    form.append(submitButton);
-
-    // Append form & success message container
+    // Append form
     this.formMessage = document.createElement("p");
     this.formMessage.id = "formMessage";
     this.formMessage.classList.add("mt-4", "text-center", "text-red-500", "hidden");
@@ -109,147 +107,141 @@ export class ManageListings {
   }
 
   /**
+   * Fetch user's listings and render them
+   */
+  async fetchUserListings() {
+    console.log("Fetching user listings...");
+    showLoader();
+
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        console.error("No Auth Token. Cannot fetch listings.");
+        this.showMessage("You must be logged in to manage listings!", "red");
+        hideLoader();
+        return;
+      }
+
+      const response = await fetch(`${API_LISTINGS}/user`, {
+        headers: { 
+          "Authorization": `Bearer ${authToken.trim()}`,
+          "X-Noroff-API-Key": API_KEY
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch listings");
+
+      this.listings = await response.json();
+      this.renderListings();
+    } catch (error) {
+      console.error("Error fetching user listings:", error);
+      this.showMessage("Failed to fetch listings!", "red");
+    }
+
+    hideLoader();
+  }
+
+  /**
+   * Render Listings with Edit and Delete Buttons
+   */
+  renderListings() {
+    const listingsContainer = document.createElement("div");
+    listingsContainer.id = "listingsContainer";
+    listingsContainer.classList.add("mt-6");
+
+    this.listings.forEach((listing) => {
+      const listingItem = document.createElement("div");
+      listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
+
+      const title = document.createElement("h2");
+      title.classList.add("text-xl", "font-bold");
+      title.textContent = listing.title;
+
+      // ✅ Use imported Edit/Delete buttons
+      const buttonContainer = createManageListingButtons(
+        listing,
+        this.handleDeleteListing.bind(this),
+        this.handleEditListing.bind(this)
+      );
+
+      listingItem.append(title, buttonContainer);
+      listingsContainer.appendChild(listingItem);
+    });
+
+    this.container.appendChild(listingsContainer);
+  }
+
+  /**
+   * Handle Listing Deletion
+   */
+  async handleDeleteListing(listingId) {
+    const confirmDelete = confirm("Are you sure you want to delete this listing?");
+    if (!confirmDelete) return;
+
+    showLoader();
+
+    try {
+      const response = await fetch(`${API_LISTINGS}/${listingId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+          "X-Noroff-API-Key": API_KEY
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to delete listing");
+
+      console.log("Listing successfully deleted!");
+      this.showMessage("Listing deleted successfully!", "green");
+
+      await this.fetchUserListings(); // Refresh list after deletion
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      this.showMessage("Failed to delete listing!", "red");
+    }
+
+    hideLoader();
+  }
+
+  /**
+   * Handle Listing Editing (Redirects to Edit Page)
+   */
+  handleEditListing(listing) {
+    window.history.pushState({}, "", `/edit-listing?id=${listing.id}`);
+    router(`/edit-listing?id=${listing.id}`);
+  }
+
+  /**
    * Set up event listeners
    */
   setupEventListeners() {
-    console.log("Setting up event listeners for Manage Listings...");
+    console.log("Setting up event listeners...");
     const form = document.getElementById("createListingForm");
     const mediaInput = document.getElementById("listingMediaUrl");
 
     if (form) {
-      console.log("Found form. Adding submit listener...");
+      console.log("Adding submit listener...");
       form.addEventListener("submit", (event) => this.handleCreateListing(event));
     }
 
     if (mediaInput) {
-      console.log("Found media input. Adding change listener...");
+      console.log("Adding media preview listener...");
       mediaInput.addEventListener("change", this.handleMediaPreview.bind(this));
     }
   }
 
   /**
-   * Handle Image Preview (Now Works with URLs)
+   * Display Success or Error Message
    */
-  handleMediaPreview(event) {
-    const previewContainer = document.getElementById("mediaPreview");
-    previewContainer.innerHTML = ""; 
-
-    const imageUrl = event.target.value.trim();
-    if (!imageUrl) {
-      console.warn("No image URL provided.");
-      return;
-    }
-
-    if (!imageUrl.startsWith("http")) {
-      console.error("Invalid image URL. Must start with http or https.");
-      return;
-    }
-
-    // Create and Display Image Preview
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    img.className = "w-24 h-24 object-cover rounded-lg shadow-md";
-    img.alt = "Listing Image Preview";
-    previewContainer.appendChild(img);
-
-    console.log("Image preview updated with URL:", imageUrl);
-  }
-
-  async handleCreateListing(event) {
-    event.preventDefault();
-    console.log("📡 Creating a new listing...");
-
-    showLoader();
-
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
-        console.error("No Auth Token Found. Redirecting to Login...");
-        this.showMessage("You must be logged in to create a listing!", "red");
-        hideLoader();
-        return;
-    }
-
-    const title = document.getElementById("listingTitle")?.value.trim();
-    const description = document.getElementById("listingDescription")?.value.trim();
-    const deadline = document.getElementById("listingDeadline")?.value;
-    const mediaInput = document.getElementById("listingMediaUrl")?.value.trim();
-    const tagsInput = document.getElementById("listingTags")?.value.trim();
-
-    if (!title || !deadline) {
-        this.showMessage("Title and Deadline are required!", "red");
-        hideLoader();
-        return;
-    }
-
-    const endsAt = new Date(deadline).toISOString();
-    const media = mediaInput ? [{ url: mediaInput, alt: title }] : [];
-    const tags = tagsInput ? tagsInput.split(",").map(tag => tag.trim()) : [];
-
-    const listingData = { title, description, tags, media, endsAt };
-
-    console.log("Sending data to API:", listingData);
-
-    try {
-        const response = await fetch(API_LISTINGS, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken.trim()}`,
-                "X-Noroff-API-Key": API_KEY
-            },
-            body: JSON.stringify(listingData)
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to create listing");
-        }
-
-        console.log(" Listing successfully created!");
-
-        //  Clear Form & Hide It
-        event.target.reset();
-        document.getElementById("mediaPreview").innerHTML = "";
-        document.getElementById("createListingForm").classList.add("hidden");
-
-        this.showSuccessOptions(); //  Show success message
-
-        // Refresh Home Page Listings
-        console.log("Refreshing home page listings...");
-        window.history.pushState({}, "", "/"); // Navigate to home page
-        router("/"); // Reload home page
-
-    } catch (error) {
-        console.error("Error creating listing:", error);
-        this.showMessage("Failed to create listing!", "red");
-    }
-
-    hideLoader();
-}
-
-
-
-  /**
-   * Show success message and redirect button
-   */
-  showSuccessOptions() {
-    this.formMessage.textContent = "Listing created successfully!";
-    this.formMessage.classList.remove("hidden", "text-red-500");
-    this.formMessage.classList.add("text-green-600");
-
-    const viewListingsButton = document.createElement("button");
-    viewListingsButton.textContent = "View My Listings";
-    viewListingsButton.classList.add("bg-blue-600", "text-white", "p-2", "rounded", "mt-2", "hover:bg-blue-700");
-
-    this.formMessage.appendChild(viewListingsButton);
-    viewListingsButton.addEventListener("click", () => {
-      window.history.pushState({}, "", "/profile");
-      router("/profile");
-    });
+  showMessage(text, color) {
+    this.formMessage.textContent = text;
+    this.formMessage.classList.remove("hidden", "text-red-500", "text-green-600");
+    this.formMessage.classList.add(color === "red" ? "text-red-500" : "text-green-600");
   }
 }
 
 /**
- * Ensure correct function name for router
+ * Initialize the Manage Listings Page
  */
 export function initializeManageListingsPage() {
   console.log("Initializing Manage Listings Page...");
@@ -257,6 +249,7 @@ export function initializeManageListingsPage() {
   if (!mainContainer) return;
   new ManageListings(mainContainer);
 }
+
 
 
 
