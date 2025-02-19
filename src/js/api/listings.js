@@ -100,11 +100,6 @@ export async function fetchAllListings() {
   }
 }
 
-
-
-
-
-
 // ✅ Wrap in an async function
 async function logListings() {
   const listings = await fetchAllListings();
@@ -125,7 +120,7 @@ logListings();
 
 
 export async function fetchAndRenderListings(page = 1, filterQuery = "") {
-  //console.log(`Fetching and rendering listings - Page ${page}`);
+  console.log(`Fetching and rendering listings - Page ${page}`);
   
 
   const container = document.getElementById("listingsContainer");
@@ -137,20 +132,13 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
   container.innerHTML = ""; // Clear previous listings before rendering
 
   try {
-    // ✅ Ensure we fetch all listings before filtering
+    //Ensure we fetch all listings before filtering
     if (allListings.length === 0) {
       console.log("All listings array is empty. Fetching now...");
       await fetchAllListings();
     }
 
-    //console.log("✅ All Listings Fetched:", allListings); // <-- CHECK THIS IN BROWSER CONSOLE
-    //console.log("Fetched Listings:", allListings);
-//allListings.forEach((listing) => {
- // console.log(`Listing: ${listing.title}, Tags: ${listing.tags}`);
-//});
-
-
-    // ✅ Apply search filtering
+    // Apply search filtering
     let filteredListings = allListings.filter(listing => {
       return (
         listing.title.toLowerCase().includes(filterQuery.toLowerCase()) ||
@@ -160,19 +148,19 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
 
     console.log(`🔎 Filtered Listings Count: ${filteredListings.length}`);
 
-    // ✅ Apply pagination AFTER filtering
+    // Apply pagination AFTER filtering
     const totalCount = filteredListings.length;
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const paginatedListings = filteredListings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    console.log("📄 Paginated Listings:", paginatedListings);
+    console.log("Paginated Listings:", paginatedListings);
 
     if (paginatedListings.length === 0) {
       container.innerHTML = "<p>No listings found.</p>";
       return;
     }
 
-    // ✅ Render listings
+    // Render listings
     paginatedListings.forEach(listing => {
       const listingItem = document.createElement("div");
       listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
@@ -212,14 +200,14 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       viewButton.textContent = "View Item";
       viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
       viewButton.dataset.id = listing.id;
-      viewButton.addEventListener("click", () => {
-        window.history.pushState({}, "", `/item?id=${listing.id}`);
-        router(`/item?id=${listing.id}`);
-      });
+      
 
       listingItem.append(title, image, description, auctionEnd, viewButton);
       container.appendChild(listingItem);
     });
+
+    setupListingButtons();
+    console.log("✅ setupListingButtons() called after rendering listings!");
 
     renderPaginationControls(totalCount);
   } catch (error) {

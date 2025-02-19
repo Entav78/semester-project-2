@@ -2,8 +2,6 @@ import { fetchAndRenderListings } from "@/js/api/listings.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 
-import { setupListingButtons } from "@/components/buttons/index.js";
-
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
 

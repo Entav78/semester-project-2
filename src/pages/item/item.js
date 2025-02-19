@@ -3,17 +3,11 @@ import { Listing } from "@/models/listing.js";
 import { Bidding } from "@/js/api/Bidding.js"; //  Import Bidding class
 
 export function initializeItemPage() {
-  if (window.itemPageInitialized) return;
-  window.itemPageInitialized = true;
-
-  if (!window.location.pathname.includes("/item")) {
-    console.warn("Item script loaded on the wrong page, exiting...");
-    return;
-  }
   console.log("Initializing Item Page...");
 
   const params = new URLSearchParams(window.location.search);
   const itemId = params.get("id");
+  console.log("Extracted Item ID:", itemId);
 
   if (!itemId) {
     console.error("No item ID found in URL");

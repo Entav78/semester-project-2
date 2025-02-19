@@ -169,11 +169,7 @@ async function displayUserListings(userName) {
     viewButton.textContent = "View Item";
     viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
     viewButton.dataset.id = listing.id;
-    viewButton.addEventListener("click", () => {
-      console.log(`Navigating to item: ${listing.id}`);
-      window.history.pushState({}, "", `/item?id=${listing.id}`);
-      router(`/item?id=${listing.id}`);
-    });
+    
 
     // ✅ Edit Listing Button
     const editButton = document.createElement("button");

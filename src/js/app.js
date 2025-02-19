@@ -3,7 +3,7 @@ import { router } from "@/pages/router/router.js";
 import { initializeRegisterPage } from "@/pages/auth/register/register.js";
 import { initializeLoginPage } from "@/pages/auth/login/login.js";
 import { Login } from "@/js/api/login.js";
-import { initializeItemPage } from "@/pages/item/item.js";
+//import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; 
 import { Avatar } from "@/js/api/Avatar.js";
 import "../styles/main.scss";
@@ -72,12 +72,12 @@ if (currentPath.includes("/auth/login")) {
   console.log("Login Page Detected - Initializing...");
   initializeLoginPage();
 }
-
+/*
 if (currentPath.includes("/item")) {
-  console.log("Item Page Detected - Initializing...");
- // initializeItemPage();
+  console.log("Item Page Detected in app.js - Initializing...");
+  initializeItemPage();
 }
-
+*/
 document.body.addEventListener("click", (event) => {
   const button = event.target.closest(".nav-link");
   if (!button) return; // Ensure we clicked a navigation button

@@ -48,7 +48,7 @@ export class Filtering {
     this.listings = await fetchAllListings();
 
     this.listings.forEach(listing => {
-      console.log(`Filtering.js - Listing: ${listing.title}, Ends At: ${listing.endsAt}`);
+      //console.log(`Filtering.js - Listing: ${listing.title}, Ends At: ${listing.endsAt}`);
     });
        
 }
@@ -191,7 +191,7 @@ export class Filtering {
       const auctionEnd = document.createElement("p"); 
       auctionEnd.classList.add("mt-2", "font-bold");
 
-      console.log(`Listing: ${listing.title}, Ends At: ${listing.endsAt}`);
+     // console.log(`Listing: ${listing.title}, Ends At: ${listing.endsAt}`);
 
 
       if (listing.endsAt) {
@@ -215,10 +215,7 @@ export class Filtering {
       viewButton.textContent = "View Item";
       viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
       viewButton.dataset.id = listing.id;
-      viewButton.addEventListener("click", () => {
-        window.history.pushState({}, "", `/item?id=${listing.id}`);
-        router(`/item?id=${listing.id}`);
-      });
+      
 
       listingItem.append(title, image, description, auctionEnd, viewButton);
       this.listingsContainer.appendChild(listingItem);
