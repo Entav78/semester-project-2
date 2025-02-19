@@ -38,7 +38,17 @@ export class Register {
         throw error;
     }
 }
-
+  /**
+   * Helper function to validate URLs
+   */
+  isValidURL(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
   async handleRegister(event) {
     event.preventDefault();
@@ -91,16 +101,17 @@ export class Register {
     }
   
     // Validate avatar URL if provided
-    if (avatarUrl && !isValidURL(avatarUrl)) {
+    if (avatarUrl && !this.isValidURL(avatarUrl)) { // ✅ Add "this."
       errorDiv.textContent = "Invalid avatar URL.";
       return;
     }
-  
+
     // Validate banner URL if provided
-    if (bannerUrl && !isValidURL(bannerUrl)) {
+    if (bannerUrl && !this.isValidURL(bannerUrl)) { // ✅ Add "this."
       errorDiv.textContent = "Invalid banner URL.";
       return;
     }
+
   
     const userData = {
       name,
@@ -126,23 +137,13 @@ export class Register {
       }));
   
       // Redirect to login page
-      window.history.pushState({}, "", "/auth/login/");
-      router("/auth/login/");
+      window.history.pushState({}, "", "/login");
+      router("/login");
     } catch (error) {
       console.error("Error during registration:", error.message);
       errorDiv.textContent = `Registration failed: ${error.message}`;
     }
   }
   
-  /**
-   * Helper function to validate URLs
-   */
-  isValidURL(url) {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
+  
 }
