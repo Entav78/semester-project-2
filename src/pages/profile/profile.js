@@ -4,6 +4,7 @@ import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
+import { setupProfileButtons } from "@/components/buttons/index.js";
 
 
 let user = JSON.parse(localStorage.getItem("user")) || null; 
@@ -115,6 +116,8 @@ export function initializeProfilePage() {
 
     console.log("✅ Profile Page Setup Complete!");
   }, 300);
+
+  setupProfileButtons();
 }
 
 // ✅ Ensure the function is executed when the profile page loads

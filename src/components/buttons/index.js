@@ -81,3 +81,35 @@ editButton.addEventListener("click", () => {
   buttonContainer.append(editButton, deleteButton);
   return buttonContainer;
 }
+
+export function setupProfileButtons() {
+  const saveButton = document.getElementById("save-profile-btn");
+
+  if (saveButton) {
+    saveButton.addEventListener("click", () => {
+      console.log("💾 Save Changes Clicked!");
+      saveProfileChanges();
+    });
+  } else {
+    console.error("❌ Save button not found in DOM!");
+  }
+}
+
+function saveProfileChanges() {
+  console.log("Saving profile changes...");
+
+  const avatarUrl = document.getElementById("avatar-url")?.value.trim();
+  const bio = document.getElementById("bio")?.value.trim();
+
+  console.log("New Avatar URL:", avatarUrl);
+  console.log("New Bio:", bio);
+
+  if (!avatarUrl && !bio) {
+    console.warn("No changes detected.");
+    return;
+  }
+
+  // Here you would make an API request to update the profile
+  // Example: updateProfile({ avatarUrl, bio }).then(() => console.log("Profile updated!"));
+}
+
