@@ -47,17 +47,16 @@ export function createManageListingButtons(listing, onDelete, onEdit) {
 
   // Edit Button
   const editButton = document.createElement("button");
-  editButton.textContent = "Edit";
-  editButton.classList.add(
-    "edit-listing",
-    "bg-yellow-500",
-    "text-white",
-    "px-4",
-    "py-2",
-    "rounded",
-    "hover:bg-yellow-600"
-  );
-  editButton.addEventListener("click", () => onEdit(listing));
+editButton.textContent = "Edit Listing";
+editButton.classList.add("bg-yellow-500", "text-white", "px-4", "py-2", "rounded", "mt-2");
+editButton.dataset.id = listing.id;
+
+editButton.addEventListener("click", () => {
+  console.log(`Editing listing: ${listing.id}`);
+  window.history.pushState({}, "", `/manageListings?id=${listing.id}`); // ✅ Pass listing ID
+  router(`/manageListings?id=${listing.id}`); // Navigate to manageListings
+});
+
 
   // Delete Button
   const deleteButton = document.createElement("button");
