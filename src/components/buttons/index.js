@@ -85,47 +85,86 @@ editButton.addEventListener("click", () => {
 export function setupProfileButtons() {
   console.log("🔄 Re-initializing profile buttons...");
 
+  const updateAvatarBtn = document.getElementById("update-avatar-btn");
   const editProfileBtn = document.getElementById("edit-profile-btn");
   const saveProfileBtn = document.getElementById("save-profile-btn");
-  const updateAvatarBtn = document.getElementById("update-avatar-btn");
+  const myListingsTab = document.querySelector("[data-tab='listings']");
+  const myBidsTab = document.querySelector("[data-tab='bids']");
 
-  if (!editProfileBtn || !saveProfileBtn || !updateAvatarBtn) {
-    console.error("❌ One or more profile buttons are missing!");
-    return;
+  // ✅ Remove previous event listeners before adding new ones
+  if (updateAvatarBtn) {
+    updateAvatarBtn.replaceWith(updateAvatarBtn.cloneNode(true));
+  }
+  if (editProfileBtn) {
+    editProfileBtn.replaceWith(editProfileBtn.cloneNode(true));
+  }
+  if (saveProfileBtn) {
+    saveProfileBtn.replaceWith(saveProfileBtn.cloneNode(true));
+  }
+  if (myListingsTab) {
+    myListingsTab.replaceWith(myListingsTab.cloneNode(true));
+  }
+  if (myBidsTab) {
+    myBidsTab.replaceWith(myBidsTab.cloneNode(true));
   }
 
-  // ✅ Remove old event listeners to prevent duplicates
-  editProfileBtn.replaceWith(editProfileBtn.cloneNode(true));
-  saveProfileBtn.replaceWith(saveProfileBtn.cloneNode(true));
-  updateAvatarBtn.replaceWith(updateAvatarBtn.cloneNode(true));
-
-  // ✅ Select new elements
+  // ✅ Re-select elements after cloning
+  const newUpdateAvatarBtn = document.getElementById("update-avatar-btn");
   const newEditProfileBtn = document.getElementById("edit-profile-btn");
   const newSaveProfileBtn = document.getElementById("save-profile-btn");
-  const newUpdateAvatarBtn = document.getElementById("update-avatar-btn");
+  const newMyListingsTab = document.querySelector("[data-tab='listings']");
+  const newMyBidsTab = document.querySelector("[data-tab='bids']");
 
-  // ✅ Reattach event listeners
-  newEditProfileBtn.addEventListener("click", () => {
-    console.log("✏️ Edit Profile clicked!");
-    document.getElementById("edit-profile-container").classList.toggle("hidden");
-  });
+  // ✅ Attach event listeners again
+  if (newUpdateAvatarBtn) {
+    newUpdateAvatarBtn.addEventListener("click", () => {
+      console.log("🖼️ Update Avatar Clicked");
+      const avatarInput = document.getElementById("avatar-url-input").value.trim();
+      if (!avatarInput) {
+        alert("Please enter a valid avatar URL!");
+        return;
+      }
+      new Avatar(
+        document.getElementById("avatar-img"),
+        document.getElementById("avatar-url-input"),
+        newUpdateAvatarBtn
+      ).updateAvatar();
+    });
+  }
 
-  newSaveProfileBtn.addEventListener("click", () => {
-    console.log("💾 Saving profile changes...");
-    saveProfileChanges();
-  });
+  if (newEditProfileBtn) {
+    newEditProfileBtn.addEventListener("click", () => {
+      console.log("✏️ Edit Profile Clicked");
+      document.getElementById("edit-profile-container").classList.toggle("hidden");
+    });
+  }
 
-  newUpdateAvatarBtn.addEventListener("click", () => {
-    console.log("🖼 Updating Avatar...");
-    const avatarImg = document.getElementById("avatar-img");
-    const avatarInput = document.getElementById("avatar-url-input");
-    if (avatarImg && avatarInput) {
-      avatarImg.src = avatarInput.value.trim();
-    }
-  });
+  if (newSaveProfileBtn) {
+    newSaveProfileBtn.addEventListener("click", () => {
+      console.log("💾 Save Profile Clicked");
+      alert("Profile changes saved! (Not implemented yet)");
+    });
+  }
+
+  if (newMyListingsTab) {
+    newMyListingsTab.addEventListener("click", () => {
+      console.log("📜 My Listings Clicked");
+      document.getElementById("listingsTab").classList.remove("hidden");
+      document.getElementById("bidsTab").classList.add("hidden");
+    });
+  }
+
+  if (newMyBidsTab) {
+    newMyBidsTab.addEventListener("click", () => {
+      console.log("🎯 My Bids Clicked");
+      document.getElementById("bidsTab").classList.remove("hidden");
+      document.getElementById("listingsTab").classList.add("hidden");
+    });
+  }
 
   console.log("✅ Profile buttons initialized!");
 }
+
 
 
 

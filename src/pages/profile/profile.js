@@ -6,9 +6,9 @@ import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
 import { setupProfileButtons } from "@/components/buttons/index.js";
 
-
-let user = JSON.parse(localStorage.getItem("user")) || null; 
 /* testing out a modification
+let user = JSON.parse(localStorage.getItem("user")) || null; 
+
 export function initializeProfilePage() {
   console.log("📦 localStorage BEFORE entering Manage Listings:", JSON.parse(JSON.stringify(localStorage)));
 
@@ -94,23 +94,26 @@ export function initializeProfilePage() {
 }
 */
 
+let user = JSON.parse(localStorage.getItem("user")) || null;
+
 export function initializeProfilePage(forceRefresh = false) {
   if (window.profilePageInitialized && !forceRefresh) {
     console.warn("⚠️ Profile Page already initialized. Re-fetching user data...");
-    const user = JSON.parse(localStorage.getItem("user")) || {};
-    
-    // ✅ Refresh avatar and user info separately
+
     refreshAvatarSection(user.userName || user.name);
-    
     displayUserListings(user.userName || user.name);
     displayUserBids(user.userName || user.name);
+    setupTabNavigation();
     
+    // ✅ Ensure buttons are reinitialized
+    setupProfileButtons();
+
     return;
   }
 
   console.log("✅ Initializing Profile Page...");
   window.profilePageInitialized = true;
-  
+
   showLoader();
 
   setTimeout(() => {
@@ -144,7 +147,7 @@ export function initializeProfilePage(forceRefresh = false) {
     Promise.all([
       displayUserListings(user.userName),
       displayUserBids(user.userName),
-      refreshAvatarSection(user.userName)  // ✅ Force refresh avatar section
+      refreshAvatarSection(user.userName)
     ])
     .then(() => console.log("✅ Profile Data Loaded Successfully"))
     .catch(error => console.error("❌ Error loading profile:", error))
@@ -155,14 +158,11 @@ export function initializeProfilePage(forceRefresh = false) {
 
     // ✅ Ensure Buttons Work After Navigation
     setupTabNavigation();
-    setupProfileButtons();
+    setupProfileButtons(); // 🔥 Call button setup here
+
     console.log("✅ Profile Setup Complete!");
   }, 300);
 }
-
-
-
-
 
 
 
@@ -519,6 +519,99 @@ async function refreshAvatarSection(userName) {
   }
 }
 
+/* deactivate while debugging with debugEventListeners
+function reattachProfileEventListeners() {
+  console.log("🔄 Reattaching Profile Event Listeners...");
+
+  // 🔥 Function to safely reattach event listeners
+  function resetButton(selector, callback) {
+    const oldButton = document.querySelector(selector);
+    if (!oldButton) {
+      console.warn(`⚠️ Button ${selector} not found!`);
+      return;
+    }
+
+    const newButton = oldButton.cloneNode(true);
+    oldButton.replaceWith(newButton);
+    newButton.addEventListener("click", callback);
+  }
+
+  // ✅ Update Avatar Button
+  resetButton("#update-avatar-btn", () => {
+    console.log("🔄 Update Avatar Clicked");
+    const avatarInput = document.getElementById("avatar-url-input").value.trim();
+    if (!avatarInput) {
+      alert("Please enter a valid avatar URL!");
+      return;
+    }
+    new Avatar(
+      document.getElementById("avatar-img"),
+      document.getElementById("avatar-url-input"),
+      document.getElementById("update-avatar-btn")
+    ).updateAvatar();
+  });
+
+  // ✅ Edit Profile Button
+  resetButton("#edit-profile-btn", () => {
+    console.log("🔄 Edit Profile Clicked");
+    document.getElementById("profile-edit-section").classList.toggle("hidden");
+  });
+
+  // ✅ My Listings Button
+  resetButton("#my-listings-btn", () => {
+    console.log("🔄 My Listings Clicked");
+    document.getElementById("listingsTab").classList.remove("hidden");
+    document.getElementById("bidsTab").classList.add("hidden");
+  });
+
+  // ✅ My Bids Button
+  resetButton("#my-bids-btn", () => {
+    console.log("🔄 My Bids Clicked");
+    document.getElementById("bidsTab").classList.remove("hidden");
+    document.getElementById("listingsTab").classList.add("hidden");
+
+    // Fetch bids when clicking "My Bids"
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    if (user.userName) {
+      displayUserBids(user.userName);
+    } else {
+      console.error("❌ No user found in localStorage. Cannot fetch bids.");
+    }
+  });
+
+  console.log("✅ All profile event listeners reattached!");
+}
+*/
+
+function debugEventListeners() {
+  console.log("🔍 Checking event listeners...");
+
+  const buttons = [
+    { selector: "#update-avatar-btn", name: "Update Avatar" },
+    { selector: "#edit-profile-btn", name: "Edit Profile" },
+    { selector: "#my-listings-btn", name: "My Listings" },
+    { selector: "#my-bids-btn", name: "My Bids" },
+  ];
+
+  buttons.forEach(({ selector, name }) => {
+    const button = document.querySelector(selector);
+    if (button) {
+      const clone = button.cloneNode();
+      const hasListeners = clone.outerHTML !== button.outerHTML;
+      console.log(`🔹 ${name} (${selector}) - Event Listener Present:`, hasListeners);
+    } else {
+      console.warn(`⚠️ ${name} (${selector}) - Button not found!`);
+    }
+  });
+}
+
+// Call this inside initializeProfilePage
+setTimeout(() => {
+  debugEventListeners();
+}, 500);
+
+
+console.log("✅ Profile Page Setup Complete!");
 
 window.initializeProfilePage = initializeProfilePage;
 
