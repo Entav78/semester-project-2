@@ -98,7 +98,7 @@ export function setupProfileButtons() {
 function saveProfileChanges() {
   console.log("Saving profile changes...");
 
-  const avatarUrl = document.getElementById("avatar-url")?.value.trim();
+  const avatarUrl = document.getElementById("avatar-url-input")?.value.trim();  // Updated ID
   const bio = document.getElementById("bio")?.value.trim();
 
   console.log("New Avatar URL:", avatarUrl);
@@ -112,4 +112,5 @@ function saveProfileChanges() {
   // Here you would make an API request to update the profile
   // Example: updateProfile({ avatarUrl, bio }).then(() => console.log("Profile updated!"));
 }
+
 

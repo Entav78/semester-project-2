@@ -129,13 +129,12 @@ export class Register {
       const user = await this.register(userData);
       alert("Registration successful! Redirecting to login...");
   
-      // Store user data locally
       localStorage.setItem("user", JSON.stringify({
-        userName: user.userName,
+        userName: user.userName || user.name, // Normalize username inconsistency
         email: user.email,
-        credits: 1000, // Assuming the API assigns this
-      }));
-  
+        credits: user.credits || 1000, // Ensure credits are set properly
+    }));
+    
       // Redirect to login page
       window.history.pushState({}, "", "/login");
       router("/login");

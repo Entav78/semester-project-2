@@ -52,72 +52,75 @@ console.log("populateEditForm() executed!");
   
   
   async populateEditForm() {
-    console.log(`Fetching details for editing listing: ${this.listingId}`);
-
-    try {
-        const response = await fetch(`${API_LISTINGS}/${this.listingId}`);
-        if (!response.ok) throw new Error("Failed to fetch listing data");
-
-        const listing = await response.json();
-        console.log("Fetched Listing for Edit:", listing);
-
-        // ✅ Ensure we access the correct data
-        const listingData = listing.data; 
-        
-        if (!listingData) {
-            console.error("No listing data found!");
-            return;
-        }
-
-        // ✅ Populate the form fields with existing data
-        const titleInput = document.getElementById("listingTitle");
-        const descriptionInput = document.getElementById("listingDescription");
-        const deadlineInput = document.getElementById("listingDeadline");
-        const mediaInput = document.getElementById("listingMediaUrl");
-        const tagsInput = document.getElementById("listingTags");
-
-        if (titleInput) {
-            titleInput.value = listingData.title || "";
-            console.log("Title set:", listingData.title);
-        } else {
-            console.error("Title input not found!");
-        }
-
-        if (descriptionInput) {
-            descriptionInput.value = listingData.description || "";
-            console.log("Description set:", listingData.description);
-        } else {
-            console.error("Description input not found!");
-        }
-
-        if (deadlineInput) {
-            deadlineInput.value = listingData.endsAt
-                ? new Date(listingData.endsAt).toISOString().slice(0, 16)
-                : "";
-            console.log("Deadline set:", listingData.endsAt);
-        } else {
-            console.error("Deadline input not found!");
-        }
-
-        if (mediaInput) {
-            mediaInput.value = listingData.media?.[0]?.url || "";
-            console.log("Media URL set:", listingData.media?.[0]?.url);
-        } else {
-            console.error("Media URL input not found!");
-        }
-
-        if (tagsInput) {
-            tagsInput.value = listingData.tags?.join(", ") || "";
-            console.log("Tags set:", listingData.tags?.join(", "));
-        } else {
-            console.error("Tags input not found!");
-        }
-
-        console.log("Form populated successfully!");
-    } catch (error) {
-        console.error("Error fetching listing data for editing:", error);
+    if (!this.listingId) {
+      console.warn("⚠️ No listing ID found in the URL. Skipping API call.");
+      return;
     }
-}
+  
+    console.log(`📡 Fetching listing details for ID: ${this.listingId}`);
+  
+    try {
+      const response = await fetch(`${API_LISTINGS}/${this.listingId}`);
+      if (!response.ok) throw new Error("Failed to fetch listing data");
+  
+      const listing = await response.json();
+      console.log("✅ Listing data received:", listing);
+  
+      // ✅ Ensure we access the correct data
+      const listingData = listing.data;
+      if (!listingData) {
+        console.error("❌ No listing data found!");
+        return;
+      }
+  
+      // ✅ Populate form fields using a helper function
+      this.populateFormFields(listingData);
+  
+      console.log("✅ Form populated successfully!");
+    } catch (error) {
+      console.error("❌ Error fetching listing data:", error);
+    }
+  }
+  
+
+        populateFormFields(listingData) {
+          const fields = {
+            titleInput: document.getElementById("listingTitle"),
+            descriptionInput: document.getElementById("listingDescription"),
+            deadlineInput: document.getElementById("listingDeadline"),
+            mediaInput: document.getElementById("listingMediaUrl"),
+            tagsInput: document.getElementById("listingTags"),
+          };
+        
+          // ✅ Set values in form fields (if they exist)
+          if (fields.titleInput) {
+            fields.titleInput.value = listingData.title || "";
+            console.log("📌 Title set:", listingData.title);
+          }
+        
+          if (fields.descriptionInput) {
+            fields.descriptionInput.value = listingData.description || "";
+            console.log("📌 Description set:", listingData.description);
+          }
+        
+          if (fields.deadlineInput) {
+            fields.deadlineInput.value = listingData.endsAt
+              ? new Date(listingData.endsAt).toISOString().slice(0, 16)
+              : "";
+            console.log("📌 Deadline set:", listingData.endsAt);
+          }
+        
+          if (fields.mediaInput) {
+            fields.mediaInput.value = listingData.media?.[0]?.url || "";
+            console.log("📌 Media URL set:", listingData.media?.[0]?.url);
+          }
+        
+          if (fields.tagsInput) {
+            fields.tagsInput.value = listingData.tags?.join(", ") || "";
+            console.log("📌 Tags set:", listingData.tags?.join(", "));
+          }
+        }
+        
 
 
 
@@ -318,6 +321,24 @@ if (this.listingId) {
         return;
     }
 
+    if (description.length > 280) {
+      this.showMessage(`Description is too long! (${description.length}/280)`, "red");
+      hideLoader();
+        return;
+    }
+
+    if (tagsInput.length > 50) {
+        this.showMessage(`Tags are too long! (${tagsInput.length}/50)`, "red");
+        hideLoader();
+        return;
+    }
+
+    if (!title || !deadline) {
+        this.showMessage("Title and Deadline are required!", "red");
+        hideLoader();
+        return;
+    }
+
     const endsAt = new Date(deadline).toISOString();
     const media = mediaInput ? [{ url: mediaInput, alt: title }] : [];
     const tags = tagsInput ? tagsInput.split(",").map(tag => tag.trim()) : [];
@@ -338,19 +359,26 @@ if (this.listingId) {
         });
 
         if (!response.ok) {
-            throw new Error("Failed to create listing");
-        }
-
-        console.log("✅ Listing successfully created!");
-
-        event.target.reset();
-        document.getElementById("mediaPreview").innerHTML = "";
-        this.showSuccessOptions();
-
-        window.history.pushState({}, "", "/profile");
-        router("/profile");
+          const responseData = await response.json(); // Fetch the API error response
+          console.error("❌ API Error:", responseData);
+      
+          // ✅ Extract and display the error message to the user
+          const errorMessage = responseData.errors?.[0]?.message || "Failed to create listing";
+          this.showMessage(errorMessage, "red");
+      
+          throw new Error(errorMessage);
+      }
+      
+      console.log("✅ Listing successfully created!");
+      
+      event.target.reset();
+      document.getElementById("mediaPreview").innerHTML = "";
+      this.showSuccessOptions();
+      
+      window.history.pushState({}, "", "/profile");
+      router("/profile");
     } catch (error) {
-        console.error("❌ Error creating listing:", error);
+        console.error("Error creating listing:", error);
         this.showMessage("Failed to create listing!", "red");
     }
 
