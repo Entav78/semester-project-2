@@ -83,34 +83,49 @@ editButton.addEventListener("click", () => {
 }
 
 export function setupProfileButtons() {
-  const saveButton = document.getElementById("save-profile-btn");
+  console.log("🔄 Re-initializing profile buttons...");
 
-  if (saveButton) {
-    saveButton.addEventListener("click", () => {
-      console.log("💾 Save Changes Clicked!");
-      saveProfileChanges();
-    });
-  } else {
-    console.error("❌ Save button not found in DOM!");
-  }
-}
+  const editProfileBtn = document.getElementById("edit-profile-btn");
+  const saveProfileBtn = document.getElementById("save-profile-btn");
+  const updateAvatarBtn = document.getElementById("update-avatar-btn");
 
-function saveProfileChanges() {
-  console.log("Saving profile changes...");
-
-  const avatarUrl = document.getElementById("avatar-url-input")?.value.trim();  // Updated ID
-  const bio = document.getElementById("bio")?.value.trim();
-
-  console.log("New Avatar URL:", avatarUrl);
-  console.log("New Bio:", bio);
-
-  if (!avatarUrl && !bio) {
-    console.warn("No changes detected.");
+  if (!editProfileBtn || !saveProfileBtn || !updateAvatarBtn) {
+    console.error("❌ One or more profile buttons are missing!");
     return;
   }
 
-  // Here you would make an API request to update the profile
-  // Example: updateProfile({ avatarUrl, bio }).then(() => console.log("Profile updated!"));
+  // ✅ Remove old event listeners to prevent duplicates
+  editProfileBtn.replaceWith(editProfileBtn.cloneNode(true));
+  saveProfileBtn.replaceWith(saveProfileBtn.cloneNode(true));
+  updateAvatarBtn.replaceWith(updateAvatarBtn.cloneNode(true));
+
+  // ✅ Select new elements
+  const newEditProfileBtn = document.getElementById("edit-profile-btn");
+  const newSaveProfileBtn = document.getElementById("save-profile-btn");
+  const newUpdateAvatarBtn = document.getElementById("update-avatar-btn");
+
+  // ✅ Reattach event listeners
+  newEditProfileBtn.addEventListener("click", () => {
+    console.log("✏️ Edit Profile clicked!");
+    document.getElementById("edit-profile-container").classList.toggle("hidden");
+  });
+
+  newSaveProfileBtn.addEventListener("click", () => {
+    console.log("💾 Saving profile changes...");
+    saveProfileChanges();
+  });
+
+  newUpdateAvatarBtn.addEventListener("click", () => {
+    console.log("🖼 Updating Avatar...");
+    const avatarImg = document.getElementById("avatar-img");
+    const avatarInput = document.getElementById("avatar-url-input");
+    if (avatarImg && avatarInput) {
+      avatarImg.src = avatarInput.value.trim();
+    }
+  });
+
+  console.log("✅ Profile buttons initialized!");
 }
+
 
 

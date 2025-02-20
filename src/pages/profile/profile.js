@@ -1,4 +1,4 @@
-import { API_LISTINGS, API_KEY } from "@/js/api/constants.js";
+import { API_LISTINGS, API_PROFILES, API_KEY } from "@/js/api/constants.js";
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
@@ -8,10 +8,15 @@ import { setupProfileButtons } from "@/components/buttons/index.js";
 
 
 let user = JSON.parse(localStorage.getItem("user")) || null; 
-
+/* testing out a modification
 export function initializeProfilePage() {
+  console.log("📦 localStorage BEFORE entering Manage Listings:", JSON.parse(JSON.stringify(localStorage)));
+
+  console.log("📦 localStorage AFTER returning to Profile:", JSON.parse(JSON.stringify(localStorage)));
+
   if (window.profilePageInitialized) {
     console.warn("Profile Page is already initialized. Re-fetching user data...");
+
     const user = JSON.parse(localStorage.getItem("user")) || {};
     fetchUserListings(user.userName || user.name); 
     return; 
@@ -58,26 +63,107 @@ export function initializeProfilePage() {
     // Always Fetch Listings & Bids on Navigation
     Promise.all([
       displayUserListings(userName),
-      displayUserBids(userName)
+      displayUserBids(userName),
     ])
-    .then(() => {
-      console.log("✅ Profile Data Loaded Successfully");
-    })
-    .catch(error => {
-      console.error("❌ Error loading profile data:", error);
-    })
+    .then(() => console.log("✅ Profile Data Loaded Successfully"))
+    .catch(error => console.error("❌ Error loading profile data:", error))
     .finally(() => {
-      hideLoader(); 
+      hideLoader();
       console.log("🔽 Loader Hidden After Profile Data Loaded");
     });
 
+    // ✅ Initialize Avatar (Profile Image, Bio, Banner, Credits)
+    const avatarImg = document.getElementById("avatar-img");
+    const avatarInput = document.getElementById("avatar-url-input");
+    const updateAvatarBtn = document.getElementById("update-avatar-btn");
+    const bioContainer = document.getElementById("bio-container");
+    const bannerContainer = document.getElementById("banner-img");
+    const creditsContainer = document.getElementById("user-credits");
+
+    if (avatarImg && avatarInput && updateAvatarBtn) {
+      new Avatar(avatarImg, avatarInput, updateAvatarBtn, bioContainer, bannerContainer, creditsContainer);
+    } else {
+      console.error("❌ Avatar elements not found!");
+    }
+
     setupTabNavigation();
+    setupProfileButtons();
 
     console.log("✅ Profile Page Setup Complete!");
-  }, 300);
-
-  setupProfileButtons();
+  }, 300);  
 }
+*/
+
+export function initializeProfilePage(forceRefresh = false) {
+  if (window.profilePageInitialized && !forceRefresh) {
+    console.warn("⚠️ Profile Page already initialized. Re-fetching user data...");
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    
+    // ✅ Refresh avatar and user info separately
+    refreshAvatarSection(user.userName || user.name);
+    
+    displayUserListings(user.userName || user.name);
+    displayUserBids(user.userName || user.name);
+    
+    return;
+  }
+
+  console.log("✅ Initializing Profile Page...");
+  window.profilePageInitialized = true;
+  
+  showLoader();
+
+  setTimeout(() => {
+    const authToken = localStorage.getItem("authToken");
+    let user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.userName) {
+      console.warn("User not found. Checking token...");
+      if (authToken) {
+        try {
+          const payloadJSON = JSON.parse(atob(authToken.split(".")[1]));
+          if (payloadJSON.name) {
+            user = { userName: payloadJSON.name };
+            localStorage.setItem("user", JSON.stringify(user));
+            console.log("🔍 Extracted user:", user.userName);
+          }
+        } catch (error) {
+          console.error("❌ JWT Decode Failed. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+        }
+      } else {
+        console.error("❌ No auth token. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
+    }
+
+    console.log("📡 Fetching profile for:", user.userName);
+
+    Promise.all([
+      displayUserListings(user.userName),
+      displayUserBids(user.userName),
+      refreshAvatarSection(user.userName)  // ✅ Force refresh avatar section
+    ])
+    .then(() => console.log("✅ Profile Data Loaded Successfully"))
+    .catch(error => console.error("❌ Error loading profile:", error))
+    .finally(() => {
+      hideLoader();
+      console.log("🔽 Loader Hidden");
+    });
+
+    // ✅ Ensure Buttons Work After Navigation
+    setupTabNavigation();
+    setupProfileButtons();
+    console.log("✅ Profile Setup Complete!");
+  }, 300);
+}
+
+
+
+
+
 
 
 
@@ -204,7 +290,14 @@ async function handleDeleteListing(listingId) {
 
 // ✅ 3. Function to display user bids (no changes here)
 async function displayUserBids(userName) {
+  console.log("📡 Fetching bids for user:", userName);
+  
   const bidsContainer = document.getElementById("bidsContainer");
+  if (!bidsContainer) {
+    console.error("❌ Bids container is missing! Trying to re-add...");
+    return;
+  }
+  
   bidsContainer.innerHTML = "<p>Loading your bids...</p>";
 
   const response = await fetchUserBids(userName);
@@ -225,7 +318,7 @@ async function displayUserBids(userName) {
 
     const listingsData = await listingsResponse.json();
     const listings = listingsData.data;
-    console.log("All Listings Fetched:", listings);
+    console.log("📡 All Listings Fetched:", listings);
 
     bids.forEach((bid) => {
       console.log("🔍 Processing bid:", bid);
@@ -255,7 +348,7 @@ async function displayUserBids(userName) {
       );
 
       if (matchingListing) {
-        console.log("Matched Listing:", matchingListing);
+        console.log("✅ Matched Listing:", matchingListing);
 
         title.textContent = matchingListing.title || "Unknown Item";
         listingEnds.textContent = matchingListing.endsAt
@@ -269,17 +362,18 @@ async function displayUserBids(userName) {
           router(`/item?id=${matchingListing.id}`);
         });
       } else {
-        console.warn(`No listing found for bid: ${bid.id}`);
+        console.warn(`⚠️ No listing found for bid: ${bid.id}`);
       }
 
       bidItem.append(title, bidAmount, listingEnds, viewButton);
       bidsContainer.appendChild(bidItem);
     });
   } catch (error) {
-    console.error("Error fetching listings:", error);
+    console.error("❌ Error fetching listings:", error);
   }
 }
 
+/* testing new function
 function setupTabNavigation() {
   console.log("Setting up Profile Page Tabs...");
   
@@ -319,6 +413,110 @@ if (avatarImg && avatarInput && updateAvatarBtn) {
   new Avatar(avatarImg, avatarInput, updateAvatarBtn);
 } else {
   console.error("❌ Avatar elements not found!");
+}
+*/
+
+export function setupTabNavigation() {
+  console.log("🔄 Setting up tab navigation...");
+
+  const listingsTabButton = document.querySelector("[data-tab='listings']");
+  const bidsTabButton = document.querySelector("[data-tab='bids']");
+  const listingsTab = document.getElementById("listingsTab");
+  const bidsTab = document.getElementById("bidsTab");
+
+  if (!listingsTabButton || !bidsTabButton || !listingsTab || !bidsTab) {
+    console.error("❌ One or more tab elements not found! Cannot set up tab navigation.");
+    return;
+  }
+
+  function switchTab(targetTab) {
+    console.log(`🔀 Switching to tab: ${targetTab}`);
+
+    // Hide all tab contents
+    document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.add("hidden"));
+
+    // Remove active class from all buttons
+    document.querySelectorAll(".tab-button").forEach((btn) => btn.classList.remove("active-tab"));
+
+    // Show the selected tab and highlight the button
+    if (targetTab === "listings") {
+      listingsTab.classList.remove("hidden");
+      listingsTabButton.classList.add("active-tab");
+    } else if (targetTab === "bids") {
+      bidsTab.classList.remove("hidden");
+      bidsTabButton.classList.add("active-tab");
+
+      // ✅ Ensure bids are displayed when clicking "My Bids"
+      const user = JSON.parse(localStorage.getItem("user")) || {};
+      if (user.userName) {
+        displayUserBids(user.userName);
+      } else {
+        console.error("❌ No user found in localStorage. Cannot fetch bids.");
+      }
+    }
+  }
+
+  // ✅ Remove old event listeners before adding new ones (prevents duplicates)
+  listingsTabButton.removeEventListener("click", () => switchTab("listings"));
+  bidsTabButton.removeEventListener("click", () => switchTab("bids"));
+
+  // ✅ Add event listeners to tab buttons
+  listingsTabButton.addEventListener("click", () => switchTab("listings"));
+  bidsTabButton.addEventListener("click", () => switchTab("bids"));
+
+  console.log("✅ Tab navigation initialized!");
+}
+
+async function refreshAvatarSection(userName) {
+  console.log(`🔄 Refreshing avatar section for: ${userName}`);
+
+  const authToken = localStorage.getItem("authToken");
+  if (!authToken || !userName) {
+    console.error("❌ Missing authentication or userName.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_PROFILES}/${userName}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken.trim()}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("❌ Failed to fetch profile data.");
+      return;
+    }
+
+    const userData = await response.json();
+    console.log("📡 Refreshed Profile Data:", userData);
+
+    // ✅ Update avatar image
+    const avatarImg = document.getElementById("avatar-img");
+    const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150";
+    if (avatarImg) avatarImg.src = avatarUrl;
+
+    // ✅ Update bio
+    const bioContainer = document.getElementById("bio-container");
+    if (bioContainer) bioContainer.textContent = userData.data.bio || "No bio available.";
+
+    // ✅ Update banner
+    const bannerContainer = document.getElementById("banner-img");
+    if (bannerContainer) bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
+
+    // ✅ Update credits
+    const creditsContainer = document.getElementById("user-credits");
+    if (creditsContainer) {
+      creditsContainer.textContent = `Credits: ${userData.data.credits}`;
+    }
+
+    console.log("✅ Avatar section refreshed!");
+  } catch (error) {
+    console.error("❌ Error refreshing avatar section:", error);
+  }
 }
 
 
