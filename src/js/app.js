@@ -8,6 +8,7 @@ import { initializeHomePage } from "@/pages/home/index.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import "../styles/main.scss";
 
+
 console.log("Initializing App...");
 
 // Prevent multiple navigation instances

@@ -55,20 +55,20 @@ export async function fetchAllListings() {
 
       const json = await response.json();
 
-      // ✅ Debug raw data
-      console.log(`🟢 Raw API Response (Page ${page}):`, json);
+      // Debug raw data
+      console.log(`Raw API Response (Page ${page}):`, json);
 
-      // ✅ Log first 5 fetched listings
+      // Log first 5 fetched listings
       console.log(
-        "🟡 First 5 Raw Listings Before Processing:",
+        "First 5 Raw Listings Before Processing:",
         json.data.slice(0, 5).map(listing => ({
           id: listing.id,
           title: listing.title,
-          endsAt: listing.endsAt || "❌ Missing endsAt"
+          endsAt: listing.endsAt || "Missing endsAt"
         }))
       );
 
-      // ✅ Ensure `endsAt` is included when creating `Listing` instances
+      // Ensure `endsAt` is included when creating `Listing` instances
       const listings = json.data.map(listing => new Listing({
         ...listing, // Spread existing properties
         endsAt: listing.endsAt ?? null // Ensure `endsAt` is at least `null` if missing
@@ -82,25 +82,25 @@ export async function fetchAllListings() {
       }
     }
 
-    console.log("✅ Fetch Complete. Total Listings:", allFetchedListings.length);
+    console.log("Fetch Complete. Total Listings:", allFetchedListings.length);
 
-    // ✅ Log first 5 listings AFTER creating Listing instances
+    // Log first 5 listings AFTER creating Listing instances
     console.log(
-      "🔵 First 5 Listings After Processing:",
+      "First 5 Listings After Processing:",
       allFetchedListings.slice(0, 5).map(listing => ({
         title: listing.title,
-        endsAt: listing.endsAt || "❌ Missing endsAt"
+        endsAt: listing.endsAt || "Missing endsAt"
       }))
     );
 
     return allFetchedListings;
   } catch (error) {
-    console.error("❌ Fetch Error:", error);
+    console.error("Fetch Error:", error);
     return [];
   }
 }
 
-// ✅ Wrap in an async function
+// Wrap in an async function
 async function logListings() {
   const listings = await fetchAllListings();
   
@@ -115,7 +115,7 @@ async function logListings() {
   console.table(filteredListings);
 }
 
-// ✅ Call the function
+// Call the function
 logListings();
 
 
@@ -207,11 +207,11 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
     });
 
     setupListingButtons();
-    console.log("✅ setupListingButtons() called after rendering listings!");
+    console.log("setupListingButtons() called after rendering listings!");
 
     renderPaginationControls(totalCount);
   } catch (error) {
-    console.error("❌ Error fetching listings:", error);
+    console.error("Error fetching listings:", error);
   }
 }
 

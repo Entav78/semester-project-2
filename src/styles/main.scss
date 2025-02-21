@@ -1,17 +1,32 @@
-/*
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-*/
+/*@use "mixins";
+@use "custom";
+
+//@use "/src/pages/home/index.scss"; //already have a name of index...
+@use "@/components/buttons/index.scss";
+//@use "@/components/navigation/index.scss"; //already have a name of index...
+@use "@/pages/profile/profile.scss";
+@use "@/pages/auth/register/register.scss";
+@use "@/pages/auth/login/login.scss";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+*/
 
 
+@use "mixins";
+@use "custom";
 
+@use "@/components/buttons/buttons.scss"; // Renamed
+@use "@/components/navigation/navigation.scss"; // Renamed
+@use "@/pages/home/index.scss"; // Keeping this as is
+@use "@/pages/profile/profile.scss";
+@use "@/pages/auth/register/register.scss";
+@use "@/pages/auth/login/login.scss";
 
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 
 
