@@ -1,24 +1,9 @@
-//works 
-/*
 module.exports = {
   plugins: {
-    "@tailwindcss/postcss": {},
+    "tailwindcss/nesting": {},
+    tailwindcss: {},
     autoprefixer: {},
   },
 };
-*/
-
-module.exports = {
-  plugins: {
-    "@tailwindcss/postcss": {}, // ✅ Correct way to use Tailwind in PostCSS
-    autoprefixer: {},
-  },
-};
-
-
-
-
-
-
 
 

@@ -99,18 +99,22 @@ document.body.addEventListener("click", (event) => {
 
 document.addEventListener("readystatechange", () => {
   if (document.readyState === "complete") {
+    console.log("Document fully loaded. Checking for avatar elements...");
+
     const avatarImg = document.getElementById("avatar-img");
-    const avatarInput = document.getElementById("avatar-url-input");  // For updating avatar
-    //const profileAvatarInput = document.getElementById("avatar-url-profile"); // Profile page input
+    const avatarInput = document.getElementById("avatar-url-input");  // Avatar input field
     const updateAvatarBtn = document.getElementById("update-avatar-btn");
 
+    // Only run the Avatar logic if ALL required elements exist
     if (avatarImg && avatarInput && updateAvatarBtn) {
+      console.log("Avatar elements found. Initializing Avatar...");
       new Avatar(avatarImg, avatarInput, updateAvatarBtn);
     } else {
-      console.error("❌ Avatar elements not found!");
+      console.warn("Some avatar elements are missing. Skipping initialization.");
     }
   }
 });
+
 
 
 // Ensure correct page loads on back/forward navigation

@@ -62,7 +62,7 @@ export class Navigation {
 
       const button = document.createElement("button");
       button.textContent = text;
-      button.className = "nav-link text-white hover:text-gray-300 transition";
+      button.classList.add("nav-link", "text-white", "hover:text-gray-300", "transition");
       button.dataset.path = path;
 
       if (action) {
@@ -87,59 +87,73 @@ export class Navigation {
     });
 
     this.container.appendChild(nav);
-    console.log(`Navigation created for ${this.container.id}`);
+    console.log(`✅ Navigation created for ${this.container.id}`);
   }
 
   updateNavbar(isLoggedIn) {
-    console.log(`Updating navbar... (isLoggedIn: ${isLoggedIn})`);
+    console.log(`🔄 Updating navbar... (isLoggedIn: ${isLoggedIn})`);
     isLoggedIn = Boolean(localStorage.getItem("authToken"));
-    console.log(`isLoggedIn detected: ${isLoggedIn}`);
+    console.log(`🔍 isLoggedIn detected: ${isLoggedIn}`);
     this.createNavbar(isLoggedIn);
   }
 }
 
 /**
- * Function to set up sidebar functionality
+ * ✅ Function to set up sidebar functionality
  */
 function setupSidebar() {
-  console.log("Setting up sidebar functionality...");
+  console.log("🛠️ Setting up sidebar functionality...");
 
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
   const openButton = document.getElementById("openSidebar");
   const closeButton = document.getElementById("closeSidebar");
+  const sidebarNav = document.getElementById("sidebar-nav");
 
-  if (!sidebar || !overlay || !openButton || !closeButton) {
-    console.warn("Sidebar elements missing. Skipping setup.");
+  if (!sidebar || !overlay || !openButton || !closeButton || !sidebarNav) {
+    console.warn("❌ Sidebar elements missing. Skipping setup.");
     return;
   }
 
+  // Open sidebar
   openButton.addEventListener("click", () => {
     console.log("Opening sidebar...");
-    sidebar.classList.remove("translate-x-full");
+    sidebar.classList.remove("translate-x-full", "hidden");
     overlay.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden"); // Prevent scrolling
   });
 
-  closeButton.addEventListener("click", () => {
+  // Close sidebar function
+  function closeSidebar() {
     console.log("Closing sidebar...");
     sidebar.classList.add("translate-x-full");
+
+    setTimeout(() => {
+      sidebar.classList.add("hidden"); // Hide sidebar after animation
+    }, 300);
+
     overlay.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden"); // Restore scrolling
+  }
+
+  // Close sidebar when clicking outside or close button
+  closeButton.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
+
+  // ✅ Use event delegation to close sidebar when clicking on a link
+  sidebarNav.addEventListener("click", (event) => {
+    if (event.target.tagName === "A" || event.target.tagName === "BUTTON") {
+      console.log("Sidebar link clicked, closing sidebar...");
+      closeSidebar();
+    }
   });
 
-  overlay.addEventListener("click", () => {
-    console.log("Closing sidebar via overlay...");
-    sidebar.classList.add("translate-x-full");
-    overlay.classList.add("hidden");
-  });
-
-  console.log("Sidebar setup completed.");
+  console.log("✅ Sidebar setup completed.");
 }
 
+
 /**
- * Function to dynamically load navigation from `navigation/index.html`
- */
-/**
- * Function to dynamically load navigation from `navigation/index.html`
+ * ✅ Function to dynamically load navigation from `navigation/index.html`
  */
 export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
@@ -199,6 +213,7 @@ export async function loadNavigation() {
 
 // Load navigation after defining all functions
 loadNavigation();
+
 
 
 

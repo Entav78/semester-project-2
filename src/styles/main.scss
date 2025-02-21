@@ -1,27 +1,17 @@
-@use "mixins";
-@use "custom";
-
-@use "/src/pages/home/index.scss" as home;
-@use "/src/pages/auth/login/login.scss" as login;
-@use "/src/pages/auth/register/register.scss" as register;
-@use "/src/pages/profile/profile.scss" as profile;
-@use "/src/components/navigation/index.scss" as navigation;
-@use "/src/components/buttons/index.scss" as buttons;
-
-
+/*
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+*/
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
-/*
-.errorMessage {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-}
-*/
+
+
+
 
 
 

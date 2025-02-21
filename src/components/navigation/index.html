@@ -6,19 +6,39 @@
     <title>Header Navigation</title>
   </head>
   <body> 
-  <div id="navigation-container">
-  <header class="bg-gray-900 text-white p-4 flex justify-between items-center">
-    <button id="openSidebar" class="lg:hidden text-2xl">☰</button>
-    <nav id="main-nav" class="hidden lg:flex space-x-6"></nav>
-  </header>
-  
-  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-  
-  <aside id="sidebar"
-    class="fixed top-0 right-0 h-full w-64 bg-gray-800 shadow-lg transform translate-x-full transition-transform duration-300">
-    <button id="closeSidebar" class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl">✖</button>
-    <nav id="sidebar-nav" class="p-6 space-y-6 flex flex-col"></nav>
-  </aside>
-</div>
+    <div class="bg-red-500 text-white p-4">If this is red, Tailwind works!</div>
+
+    <div id="navigation-container" class="bg-red-500 text-white">
+
+
+      <header class="bg-gray-900 text-white p-4 flex items-center justify-between">
+        <!-- LOGO (Center on Mobile, Left on Large Screens) -->
+        <div class="lg:ml-4 mx-auto">
+            <img src="/src/img/logo.png" alt="Logo" class="h-12 transition-transform hover:scale-105">
+        </div>
+    
+        <!-- HAMBURGER BUTTON (Mobile Only) -->
+        <button id="openSidebar" class="lg:hidden text-2xl absolute right-4">
+            ☰
+        </button>
+    
+        <!-- MAIN NAVIGATION (Hidden on Mobile, Visible on Large Screens) -->
+        <nav id="main-nav" class="hidden lg:flex space-x-6">
+            <a href="/" class="nav-link text-white hover:text-gray-300 transition">Home</a>
+            <a href="/profile" class="nav-link text-white hover:text-gray-300 transition">Profile</a>
+            <a href="/manageListings" class="nav-link text-white hover:text-gray-300 transition">Manage Listings</a>
+            <a href="/login" class="nav-link text-white hover:text-gray-300 transition">Login</a>
+            <a href="/register" class="nav-link text-white hover:text-gray-300 transition">Register</a>
+        </nav>
+    </header>
+    
+      <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
+      
+      <aside id="sidebar" class="fixed top-0 right-0 h-screen w-64 bg-gray-800 shadow-lg transform translate-x-full transition-transform duration-300 hidden">
+          <button id="closeSidebar" class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl">✖</button>
+          <nav id="sidebar-nav" class="p-6 space-y-6 flex flex-col"></nav>
+      </aside>
+
+  </div>
 </body>
 </html>
