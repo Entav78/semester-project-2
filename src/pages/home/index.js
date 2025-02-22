@@ -1,9 +1,12 @@
 import { fetchAndRenderListings } from "@/js/api/listings.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
+import { Pagination } from "@/components/pagination/Pagination.js";
+import { setupSidebar } from "@/components/navigation/index.js"; 
 
 const ITEMS_PER_PAGE = 8;
 let currentPage = 1;
+let pagination;
 
 export async function initializeHomePage() {
   console.log("Initializing Home Page...");
@@ -29,9 +32,13 @@ export async function initializeHomePage() {
     paginationContainer.innerHTML = "";
 
     console.log("Fetching and rendering listings...");
-    await fetchAndRenderListings(currentPage); // ✅ Fetch Listings
+    const totalListings = await fetchAndRenderListings(currentPage);
 
-    // Initialize Filtering after listings are loaded
+    if (!pagination) {
+      pagination = new Pagination(paginationContainer, ITEMS_PER_PAGE, totalListings, changePage);
+    }
+    pagination.update(currentPage, totalListings);
+
     new Filtering();
 
   } catch (error) {
@@ -41,6 +48,19 @@ export async function initializeHomePage() {
   }
 
   console.log("Home Page Initialized!");
+
+  // ✅ Ensure the sidebar works after everything is loaded
+  setTimeout(() => {
+    console.log("🔄 Running setupSidebar() manually...");
+    setupSidebar(); // Ensures sidebar is initialized after the page loads
+  }, 500);
+}
+
+function changePage(newPage) {
+  currentPage = newPage;
+  fetchAndRenderListings(currentPage).then(totalListings => {
+    pagination.update(currentPage, totalListings);
+  });
 }
 
 

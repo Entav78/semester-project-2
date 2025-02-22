@@ -88,6 +88,7 @@ export class Navigation {
 
     this.container.appendChild(nav);
     console.log(`Navigation created for ${this.container.id}`);
+    console.log("Checking sidebar elements...");
   }
 
   updateNavbar(isLoggedIn) {
@@ -101,7 +102,7 @@ export class Navigation {
 /**
  * ✅ Function to set up sidebar functionality
  */
-function setupSidebar() {
+export function setupSidebar() {
   console.log("Setting up sidebar functionality...");
 
   const sidebar = document.getElementById("sidebar");
@@ -140,7 +141,7 @@ function setupSidebar() {
   closeButton.addEventListener("click", closeSidebar);
   overlay.addEventListener("click", closeSidebar);
 
-  // ✅ Use event delegation to close sidebar when clicking on a link
+  // ✅ Ensure sidebar closes when clicking on a link
   sidebarNav.addEventListener("click", (event) => {
     if (event.target.tagName === "A" || event.target.tagName === "BUTTON") {
       console.log("Sidebar link clicked, closing sidebar...");
@@ -150,6 +151,7 @@ function setupSidebar() {
 
   console.log("Sidebar setup completed.");
 }
+
 
 
 /**

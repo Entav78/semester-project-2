@@ -1,45 +1,11 @@
+import { Pagination } from "@components/pagination/Pagination.js";
+import { Listing } from "@/models/Listing.js";
+import { API_LISTINGS } from "@/js/api/constants.js";
 
-
-import { API_LISTINGS, API_KEY } from "./constants.js";
-import { Listing } from "../../models/Listing.js";
-import { setupListingButtons } from "@/components/buttons/index.js";
-
-
-console.log("API_LISTINGS URL:", API_LISTINGS); 
 
 const ITEMS_PER_PAGE = 8;
+let allListings = [];
 let currentPage = 1;
-
-//  Fetch Listings from API
-export async function fetchListings(page = 1) {
-  console.log(`Fetching Listings - Page ${page}`);
-
-  try {
-    const response = await fetch(`${API_LISTINGS}?_active=true`);
-    if (!response.ok) throw new Error("Failed to fetch listings");
-
-    const json = await response.json();
-    console.log("API Response Data:", json);
-
-    const { data } = json;
-    console.log("Processed Listings:", data);
-
-    // Apply Listing class to each listing
-    const processedListings = data.map(listing => new Listing(listing));
-
-    const totalCount = processedListings.length;
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedListings = processedListings.slice(startIndex, endIndex);
-
-    return { listings: paginatedListings, totalCount };
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    return { listings: [], totalCount: 0 };
-  }
-}
-
-let allListings = []; // Store all fetched listings globally
 
 export async function fetchAllListings() {
   console.log("🔄 Fetching ALL listings...");
@@ -54,19 +20,6 @@ export async function fetchAllListings() {
       if (!response.ok) throw new Error("Failed to fetch listings");
 
       const json = await response.json();
-
-      // Debug raw data
-      console.log(`Raw API Response (Page ${page}):`, json);
-
-      // Log first 5 fetched listings
-      console.log(
-        "First 5 Raw Listings Before Processing:",
-        json.data.slice(0, 5).map(listing => ({
-          id: listing.id,
-          title: listing.title,
-          endsAt: listing.endsAt || "Missing endsAt"
-        }))
-      );
 
       // Ensure `endsAt` is included when creating `Listing` instances
       const listings = json.data.map(listing => new Listing({
@@ -100,28 +53,8 @@ export async function fetchAllListings() {
   }
 }
 
-// Wrap in an async function
-async function logListings() {
-  const listings = await fetchAllListings();
-  
-
-  const filteredListings = listings
-    .filter(listing => listing.title && listing.tags.length > 0)
-    .map(listing => ({
-      Title: listing.title,
-      Tags: listing.tags.join(", ")
-    }));
-
-  console.table(filteredListings);
-}
-
-// Call the function
-logListings();
-
-
 export async function fetchAndRenderListings(page = 1, filterQuery = "") {
   console.log(`Fetching and rendering listings - Page ${page}`);
-  
 
   const container = document.getElementById("listingsContainer");
   if (!container) {
@@ -132,13 +65,13 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
   container.innerHTML = ""; // Clear previous listings before rendering
 
   try {
-    //Ensure we fetch all listings before filtering
+    // Fetch listings if empty
     if (allListings.length === 0) {
       console.log("All listings array is empty. Fetching now...");
       await fetchAllListings();
     }
 
-    // Apply search filtering
+    // 🔥 **Calculate total listings BEFORE pagination**
     let filteredListings = allListings.filter(listing => {
       return (
         listing.title.toLowerCase().includes(filterQuery.toLowerCase()) ||
@@ -146,10 +79,7 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       );
     });
 
-    console.log(`🔎 Filtered Listings Count: ${filteredListings.length}`);
-
-    // Apply pagination AFTER filtering
-    const totalCount = filteredListings.length;
+    const totalCount = filteredListings.length; 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const paginatedListings = filteredListings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
@@ -157,10 +87,9 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
 
     if (paginatedListings.length === 0) {
       container.innerHTML = "<p>No listings found.</p>";
-      return;
+      return totalCount;
     }
 
-    // Render listings
     paginatedListings.forEach(listing => {
       const listingItem = document.createElement("div");
       listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
@@ -169,7 +98,6 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       title.classList.add("listing-title", "text-xl", "font-bold");
       title.textContent = listing.title;
 
-      // Handle Image
       const image = document.createElement("img");
       const imageUrl =
         Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
@@ -195,13 +123,11 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
         auctionEnd.textContent = "No deadline set";
       }
 
-      // View Item Button
       const viewButton = document.createElement("button");
       viewButton.textContent = "View Item";
       viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
       viewButton.dataset.id = listing.id;
       
-
       listingItem.append(title, image, description, auctionEnd, viewButton);
       container.appendChild(listingItem);
     });
@@ -209,67 +135,12 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
     setupListingButtons();
     console.log("setupListingButtons() called after rendering listings!");
 
-    renderPaginationControls(totalCount);
+    return totalCount; // ✅ Ensure this function returns total listings
   } catch (error) {
     console.error("Error fetching listings:", error);
+    return 0; // Return 0 on error
   }
 }
-
-
-
-// Render Pagination Controls
-export function renderPaginationControls(totalCount) {
-  console.log("Rendering pagination controls...");
-
-  const paginationContainer = document.getElementById("paginationContainer");
-  if (!paginationContainer) {
-    console.error("paginationContainer not found in the DOM!");
-    return;
-  }
-
-  paginationContainer.innerHTML = "";
-
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-  if (totalPages <= 1) return;
-
-  const prevButton = document.createElement("button");
-  prevButton.textContent = "Previous";
-  prevButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`;
-  prevButton.disabled = currentPage === 1;
-  prevButton.addEventListener("click", () => changePage(currentPage - 1, totalCount));
-
-  paginationContainer.appendChild(prevButton);
-
-  for (let i = 1; i <= totalPages; i++) {
-    const pageButton = document.createElement("button");
-    pageButton.textContent = i;
-    pageButton.className = `px-4 py-2 mx-1 rounded ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-300 text-black"}`;
-    pageButton.addEventListener("click", () => changePage(i, totalCount));
-    paginationContainer.appendChild(pageButton);
-  }
-
-  const nextButton = document.createElement("button");
-  nextButton.textContent = "Next";
-  nextButton.className = `px-4 py-2 bg-gray-500 text-white rounded ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`;
-  nextButton.disabled = currentPage === totalPages;
-  nextButton.addEventListener("click", () => changePage(currentPage + 1, totalCount));
-
-  paginationContainer.appendChild(nextButton);
-}
-
-//  Change Page Function
-function changePage(newPage, totalCount) {
-  if (newPage < 1 || newPage > Math.ceil(totalCount / ITEMS_PER_PAGE)) return;
-
-  console.log(`Changing to page ${newPage}`);
-  currentPage = newPage;
-
-  fetchAndRenderListings(currentPage);
-  renderPaginationControls(totalCount);
-}
-
-//  Ensure `fetchAndRenderListings` is globally available
-window.fetchAndRenderListings = fetchAndRenderListings;
 
 
 
