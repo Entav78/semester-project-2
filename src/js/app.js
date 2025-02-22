@@ -6,7 +6,8 @@ import { Login } from "@/js/api/login.js";
 //import { initializeItemPage } from "@/pages/item/item.js";
 import { initializeHomePage } from "@/pages/home/index.js"; 
 import { Avatar } from "@/js/api/Avatar.js";
-import "../styles/main.scss";
+import "../styles/main.css";
+
 
 
 console.log("Initializing App...");

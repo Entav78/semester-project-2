@@ -212,9 +212,10 @@ export class Filtering {
 
       // View Item Button
       const viewButton = document.createElement("button");
-      viewButton.textContent = "View Item";
-      viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
-      viewButton.dataset.id = listing.id;
+viewButton.textContent = "View Item";
+viewButton.classList.add("view-item", "bg-red-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
+viewButton.dataset.id = listing.id;
+
       
 
       listingItem.append(title, image, description, auctionEnd, viewButton);

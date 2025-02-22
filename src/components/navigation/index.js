@@ -19,7 +19,7 @@ export class Navigation {
   }
 
   handleLogout() {
-    console.log("🚪 Logging out...");
+    console.log("Logging out...");
 
     // Clear all user-related data from localStorage
     localStorage.removeItem("authToken");
@@ -87,13 +87,13 @@ export class Navigation {
     });
 
     this.container.appendChild(nav);
-    console.log(`✅ Navigation created for ${this.container.id}`);
+    console.log(`Navigation created for ${this.container.id}`);
   }
 
   updateNavbar(isLoggedIn) {
-    console.log(`🔄 Updating navbar... (isLoggedIn: ${isLoggedIn})`);
+    console.log(` Updating navbar... (isLoggedIn: ${isLoggedIn})`);
     isLoggedIn = Boolean(localStorage.getItem("authToken"));
-    console.log(`🔍 isLoggedIn detected: ${isLoggedIn}`);
+    console.log(`isLoggedIn detected: ${isLoggedIn}`);
     this.createNavbar(isLoggedIn);
   }
 }
@@ -102,7 +102,7 @@ export class Navigation {
  * ✅ Function to set up sidebar functionality
  */
 function setupSidebar() {
-  console.log("🛠️ Setting up sidebar functionality...");
+  console.log("Setting up sidebar functionality...");
 
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
@@ -111,7 +111,7 @@ function setupSidebar() {
   const sidebarNav = document.getElementById("sidebar-nav");
 
   if (!sidebar || !overlay || !openButton || !closeButton || !sidebarNav) {
-    console.warn("❌ Sidebar elements missing. Skipping setup.");
+    console.warn("Sidebar elements missing. Skipping setup.");
     return;
   }
 
@@ -148,7 +148,7 @@ function setupSidebar() {
     }
   });
 
-  console.log("✅ Sidebar setup completed.");
+  console.log("Sidebar setup completed.");
 }
 
 
@@ -159,7 +159,7 @@ export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
 
   if (!navContainer) {
-    console.error("❌ Navigation container not found in the DOM!");
+    console.error("Navigation container not found in the DOM!");
     return;
   }
 
@@ -176,9 +176,9 @@ export async function loadNavigation() {
     
     if (importedNav) {
       navContainer.innerHTML = importedNav.innerHTML; // Only inject the inner content
-      console.log("✅ Navigation loaded successfully!");
+      console.log("Navigation loaded successfully!");
     } else {
-      console.error("❌ Navigation container not found in imported HTML!");
+      console.error("Navigation container not found in imported HTML!");
       return;
     }
 

@@ -1,9 +1,10 @@
-/*@use "mixins";
+/* This kinda worked...
+@use "mixins";
 @use "custom";
 
-//@use "/src/pages/home/index.scss"; //already have a name of index...
-@use "@/components/buttons/index.scss";
-//@use "@/components/navigation/index.scss"; //already have a name of index...
+@use "@/components/buttons/buttons.scss"; 
+@use "@/components/navigation/navigation.scss"; 
+@use "@/pages/home/index.scss"; 
 @use "@/pages/profile/profile.scss";
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
@@ -12,22 +13,28 @@
 @tailwind components;
 @tailwind utilities;
 */
+/* Manually generate ALL Tailwind colors */
+/*
+@layer utilities {
+  .text-red-500 { color: red !important; }
+  .bg-red-500 { background-color: red !important; }
+  .text-blue-500 { color: blue !important; }
+  .bg-blue-500 { background-color: blue !important; }
+  .text-green-500 { color: green !important; }
+  .bg-green-500 { background-color: green !important; }
+}
+*/
 
 
 @use "mixins";
 @use "custom";
 
-@use "@/components/buttons/buttons.scss"; // Renamed
-@use "@/components/navigation/navigation.scss"; // Renamed
-@use "@/pages/home/index.scss"; // Keeping this as is
+@use "@/components/buttons/buttons.scss"; 
+@use "@/components/navigation/navigation.scss"; 
+@use "@/pages/home/index.scss"; 
 @use "@/pages/profile/profile.scss";
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 
 
 
