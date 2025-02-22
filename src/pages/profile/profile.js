@@ -329,7 +329,7 @@ if (avatarImg && avatarInput && updateAvatarBtn) {
 */
 
 export function setupTabNavigation() {
-  console.log("🔄 Setting up tab navigation...");
+  console.log("Setting up tab navigation...");
 
   const listingsTabButton = document.querySelector("[data-tab='listings']");
   const bidsTabButton = document.querySelector("[data-tab='bids']");
@@ -337,12 +337,12 @@ export function setupTabNavigation() {
   const bidsTab = document.getElementById("bidsTab");
 
   if (!listingsTabButton || !bidsTabButton || !listingsTab || !bidsTab) {
-    console.error("❌ One or more tab elements not found! Cannot set up tab navigation.");
+    console.error("One or more tab elements not found! Cannot set up tab navigation.");
     return;
   }
 
   function switchTab(targetTab) {
-    console.log(`🔀 Switching to tab: ${targetTab}`);
+    console.log(`Switching to tab: ${targetTab}`);
 
     // Hide all tab contents
     document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.add("hidden"));
@@ -358,25 +358,25 @@ export function setupTabNavigation() {
       bidsTab.classList.remove("hidden");
       bidsTabButton.classList.add("active-tab");
 
-      // ✅ Ensure bids are displayed when clicking "My Bids"
+      // Ensure bids are displayed when clicking "My Bids"
       const user = JSON.parse(localStorage.getItem("user")) || {};
       if (user.userName) {
         displayUserBids(user.userName);
       } else {
-        console.error("❌ No user found in localStorage. Cannot fetch bids.");
+        console.error("No user found in localStorage. Cannot fetch bids.");
       }
     }
   }
 
-  // ✅ Remove old event listeners before adding new ones (prevents duplicates)
+  // Remove old event listeners before adding new ones (prevents duplicates)
   listingsTabButton.removeEventListener("click", () => switchTab("listings"));
   bidsTabButton.removeEventListener("click", () => switchTab("bids"));
 
-  // ✅ Add event listeners to tab buttons
+  // Add event listeners to tab buttons
   listingsTabButton.addEventListener("click", () => switchTab("listings"));
   bidsTabButton.addEventListener("click", () => switchTab("bids"));
 
-  console.log("✅ Tab navigation initialized!");
+  console.log("Tab navigation initialized!");
 }
 
 async function refreshAvatarSection(userName) {
@@ -384,7 +384,7 @@ async function refreshAvatarSection(userName) {
 
   const authToken = localStorage.getItem("authToken");
   if (!authToken || !userName) {
-    console.error("❌ Missing authentication or userName.");
+    console.error("Missing authentication or userName.");
     return;
   }
 
@@ -399,101 +399,37 @@ async function refreshAvatarSection(userName) {
     });
 
     if (!response.ok) {
-      console.error("❌ Failed to fetch profile data.");
+      console.error("Failed to fetch profile data.");
       return;
     }
 
     const userData = await response.json();
     console.log("📡 Refreshed Profile Data:", userData);
 
-    // ✅ Update avatar image
+    // Update avatar image
     const avatarImg = document.getElementById("avatar-img");
     const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150";
     if (avatarImg) avatarImg.src = avatarUrl;
 
-    // ✅ Update bio
+    // Update bio
     const bioContainer = document.getElementById("bio-container");
     if (bioContainer) bioContainer.textContent = userData.data.bio || "No bio available.";
 
-    // ✅ Update banner
+    //Update banner
     const bannerContainer = document.getElementById("banner-img");
     if (bannerContainer) bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
 
-    // ✅ Update credits
+    // Update credits
     const creditsContainer = document.getElementById("user-credits");
     if (creditsContainer) {
       creditsContainer.textContent = `Credits: ${userData.data.credits}`;
     }
 
-    console.log("✅ Avatar section refreshed!");
+    console.log("Avatar section refreshed!");
   } catch (error) {
-    console.error("❌ Error refreshing avatar section:", error);
+    console.error("Error refreshing avatar section:", error);
   }
 }
-
-/* deactivate while debugging with debugEventListeners
-function reattachProfileEventListeners() {
-  console.log("🔄 Reattaching Profile Event Listeners...");
-
-  // 🔥 Function to safely reattach event listeners
-  function resetButton(selector, callback) {
-    const oldButton = document.querySelector(selector);
-    if (!oldButton) {
-      console.warn(`⚠️ Button ${selector} not found!`);
-      return;
-    }
-
-    const newButton = oldButton.cloneNode(true);
-    oldButton.replaceWith(newButton);
-    newButton.addEventListener("click", callback);
-  }
-
-  // ✅ Update Avatar Button
-  resetButton("#update-avatar-btn", () => {
-    console.log("🔄 Update Avatar Clicked");
-    const avatarInput = document.getElementById("avatar-url-input").value.trim();
-    if (!avatarInput) {
-      alert("Please enter a valid avatar URL!");
-      return;
-    }
-    new Avatar(
-      document.getElementById("avatar-img"),
-      document.getElementById("avatar-url-input"),
-      document.getElementById("update-avatar-btn")
-    ).updateAvatar();
-  });
-
-  // ✅ Edit Profile Button
-  resetButton("#edit-profile-btn", () => {
-    console.log("🔄 Edit Profile Clicked");
-    document.getElementById("profile-edit-section").classList.toggle("hidden");
-  });
-
-  // ✅ My Listings Button
-  resetButton("#my-listings-btn", () => {
-    console.log("🔄 My Listings Clicked");
-    document.getElementById("listingsTab").classList.remove("hidden");
-    document.getElementById("bidsTab").classList.add("hidden");
-  });
-
-  // ✅ My Bids Button
-  resetButton("#my-bids-btn", () => {
-    console.log("🔄 My Bids Clicked");
-    document.getElementById("bidsTab").classList.remove("hidden");
-    document.getElementById("listingsTab").classList.add("hidden");
-
-    // Fetch bids when clicking "My Bids"
-    const user = JSON.parse(localStorage.getItem("user")) || {};
-    if (user.userName) {
-      displayUserBids(user.userName);
-    } else {
-      console.error("❌ No user found in localStorage. Cannot fetch bids.");
-    }
-  });
-
-  console.log("✅ All profile event listeners reattached!");
-}
-*/
 
 function debugEventListeners() {
   console.log("🔍 Checking event listeners...");
