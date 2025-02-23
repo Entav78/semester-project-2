@@ -1,4 +1,5 @@
 import { fetchAndRenderListings } from "@/js/api/listings.js";
+import { setupListingButtons } from "@/components/buttons/index.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Pagination } from "@/components/pagination/Pagination.js";
@@ -60,8 +61,12 @@ function changePage(newPage) {
   currentPage = newPage;
   fetchAndRenderListings(currentPage).then(totalListings => {
     pagination.update(currentPage, totalListings);
+    
+    setupListingButtons();
   });
 }
+
+
 
 
 

@@ -17,6 +17,7 @@ export default {
         soft: "#D7CCC8", // Lighter elements
         text: "#53423C", // Text color
       },
+      safelist: ["text-white"],
     },
   },
   plugins: [],
