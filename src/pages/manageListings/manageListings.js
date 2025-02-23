@@ -275,10 +275,16 @@ if (this.listingId) {
 
     this.listings.forEach((listing) => {
       const listingItem = document.createElement("div");
-      listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
-
+      listingItem.classList.add(
+        "bg-soft", "border", "border-accent",
+        "p-4", "rounded-lg", "shadow-lg",
+        "hover:shadow-xl", "transition-shadow", "duration-200",
+        "flex", "flex-col", "justify-between", "h-full"
+      );
+      
       const title = document.createElement("h2");
-      title.classList.add("text-xl", "font-bold");
+      title.classList.add("listing-title", "text-xl", "font-bold", "min-h-[3rem]");
+
       title.textContent = listing.title;
 
       // ✅ Use imported Edit/Delete buttons

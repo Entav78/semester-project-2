@@ -102,9 +102,9 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       
       const title = document.createElement("h2");
       title.classList.add("listing-title", "text-xl", "font-bold");
-      title.textContent = listing.title; // Keeps title formatting
-
-      const defaultImagePath = "/src/img/default.jpg"; // ✅ Correct localhost path
+      title.textContent = listing.title; 
+      
+      const defaultImagePath = "/src/img/default.jpg"; 
 
       const imageUrl =
         Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
