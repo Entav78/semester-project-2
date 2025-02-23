@@ -16,7 +16,7 @@ export async function router(pathname = window.location.pathname) {
         if (mainContainer) {
             const newMain = document.createElement("main");
             newMain.id = "main-container";
-            newMain.classList.add("main-content"); // Maintain styles
+            newMain.classList.add("flex-grow", "main-content"); // Maintain styles
 
             mainContainer.replaceWith(newMain);
             console.log("Replaced #main-container to prevent duplication.");
@@ -25,7 +25,7 @@ export async function router(pathname = window.location.pathname) {
             
             mainContainer = document.createElement("main");
             mainContainer.id = "main-container";
-            mainContainer.classList.add("main-content");
+            mainContainer.classList.add("flex-grow", "main-content");
             document.body.appendChild(mainContainer);
         }
 
