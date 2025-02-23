@@ -172,7 +172,13 @@ export class Filtering {
 
     paginatedListings.forEach((listing) => {
       const listingItem = document.createElement("div");
-      listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
+      listingItem.classList.add(
+        "bg-soft", "border", "border-accent",
+        "p-4", "rounded-lg", "shadow-lg",
+        "hover:shadow-xl", "transition-shadow", "duration-200",
+        "flex", "flex-col", "justify-between",
+        "h-[500px]" // ✅ Ensure all cards have the same height
+      );
 
       const title = document.createElement("h2");
       title.classList.add("listing-title", "text-xl", "font-bold");
@@ -184,13 +190,22 @@ export class Filtering {
       image.alt = listing.title || "No image available";
       image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 
+       // ✅ Description that fills available space
       const description = document.createElement("p");
-      description.classList.add("listing-description", "text-gray-600", "mt-2");
+      description.classList.add("listing-description", "text-gray-600", "mt-2", "flex-grow");
       description.textContent = listing.description || "No description available.";
 
       // ✅ Declare auctionEnd before using it
-      const auctionEnd = document.createElement("p"); 
+      const auctionEnd = document.createElement("p");
       auctionEnd.classList.add("mt-2", "font-bold");
+      if (listing.endsAt) {
+        const now = new Date();
+        const auctionEndTime = new Date(listing.endsAt);
+        auctionEnd.textContent = auctionEndTime < now ? "SOLD / AUCTION ENDED" : `Auction Ends: ${auctionEndTime.toLocaleString()}`;
+        auctionEnd.classList.add(auctionEndTime < now ? "text-gray-700 bg-yellow-300 p-2 rounded-lg" : "text-text");
+      } else {
+        auctionEnd.textContent = "No deadline set";
+      }
 
      // console.log(`Listing: ${listing.title}, Ends At: ${listing.endsAt}`);
 
@@ -211,11 +226,11 @@ export class Filtering {
         auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
       }
 
-      // View Item Button
+      // ✅ Correct button styles (matching brown theme)
       const viewButton = document.createElement("button");
-viewButton.textContent = "View Item";
-viewButton.classList.add("view-item", "bg-red-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
-viewButton.dataset.id = listing.id;
+      viewButton.textContent = "View Item";
+      viewButton.classList.add("view-item", "bg-primary", "hover:bg-secondary", "transition", "text-white", "text-lg", "font-semibold", "px-4", "py-2", "rounded");
+      viewButton.dataset.id = listing.id;
 
       
 

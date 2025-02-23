@@ -5,3 +5,7 @@ default images for missing images
 loading indicator in every page
 don't use innerHTML -> use createElement
 profile name->title
+
+Note: Filtering is a great place to put the constants...
+
+buttonContainer is not in Filtering

@@ -54,6 +54,8 @@ export async function fetchAllListings() {
 }
 
 export async function fetchAndRenderListings(page = 1, filterQuery = "") {
+  console.log("🚀 fetchAndRenderListings() is running...");
+
   console.log(`Fetching and rendering listings - Page ${page}`);
 
   const container = document.getElementById("listingsContainer");
@@ -96,40 +98,41 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
         "bg-soft", "border", "border-accent",
         "p-4", "rounded-lg", "shadow-lg",
         "hover:shadow-xl", "transition-shadow", "duration-200",
-        "flex", "flex-col", "justify-between", // Ensures button stays at bottom
-        "h-full" // Makes all cards the same height
+        "flex", "flex-col", "justify-between",
+        "h-[500px]" // ✅ Increased height slightly for consistency
       );
-      
+    
+      // ✅ Ensure the title takes up a fixed amount of space
       const title = document.createElement("h2");
-      title.classList.add("listing-title", "text-xl", "font-bold");
+      title.classList.add("listing-title", "text-xl", "font-bold", "min-h-[3rem]"); 
       title.textContent = listing.title; 
-      
-      const defaultImagePath = "/src/img/default.jpg"; 
-
+    
+      const defaultImagePath = "/img/default.jpg";
+    
       const imageUrl =
         Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
           ? listing.media[0].url
           : defaultImagePath;
-
-      console.log("✅ Image URL being used:", imageUrl); // Double-check it's correct
-
-
+    
+      // ✅ Ensure all images take the same space
+      const imageWrapper = document.createElement("div");
+      imageWrapper.classList.add("w-full", "h-[200px]", "overflow-hidden", "flex", "justify-center", "items-center", "bg-gray-200", "rounded-lg");
+    
       const image = document.createElement("img");
+      image.classList.add("w-full", "h-full", "object-cover", "rounded-lg");
       image.src = imageUrl;
       image.alt = listing.title || "No image available";
-
-
-console.log("✅ Image element created:", image); // Check if img is correctly set
-
-
-
+    
+      imageWrapper.appendChild(image);
+    
+      // ✅ Fix description height for consistency
       const description = document.createElement("p");
-      description.classList.add("listing-description", "text-gray-600", "mt-2");
+      description.classList.add("listing-description", "text-gray-600", "mt-2", "flex-grow");
       description.textContent = listing.description || "No description available.";
-
+    
+      // ✅ Auction End Date
       const auctionEnd = document.createElement("p");
       auctionEnd.classList.add("mt-2", "font-bold");
-
       if (listing.endsAt) {
         const now = new Date();
         const auctionEndTime = new Date(listing.endsAt);
@@ -138,15 +141,24 @@ console.log("✅ Image element created:", image); // Check if img is correctly s
       } else {
         auctionEnd.textContent = "No deadline set";
       }
-
+    
+      // ✅ Fix button positioning by wrapping it in a div
+      const buttonContainer = document.createElement("div");
+      buttonContainer.classList.add("flex", "justify-center", "mt-auto"); 
+    
       const viewButton = document.createElement("button");
       viewButton.textContent = "View Item";
-      viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
+      viewButton.classList.add("view-item", "bg-red-500", "text-white", "px-4", "py-2", "rounded", "mt-4", "hover:bg-red-700");
       viewButton.dataset.id = listing.id;
-      
-      listingItem.append(title, image, description, auctionEnd, viewButton);
+    
+      buttonContainer.appendChild(viewButton);
+    
+      // ✅ Append all elements to the listing card
+      listingItem.append(title, imageWrapper, description, auctionEnd, buttonContainer);
       container.appendChild(listingItem);
     });
+    
+    
 
     setupListingButtons();
     console.log("setupListingButtons() called after rendering listings!");
