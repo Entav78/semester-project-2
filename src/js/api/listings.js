@@ -3,7 +3,7 @@ import { Listing } from "@/models/Listing.js";
 import { API_LISTINGS } from "@/js/api/constants.js";
 
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9;
 let allListings = [];
 let currentPage = 1;
 

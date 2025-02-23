@@ -23,7 +23,7 @@ export class Filtering {
 
     this.listings = []; // Store all listings for filtering
     this.filteredListings = []; // Store filtered results for pagination
-    this.itemsPerPage = 8;
+    this.itemsPerPage = 9;
     this.currentPage = 1;
 
     this.setupEventListeners();
@@ -99,10 +99,10 @@ export class Filtering {
 
     console.log("Selected Tags:", selectedTags);
 
-    // ✅ Debug BEFORE filtering - Show only 5 items
+    // Debug BEFORE filtering - Show only 5 items
     console.log("🔍 Before Filtering (First 5 Listings):", this.listings.slice(0, 5).map(listing => ({
       title: listing.title,
-      endsAt: listing.endsAt || "❌ Missing endsAt"
+      endsAt: listing.endsAt || "Missing endsAt"
     })));
 
     this.listingsContainer.innerHTML = ""; // Clear current listings display
@@ -118,10 +118,10 @@ export class Filtering {
       return matchesSearch && matchesTags;
     });
 
-    // ✅ Debug AFTER filtering - Show only 5 items
-    console.log("✅ After Filtering (First 5 Listings):", this.filteredListings.slice(0, 5).map(listing => ({
+    // Debug AFTER filtering - Show only 5 items
+    console.log("After Filtering (First 5 Listings):", this.filteredListings.slice(0, 5).map(listing => ({
       title: listing.title,
-      endsAt: listing.endsAt || "❌ Missing endsAt"
+      endsAt: listing.endsAt || "Missing endsAt"
     })));
 
     this.currentPage = 1; // Reset to page 1 on filter change
@@ -242,20 +242,75 @@ export class Filtering {
 }
 
 
-  renderPaginationControls() {
-    this.paginationContainer.innerHTML = ""; // Clear existing pagination
+renderPaginationControls() {
+  this.paginationContainer.innerHTML = ""; // Clear existing pagination
 
-    const totalPages = Math.ceil(this.filteredListings.length / this.itemsPerPage);
-    if (totalPages <= 1) return; // No need for pagination if only 1 page
+  const totalPages = Math.ceil(this.filteredListings.length / this.itemsPerPage);
+  if (totalPages <= 1) return; // No pagination needed for 1 page
 
-    for (let i = 1; i <= totalPages; i++) {
-      const pageButton = document.createElement("button");
-      pageButton.textContent = i;
-      pageButton.className = `px-4 py-2 mx-1 rounded ${i === this.currentPage ? "bg-blue-500 text-white" : "bg-gray-300 text-black"}`;
-      pageButton.addEventListener("click", () => this.changePage(i));
-      this.paginationContainer.appendChild(pageButton);
-    }
+  const paginationButtons = [];
+
+  // 🔹 **Previous Button**
+  if (this.currentPage > 1) {
+      const prevButton = this.createPaginationButton("« Prev", this.currentPage - 1);
+      paginationButtons.push(prevButton);
   }
+
+  // 🔹 **First Page**
+  if (this.currentPage > 3) {
+      paginationButtons.push(this.createPaginationButton(1, 1));
+      if (this.currentPage > 4) paginationButtons.push(this.createEllipsis());
+  }
+
+  // 🔹 **Middle Pages (Current ± 1)**
+  for (let i = Math.max(1, this.currentPage - 1); i <= Math.min(totalPages, this.currentPage + 1); i++) {
+      paginationButtons.push(this.createPaginationButton(i, i, i === this.currentPage));
+  }
+
+  // 🔹 **Last Page**
+  if (this.currentPage < totalPages - 2) {
+      if (this.currentPage < totalPages - 3) paginationButtons.push(this.createEllipsis());
+      paginationButtons.push(this.createPaginationButton(totalPages, totalPages));
+  }
+
+  // 🔹 **Next Button**
+  if (this.currentPage < totalPages) {
+      const nextButton = this.createPaginationButton("Next »", this.currentPage + 1);
+      paginationButtons.push(nextButton);
+  }
+
+  // 🔹 Append buttons to container
+  paginationButtons.forEach((btn) => this.paginationContainer.appendChild(btn));
+}
+
+createPaginationButton(text, page, isActive = false) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  
+  // Always add these base styles
+  button.classList.add("px-4", "py-2", "mx-1", "rounded", "transition");
+
+  // Add active or default styles correctly
+  if (isActive) {
+    button.classList.add("bg-primary", "text-white", "font-bold");
+  } else {
+    button.classList.add("bg-soft", "text-text", "hover:bg-secondary", "hover:text-white");
+  }
+
+  button.addEventListener("click", () => this.changePage(page));
+  return button;
+}
+
+
+createEllipsis() {
+  const ellipsis = document.createElement("span");
+  ellipsis.textContent = "...";
+  ellipsis.classList.add("px-2", "py-2", "mx-1", "text-text");
+  return ellipsis;
+}
+
+
+
 
   changePage(newPage) {
     if (newPage < 1 || newPage > Math.ceil(this.filteredListings.length / this.itemsPerPage)) return;

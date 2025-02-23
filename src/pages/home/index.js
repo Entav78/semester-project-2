@@ -5,7 +5,7 @@ import { Filtering } from "@/components/filtering/Filtering.js";
 import { Pagination } from "@/components/pagination/Pagination.js";
 import { setupSidebar } from "@/components/navigation/index.js"; 
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9;
 let currentPage = 1;
 let pagination;
 
