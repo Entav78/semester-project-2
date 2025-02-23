@@ -200,25 +200,26 @@ console.log("populateEditForm() executed!");
 
     if (this.listingId) {
         submitButton.textContent = "Update Listing";
-        submitButton.classList.add("bg-green-600", "hover:bg-green-700");
+        submitButton.classList.add("bg-primary", "hover:bg-secondary");
     } else {
         submitButton.textContent = "Create Listing";
-        submitButton.classList.add("bg-blue-600", "hover:bg-blue-700");
+        submitButton.classList.add("bg-primary", "hover:bg-secondary");
     }
 
     form.append(submitButton); // Add inside the form
 
-// Delete Button (Only for Edit Mode)
-if (this.listingId) {
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.textContent = "Delete Listing";
-    deleteButton.classList.add("w-full", "bg-red-600", "text-white", "py-2", "rounded", "hover:bg-red-700", "mt-2");
-    
-    deleteButton.addEventListener("click", () => this.handleDeleteListing());
+    // Delete Button (Only for Edit Mode)
+    if (this.listingId) {
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete Listing";
+        deleteButton.classList.add("w-full", "bg-accent", "text-white", "py-2", "rounded", "hover:bg-secondary", "mt-2");
+        
+        deleteButton.addEventListener("click", () => this.handleDeleteListing());
 
-    form.append(deleteButton); // Append inside the form
-}
+        form.append(deleteButton);
+    }
+
 
 
     // Append the form and message container
