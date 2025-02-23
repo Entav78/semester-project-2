@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#B09187", // Header, Sidebar
+        primary: "#B09187", // Buttons
         secondary: "#82685E", // Sidebar alternative
-        accent: "#53423C", // Buttons, highlights
+        accent: "#53423C", // Header, Sidebar, highlights, hoover
         background: "#EEE9E7", // Main background
         soft: "#D7CCC8", // Lighter elements
         text: "#53423C", // Text color

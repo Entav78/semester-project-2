@@ -92,20 +92,36 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
 
     paginatedListings.forEach(listing => {
       const listingItem = document.createElement("div");
-      listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
-
+      listingItem.classList.add(
+        "bg-soft", "border", "border-accent",
+        "p-4", "rounded-lg", "shadow-lg",
+        "hover:shadow-xl", "transition-shadow", "duration-200",
+        "flex", "flex-col", "justify-between", // Ensures button stays at bottom
+        "h-full" // Makes all cards the same height
+      );
+      
       const title = document.createElement("h2");
       title.classList.add("listing-title", "text-xl", "font-bold");
-      title.textContent = listing.title;
+      title.textContent = listing.title; // Keeps title formatting
 
-      const image = document.createElement("img");
+      const defaultImagePath = "/src/img/default.jpg"; // ✅ Correct localhost path
+
       const imageUrl =
         Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
           ? listing.media[0].url
-          : "/img/default.jpg";
+          : defaultImagePath;
+
+      console.log("✅ Image URL being used:", imageUrl); // Double-check it's correct
+
+
+      const image = document.createElement("img");
       image.src = imageUrl;
       image.alt = listing.title || "No image available";
-      image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
+
+
+console.log("✅ Image element created:", image); // Check if img is correctly set
+
+
 
       const description = document.createElement("p");
       description.classList.add("listing-description", "text-gray-600", "mt-2");
