@@ -192,7 +192,14 @@ export class Filtering {
 
        // ✅ Description that fills available space
       const description = document.createElement("p");
-      description.classList.add("listing-description", "text-gray-600", "mt-2", "flex-grow");
+      description.classList.add(
+        "listing-description",
+        "text-gray-600",
+        "mt-2",
+        "flex-grow",
+        "line-clamp-2"
+      );
+      
       description.textContent = listing.description || "No description available.";
 
       // ✅ Declare auctionEnd before using it
