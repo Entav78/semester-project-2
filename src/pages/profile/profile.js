@@ -69,6 +69,8 @@ export function initializeProfilePage(forceRefresh = true) {
     console.log("✅ setupListingButtons() manually called in Profile Page");
     setupListingButtons(); // ✅ Ensure event listeners are set up for profile page
     
+    console.log("🔄 Re-initializing profile buttons after navigation...");
+    setupProfileButtons();
 
     console.log("✅ Profile Setup Complete!");
   }, 300);
