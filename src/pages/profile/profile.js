@@ -115,45 +115,76 @@ async function displayUserListings(userName) {
     description.classList.add("text-gray-600", "mt-2");
     description.textContent = listing.description || "No description available.";
 
-    const auctionStatus = document.createElement("p");
-    auctionStatus.classList.add("font-bold", "mt-2");
+    // ✅ Create the auction status element
+    // ✅ Create the auction status element
+const auctionStatus = document.createElement("p");
+auctionStatus.classList.add(
+  "mt-2", "font-bold", "inline-block", 
+  "px-2", "text-sm", "rounded"
+);
 
-    const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
-    const now = new Date();
+const auctionEndTime = listing.endsAt ? new Date(listing.endsAt) : null;
+const now = new Date();
 
-    if (auctionEndTime && auctionEndTime < now) {
-      auctionStatus.textContent = "SOLD / AUCTION ENDED";
-      auctionStatus.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
-    } else {
-      auctionStatus.textContent = `Auction Ends: ${auctionEndTime?.toLocaleString() || "No deadline set"}`;
-      auctionStatus.classList.add("text-red-500");
-    }
+if (auctionEndTime && auctionEndTime < now) {
+  auctionStatus.textContent = "SOLD / AUCTION ENDED";
+  auctionStatus.classList.add("text-accent/80", "bg-accent/10");
+} else {
+  auctionStatus.textContent = `Auction Ends: ${auctionEndTime?.toLocaleString() || "No deadline set"}`;
+  auctionStatus.classList.add("text-white", "bg-accent", "px-2", "py-1", "rounded");
+}
 
-    // ✅ View Item Button
-    const viewButton = document.createElement("button");
-    viewButton.textContent = "View Item";
-    viewButton.classList.add("view-item", "bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
-    viewButton.dataset.id = listing.id;
-    
+// ✅ Wrap buttons inside a flex container
+const buttonContainer = document.createElement("div");
+buttonContainer.classList.add("flex", "gap-2", "mt-2");
 
-    // ✅ Edit Listing Button
-    const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
-    editButton.classList.add("bg-yellow-500", "text-white", "px-4", "py-2", "rounded", "mt-4", "ml-2");
-    editButton.addEventListener("click", () => {
-      console.log(`Editing listing: ${listing.id}`);
-      window.history.pushState({}, "", `/manageListings?id=${listing.id}`);
-      router(`/manageListings?id=${listing.id}`);
-    });
+// ✅ View Item Button
+const viewButton = document.createElement("button");
+viewButton.textContent = "View Item";
+viewButton.classList.add(
+  "bg-primary", "hover:bg-secondary", "transition",
+  "text-white", "text-lg", "font-semibold",
+  "px-4", "py-2", "rounded"
+);
+viewButton.dataset.id = listing.id;
 
-    // ✅ Delete Listing Button
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.classList.add("bg-red-500", "text-white", "px-4", "py-2", "rounded", "mt-4", "ml-2");
-    deleteButton.addEventListener("click", () => handleDeleteListing(listing.id));
+// ✅ Edit Listing Button
+const editButton = document.createElement("button");
+editButton.textContent = "Edit";
+editButton.classList.add(
+  "bg-primary", "hover:bg-secondary", "transition",
+  "text-white", "text-lg", "font-semibold",
+  "px-4", "py-2", "rounded"
+);
+editButton.addEventListener("click", () => {
+  console.log(`Editing listing: ${listing.id}`);
+  window.history.pushState({}, "", `/manageListings?id=${listing.id}`);
+  router(`/manageListings?id=${listing.id}`);
+});
 
-    listingItem.append(title, image, description, auctionStatus, viewButton, editButton, deleteButton);
-    listingsContainer.appendChild(listingItem);
+// ✅ Delete Listing Button (Using Coffee Brown)
+const deleteButton = document.createElement("button");
+deleteButton.textContent = "Delete";
+deleteButton.classList.add(
+  "bg-accent/90",       // Softer brown, slightly transparent
+  "text-white",         // Keep text readable
+  "px-4", "py-2",       // Consistent padding
+  "rounded",            // Rounded corners like other buttons
+  "border", "border-accent/50",  // Soft border to blend in
+  "transition", "hover:bg-accent/70", // Smooth hover effect
+  "font-semibold"
+);
+
+deleteButton.addEventListener("click", () => handleDeleteListing(listing.id));
+
+
+// ✅ Append buttons inside the button container
+buttonContainer.append(viewButton, editButton, deleteButton);
+
+// ✅ Append all elements to the listing item
+listingItem.append(title, image, description, auctionStatus, buttonContainer);
+listingsContainer.appendChild(listingItem);
+
   });
 
   console.log("User listings displayed successfully!");
@@ -249,7 +280,19 @@ async function displayUserBids(userName) {
 
       const viewButton = document.createElement("button");
       viewButton.textContent = "View Item";
-      viewButton.classList.add("bg-blue-500", "text-white", "px-4", "py-2", "rounded", "mt-4");
+      viewButton.classList.add(
+        "view-item",
+        "bg-primary",
+        "hover:bg-secondary",
+        "transition",
+        "text-white",
+        "text-lg",
+        "font-semibold",
+        "px-4",
+        "py-2",
+        "rounded"
+      );
+      
       viewButton.style.display = "none";
 
       const matchingListing = listings.find((listing) =>

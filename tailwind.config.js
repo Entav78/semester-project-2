@@ -16,6 +16,8 @@ export default {
         background: "#EEE9E7", // Main background
         soft: "#D7CCC8", // Lighter elements
         text: "#53423C", // Text color
+        coffee: '#241C19', // Dark brown
+        mocha: "#7A5C4F", // Softer brown for delete button
       },
       safelist: ["text-white"],
     },
