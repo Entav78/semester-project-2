@@ -5,22 +5,16 @@ import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
 import { setupProfileButtons } from "@/components/buttons/index.js";
+import { setupButtons } from "@/components/buttons/index.js";
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
 
+let avatarInstance = null; // ✅ Declare globally
+
 export function initializeProfilePage(forceRefresh = false) {
   if (window.profilePageInitialized && !forceRefresh) {
-    console.warn("⚠️ Profile Page already initialized. Re-fetching user data...");
-
-    refreshAvatarSection(user.userName || user.name);
-    displayUserListings(user.userName || user.name);
-    displayUserBids(user.userName || user.name);
-    setupTabNavigation();
-    
-    // ✅ Ensure buttons are reinitialized
-    setupProfileButtons();
-
-    return;
+    console.warn("⚠️ Profile Page already initialized. Skipping re-initialization.");
+    return;  // ❌ Stop here to prevent multiple calls
   }
 
   console.log("✅ Initializing Profile Page...");
@@ -59,7 +53,7 @@ export function initializeProfilePage(forceRefresh = false) {
     Promise.all([
       displayUserListings(user.userName),
       displayUserBids(user.userName),
-      refreshAvatarSection(user.userName)
+      refreshAvatarSection(user.userName) // ✅ This was causing multiple fetches
     ])
     .then(() => console.log("✅ Profile Data Loaded Successfully"))
     .catch(error => console.error("❌ Error loading profile:", error))
@@ -70,13 +64,16 @@ export function initializeProfilePage(forceRefresh = false) {
 
     // ✅ Ensure Buttons Work After Navigation
     setupTabNavigation();
-    setupProfileButtons(); // 🔥 Call button setup here
+    setupProfileButtons(); // ✅ Call once
 
     console.log("✅ Profile Setup Complete!");
   }, 300);
 }
 
 
+
+
+export { avatarInstance }; // ✅ Ensure this is exported
 
 
 // ✅ Ensure the function is executed when the profile page loads
@@ -328,63 +325,49 @@ if (avatarImg && avatarInput && updateAvatarBtn) {
 }
 */
 
-export function setupTabNavigation() {
-  console.log("Setting up tab navigation...");
+let tabsInitialized = false; // ✅ Prevent re-initialization
 
-  const listingsTabButton = document.querySelector("[data-tab='listings']");
-  const bidsTabButton = document.querySelector("[data-tab='bids']");
-  const listingsTab = document.getElementById("listingsTab");
-  const bidsTab = document.getElementById("bidsTab");
-
-  if (!listingsTabButton || !bidsTabButton || !listingsTab || !bidsTab) {
-    console.error("One or more tab elements not found! Cannot set up tab navigation.");
+function setupTabNavigation() {
+  if (tabsInitialized) {
+    console.warn("⚠️ Tabs already initialized. Skipping...");
     return;
   }
 
-  function switchTab(targetTab) {
-    console.log(`Switching to tab: ${targetTab}`);
+  console.log("Setting up Profile Page Tabs...");
+  
+  const tabs = document.querySelectorAll(".tab-button");
+  const tabContents = document.querySelectorAll(".tab-content");
 
-    // Hide all tab contents
-    document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.add("hidden"));
-
-    // Remove active class from all buttons
-    document.querySelectorAll(".tab-button").forEach((btn) => btn.classList.remove("active-tab"));
-
-    // Show the selected tab and highlight the button
-    if (targetTab === "listings") {
-      listingsTab.classList.remove("hidden");
-      listingsTabButton.classList.add("active-tab");
-    } else if (targetTab === "bids") {
-      bidsTab.classList.remove("hidden");
-      bidsTabButton.classList.add("active-tab");
-
-      // Ensure bids are displayed when clicking "My Bids"
-      const user = JSON.parse(localStorage.getItem("user")) || {};
-      if (user.userName) {
-        displayUserBids(user.userName);
-      } else {
-        console.error("No user found in localStorage. Cannot fetch bids.");
-      }
-    }
+  if (!tabs.length || !tabContents.length) {
+    console.warn("No tabs found on profile page.");
+    return;
   }
 
-  // Remove old event listeners before adding new ones (prevents duplicates)
-  listingsTabButton.removeEventListener("click", () => switchTab("listings"));
-  bidsTabButton.removeEventListener("click", () => switchTab("bids"));
+  tabs.forEach(tab => {
+    tab.removeEventListener("click", handleTabClick);
+    tab.addEventListener("click", handleTabClick);
+  });
 
-  // Add event listeners to tab buttons
-  listingsTabButton.addEventListener("click", () => switchTab("listings"));
-  bidsTabButton.addEventListener("click", () => switchTab("bids"));
+  function handleTabClick(event) {
+    tabs.forEach(t => t.classList.remove("active-tab"));
+    event.target.classList.add("active-tab");
 
-  console.log("Tab navigation initialized!");
+    tabContents.forEach(content => content.classList.add("hidden"));
+    document.getElementById(`${event.target.dataset.tab}Tab`).classList.remove("hidden");
+  }
+
+  tabsInitialized = true; // ✅ Prevents duplicate calls
+  console.log("✅ Tabs Initialized!");
 }
+
+
 
 async function refreshAvatarSection(userName) {
   console.log(`🔄 Refreshing avatar section for: ${userName}`);
 
   const authToken = localStorage.getItem("authToken");
   if (!authToken || !userName) {
-    console.error("Missing authentication or userName.");
+    console.error("❌ Missing authentication or userName.");
     return;
   }
 
@@ -399,38 +382,55 @@ async function refreshAvatarSection(userName) {
     });
 
     if (!response.ok) {
-      console.error("Failed to fetch profile data.");
+      console.error("❌ Failed to fetch profile data.");
       return;
     }
 
     const userData = await response.json();
     console.log("📡 Refreshed Profile Data:", userData);
 
-    // Update avatar image
+    // ✅ SAFELY SELECT ELEMENTS BEFORE UPDATING
     const avatarImg = document.getElementById("avatar-img");
-    const avatarUrl = userData.data.avatar?.url || "https://via.placeholder.com/150";
-    if (avatarImg) avatarImg.src = avatarUrl;
-
-    // Update bio
     const bioContainer = document.getElementById("bio-container");
-    if (bioContainer) bioContainer.textContent = userData.data.bio || "No bio available.";
-
-    //Update banner
     const bannerContainer = document.getElementById("banner-img");
-    if (bannerContainer) bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
-
-    // Update credits
     const creditsContainer = document.getElementById("user-credits");
-    if (creditsContainer) {
-      creditsContainer.textContent = `Credits: ${userData.data.credits}`;
+
+    // ✅ Update avatar image (check if it exists)
+    if (avatarImg) {
+      avatarImg.src = userData.data.avatar?.url || "https://via.placeholder.com/150";
+    } else {
+      console.warn("⚠️ Avatar image element not found!");
     }
 
-    console.log("Avatar section refreshed!");
+    // ✅ Update bio
+    if (bioContainer) {
+      bioContainer.textContent = userData.data.bio || "No bio available.";
+    } else {
+      console.warn("⚠️ Bio container not found!");
+    }
+
+    // ✅ Update banner
+    if (bannerContainer) {
+      bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
+    } else {
+      console.warn("⚠️ Banner container not found!");
+    }
+
+    // ✅ Update credits
+    if (creditsContainer) {
+      creditsContainer.textContent = `Credits: ${userData.data.credits}`;
+    } else {
+      console.warn("⚠️ Credits container not found!");
+    }
+
+    console.log("✅ Avatar section refreshed!");
   } catch (error) {
-    console.error("Error refreshing avatar section:", error);
+    console.error("❌ Error refreshing avatar section:", error);
   }
 }
 
+
+/*
 function debugEventListeners() {
   console.log("🔍 Checking event listeners...");
 
@@ -451,12 +451,54 @@ function debugEventListeners() {
       console.warn(`⚠️ ${name} (${selector}) - Button not found!`);
     }
   });
+  let retryCount = 0;
+const maxRetries = 5; // Set a limit to prevent infinite loops
+
+function checkAndInitializeButtons() {
+  console.log(`🔍 Checking buttons... Attempt: ${retryCount + 1}`);
+
+  const updateAvatarBtn = document.getElementById("update-avatar-btn");
+  const editProfileBtn = document.getElementById("edit-profile-btn");
+
+  if (updateAvatarBtn && editProfileBtn) {
+    console.log("✅ Buttons found! Initializing...");
+    debugEventListeners();
+  } else if (retryCount < maxRetries) {
+    retryCount++;
+    console.warn("⏳ Buttons not ready yet, retrying...");
+    setTimeout(checkAndInitializeButtons, 200); // Retry after 200ms
+  } else {
+    console.error("❌ Buttons not found after multiple attempts. Skipping initialization.");
+  }
 }
+
+// Run the function with a slight delay after page load
+setTimeout(checkAndInitializeButtons, 300);
+  
+}
+*/
+function toggleAvatarUpdateSection() {
+  const updateAvatarSection = document.getElementById("updateAvatarSection");
+  if (!updateAvatarSection) {
+      console.error("❌ Update Avatar section not found!");
+      return;
+  }
+
+  // Toggle visibility
+  if (updateAvatarSection.classList.contains("hidden")) {
+      updateAvatarSection.classList.remove("hidden");
+  } else {
+      updateAvatarSection.classList.add("hidden");
+  }
+}
+
+
 
 // Call this inside initializeProfilePage
 setTimeout(() => {
   debugEventListeners();
 }, 500);
+
 
 
 console.log("✅ Profile Page Setup Complete!");

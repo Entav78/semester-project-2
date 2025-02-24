@@ -11,3 +11,5 @@ Note: Filtering is a great place to put the constants...
 buttonContainer is not in Filtering
 
 when click on pagination page, move to the top of the page
+
+Profile changes saved! (Not implemented yet)
