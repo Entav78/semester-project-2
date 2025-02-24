@@ -119,7 +119,7 @@ setupProfileButtons();
 async function displayUserListings(userName) {
   console.log(`Fetching listings for user: ${userName}`);
 
-  const listingsContainer = document.getElementById("user-listings");
+  const listingsContainer = document.getElementById("user-listings-container");
   if (!listingsContainer) {
     console.error("Listings container not found!");
     return;

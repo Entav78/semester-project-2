@@ -11,41 +11,54 @@
   <main id="main-container" class="flex-grow main-content mx-auto max-w-3xl p-4">
     <h1 class="text-xl font-bold">This is the profile page</h1>
     
- <!-- Avatar Display -->
-<div class="avatar-section flex items-center space-x-4">
-  <img id="avatar-img" class="w-24 h-24 rounded-full" src="/src/img/Sasha.jpg" alt="User Avatar" />
-  <p id="user-credits" class="text-lg font-bold text-emerald-500">Credits: 323</p>
+ <!-- Profile Info Section -->
+<div id="profile-info" class="p-4 bg-soft rounded-lg shadow-md">
+  <h2 class="text-xl font-bold">Profile Information</h2>
 
-  
-  <!-- Edit Profile Button -->
-  <button id="edit-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
+  <!-- Avatar Section -->
+  <div class="avatar-section flex items-center space-x-4">
+    <img id="avatar-img" class="w-24 h-24 rounded-full" src="/src/img/Sasha.jpg" alt="User Avatar" />
+    <p id="user-credits" class="text-lg font-bold text-emerald-500">Credits: Loading...</p>
+
+    <!-- Edit Profile Button -->
+    <button id="edit-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
       Edit Profile
-  </button>
-</div>
+    </button>
+  </div>
 
-<!-- Avatar Update Section (Hidden by Default) -->
-<div id="updateAvatarSection" class="flex flex-col mt-4" style="display: none;">
-  <label for="avatar-url">Avatar URL:</label>
-  <input type="text" id="avatar-url-input" class="form-input border border-soft rounded p-2"
+  <!-- Avatar Update Section (Initially Hidden) -->
+  <div id="updateAvatarSection" class="flex flex-col mt-4" style="display: none;">
+    <label for="avatar-url">Avatar URL:</label>
+    <input type="text" id="avatar-url-input" class="form-input border border-soft rounded p-2"
       placeholder="Enter new avatar URL" />
-  <button id="update-avatar-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
+    <button id="update-avatar-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
       Update Avatar
-  </button>
-</div>
+    </button>
+  </div>
 
+  <!-- Editable Bio -->
+  <p id="bio-container" class="mt-2 italic text-text">Loading bio...</p>
 
-<!-- ✅ Edit Profile Form (Initially Hidden) -->
-<div id="edit-profile-container" class="hidden mt-4">
-  <label for="bio">Bio:</label>
-  <textarea id="bio" class="form-textarea border border-soft rounded p-2"></textarea>
+  <!-- Edit Profile Form (Initially Hidden) -->
+  <div id="edit-profile-container" class="hidden mt-4">
+    <label for="bio">Bio:</label>
+    <textarea id="bio" class="form-textarea border border-soft rounded p-2"></textarea>
 
-  <label for="banner-img">Profile Banner:</label>
-  <img id="banner-img" class="w-full h-40 object-cover rounded-lg mt-2" src="/img/default-banner.jpg" alt="User Banner">
+    <label for="banner-img">Profile Banner:</label>
+    <img id="banner-img" class="w-full h-40 object-cover rounded-lg mt-2" src="/img/default-banner.jpg" alt="User Banner">
 
-  <button id="save-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition mt-4">
+    <button id="save-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition mt-4">
       Save Changes
-  </button>
+    </button>
+  </div>
+
+  <!-- Listings & Wins -->
+  <div class="mt-4">
+    <p id="user-listings" class="text-text">Total Listings: Loading...</p>
+    <p id="user-wins" class="text-text">Total Wins: Loading...</p>
+  </div>
 </div>
+
 
     
 
@@ -71,11 +84,10 @@
     <!-- Listings Section -->
     <div id="listingsTab" class="tab-content p-4">
       <h2 class="text-xl font-bold mb-2">My Listings</h2>
-      <div id="user-listings">
-
-        <!-- Listings will be dynamically inserted here -->
+      <div id="user-listings-container">
+          <!-- Listings will be dynamically inserted here -->
       </div>
-    </div>
+  </div>
   
     <!-- Bids Section (Initially Hidden) -->
     <div id="bidsTab" class="tab-content p-4 hidden">
