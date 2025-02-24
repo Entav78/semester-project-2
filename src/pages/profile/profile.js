@@ -2,24 +2,28 @@ import { API_LISTINGS, API_PROFILES, API_KEY } from "@/js/api/constants.js";
 import { fetchUserListings, fetchUserBids } from "@/js/api/profile.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
-import { Avatar } from "@/js/api/Avatar.js";
+import { Avatar, setAvatarInstance } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
-import { setupProfileButtons, handleViewItemClick } from "@/components/buttons/index.js";
-import { setupListingButtons } from "@/components/buttons/index.js";
-import { setupButtons } from "@/components/buttons/index.js";
+import { setupProfileButtons, handleViewItemClick, saveProfileChanges, setupButtons, setupListingButtons  } from "@/components/buttons/index.js";
+
+
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
 
-let avatarInstance = null; // ✅ Declare globally
+//export let avatarInstance = null; // ✅ Declare globally
 
 export function initializeProfilePage(forceRefresh = true) {
   if (window.profilePageInitialized && !forceRefresh) {
     console.warn("⚠️ Profile Page already initialized. Skipping re-initialization.");
-    return;  // ❌ Stop here to prevent multiple calls
+    return;
   }
 
   console.log("✅ Initializing Profile Page...");
   window.profilePageInitialized = true;
+
+  console.log("🔄 Re-initializing profile buttons after navigation...");
+setupProfileButtons();
+
 
   showLoader();
 
@@ -51,10 +55,39 @@ export function initializeProfilePage(forceRefresh = true) {
 
     console.log("📡 Fetching profile for:", user.userName);
 
+    // ✅ Get DOM elements
+    const avatarImg = document.getElementById("profile-avatar");
+    const avatarInput = document.getElementById("avatar-url-input");
+    const avatarButton = document.getElementById("update-avatar-btn");
+    const bioContainer = document.getElementById("bio");
+    const bannerContainer = document.getElementById("banner-img");
+    const creditsContainer = document.getElementById("credits");
+
+    // ✅ If elements exist, create the Avatar instance
+    if (avatarImg && avatarInput && avatarButton) {
+      const avatar = new Avatar(avatarImg, avatarInput, avatarButton, bioContainer, bannerContainer, creditsContainer);
+      setAvatarInstance(avatar); // ✅ Set instance globally
+      console.log("✅ Avatar instance initialized!", avatar);
+    } else {
+      console.warn("⚠️ Avatar elements not found. Skipping initialization.");
+    }
+
+    // ✅ Initialize Avatar Instance
+    const avatar = new Avatar(
+      document.getElementById("avatar-img"),
+      document.getElementById("avatar-url-input"),
+      document.getElementById("update-avatar-btn"),
+      document.getElementById("bio"),
+      document.getElementById("banner-img"),
+      document.getElementById("user-credits")
+    );
+
+    setAvatarInstance(avatar); // ✅ Set the global instance
+
     Promise.all([
       displayUserListings(user.userName),
       displayUserBids(user.userName),
-      refreshAvatarSection(user.userName) // ✅ This was causing multiple fetches
+      refreshAvatarSection(user.userName),
     ])
     .then(() => console.log("✅ Profile Data Loaded Successfully"))
     .catch(error => console.error("❌ Error loading profile:", error))
@@ -63,11 +96,10 @@ export function initializeProfilePage(forceRefresh = true) {
       console.log("🔽 Loader Hidden");
     });
 
-    // ✅ Ensure Buttons Work After Navigation
     setupTabNavigation();
-    setupProfileButtons(); // ✅ Call once
+    setupProfileButtons();
     console.log("✅ setupListingButtons() manually called in Profile Page");
-    setupListingButtons(); // ✅ Ensure event listeners are set up for profile page
+    setupListingButtons();
     
     console.log("🔄 Re-initializing profile buttons after navigation...");
     setupProfileButtons();
@@ -79,7 +111,7 @@ export function initializeProfilePage(forceRefresh = true) {
 
 
 
-export { avatarInstance }; // ✅ Ensure this is exported
+//export { avatarInstance }; // ✅ Ensure this is exported
 
 
 // ✅ Ensure the function is executed when the profile page loads
@@ -431,7 +463,8 @@ function setupTabNavigation() {
   console.log("✅ Tabs Initialized!");
 }
 
-
+// ✅ Add event listener directly in profile.js
+document.getElementById("save-profile-btn").addEventListener("click", saveProfileChanges);
 
 async function refreshAvatarSection(userName) {
   console.log(`🔄 Refreshing avatar section for: ${userName}`);
@@ -462,7 +495,7 @@ async function refreshAvatarSection(userName) {
 
     // ✅ SAFELY SELECT ELEMENTS BEFORE UPDATING
     const avatarImg = document.getElementById("avatar-img");
-    const bioContainer = document.getElementById("bio-container");
+    const bioContainer = document.getElementById("bio");
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
 

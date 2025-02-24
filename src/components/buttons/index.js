@@ -1,4 +1,7 @@
 import { router } from "@/pages/router/router.js";
+import { avatarInstance } from "@/js/api/avatar.js";
+
+//setAvatarInstance(new Avatar());
 
 // ✅ Setup buttons for ALL pages
 export function setupButtons() {
@@ -167,14 +170,21 @@ function toggleEditProfile() {
   }
 }
 
-
-function saveProfileChanges() {
+export function saveProfileChanges() {
   console.log("💾 Save Profile Clicked - Updating profile...");
-  if (typeof avatarInstance !== "undefined" && avatarInstance) {
-    avatarInstance.saveProfileChanges();
+  if (avatarInstance) {
+    avatarInstance.saveProfileChanges(); // ✅ Call method from Avatar.js
   } else {
     console.error("❌ avatarInstance is not defined yet!");
   }
+}
+
+// ✅ Ensure Save Profile Button has an event listener
+const saveProfileBtn = document.getElementById("save-profile-btn");
+
+if (saveProfileBtn) {
+  saveProfileBtn.removeEventListener("click", saveProfileChanges);
+  saveProfileBtn.addEventListener("click", saveProfileChanges);
 }
 
 function showListingsTab() {
