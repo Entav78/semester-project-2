@@ -155,9 +155,18 @@ function handleUpdateAvatar() {
 }
 
 function toggleEditProfile() {
-  console.log("✏️ Edit Profile Clicked");
-  document.getElementById("edit-profile-container").classList.toggle("hidden");
+  const editProfileContainer = document.getElementById("edit-profile-container");
+  const updateAvatarSection = document.getElementById("updateAvatarSection");
+
+  if (editProfileContainer) {
+    editProfileContainer.classList.toggle("hidden");
+  }
+
+  if (updateAvatarSection) {
+    updateAvatarSection.classList.toggle("hidden");
+  }
 }
+
 
 function saveProfileChanges() {
   console.log("💾 Save Profile Clicked - Updating profile...");
