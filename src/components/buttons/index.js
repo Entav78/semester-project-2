@@ -66,7 +66,7 @@ editButton.addEventListener("click", () => {
 
 // ✅ Handles "View Item" buttons (used on home page)
 export function setupListingButtons() {
-  console.log("🔄 Setting up View Item buttons...");
+  console.log("🔄 setupListingButtons() is running...");
 
   document.removeEventListener("click", handleViewItemClick); // Prevent duplicate listeners
   document.addEventListener("click", handleViewItemClick);

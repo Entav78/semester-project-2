@@ -5,6 +5,7 @@ import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
 import { setupProfileButtons } from "@/components/buttons/index.js";
+import { setupListingButtons } from "@/components/buttons/index.js";
 import { setupButtons } from "@/components/buttons/index.js";
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
@@ -65,6 +66,9 @@ export function initializeProfilePage(forceRefresh = true) {
     // ✅ Ensure Buttons Work After Navigation
     setupTabNavigation();
     setupProfileButtons(); // ✅ Call once
+    console.log("✅ setupListingButtons() manually called in Profile Page");
+    setupListingButtons(); // ✅ Ensure event listeners are set up for profile page
+    
 
     console.log("✅ Profile Setup Complete!");
   }, 300);
@@ -142,11 +146,25 @@ buttonContainer.classList.add("flex", "gap-2", "mt-2");
 const viewButton = document.createElement("button");
 viewButton.textContent = "View Item";
 viewButton.classList.add(
-  "bg-primary", "hover:bg-secondary", "transition",
-  "text-white", "text-lg", "font-semibold",
-  "px-4", "py-2", "rounded"
+  "view-item",
+  "bg-primary",
+  "hover:bg-secondary",
+  "transition",
+  "text-white",
+  "text-lg",
+  "font-semibold",
+  "px-4",
+  "py-2",
+  "rounded"
 );
-viewButton.dataset.id = listing.id;
+
+// 🛠️ Debugging: Check if `listing.id` exists before assigning
+if (listing.id) {
+  viewButton.dataset.id = listing.id;
+} else {
+  console.warn("⚠️ Missing listing ID:", listing);
+}
+
 
 // ✅ Edit Listing Button
 const editButton = document.createElement("button");
@@ -292,8 +310,16 @@ async function displayUserBids(userName) {
         "py-2",
         "rounded"
       );
-      
-      viewButton.style.display = "none";
+
+      // 🛠️ Ensure the button is only displayed when the bid has a valid listing ID
+      if (bid.listingId) {
+        viewButton.dataset.id = bid.listingId;
+        viewButton.style.display = "block"; // ✅ Show button when valid
+      } else {
+        console.warn("⚠️ Missing bid listing ID:", bid);
+        viewButton.style.display = "none"; // ❌ Hide if no valid listing ID
+      }
+
 
       const matchingListing = listings.find((listing) =>
         listing.bids.some((b) => b.id === bid.id)
@@ -534,6 +560,12 @@ function toggleAvatarUpdateSection() {
       updateAvatarSection.classList.add("hidden");
   }
 }
+
+document.addEventListener("click", (event) => {
+  if (event.target.classList.contains("view-item")) {
+    handleViewItemClick(event);
+  }
+});
 
 
 
