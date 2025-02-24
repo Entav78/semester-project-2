@@ -13,6 +13,57 @@ export function setupButtons() {
   }
 }
 
+export function createListingButton() {
+  const button = document.createElement("button");
+  button.type = "submit";
+  button.textContent = "Create Listing";
+  button.classList.add(
+    "w-full",
+    "bg-blue-600",
+    "text-white",
+    "py-2",
+    "rounded",
+    "hover:bg-blue-700",
+    "transition"
+  );
+  return button;
+}
+
+export function createManageListingButtons(listing, onDelete, onEdit) {
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("flex", "gap-2", "mt-2");
+
+  // Edit Button
+  const editButton = document.createElement("button");
+editButton.textContent = "Edit Listing";
+editButton.classList.add("bg-yellow-500", "text-white", "px-4", "py-2", "rounded", "mt-2");
+editButton.dataset.id = listing.id;
+
+editButton.addEventListener("click", () => {
+  console.log(`Editing listing: ${listing.id}`);
+  window.history.pushState({}, "", `/manageListings?id=${listing.id}`); // ✅ Pass listing ID
+  router(`/manageListings?id=${listing.id}`); // Navigate to manageListings
+});
+
+
+  // Delete Button
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.classList.add(
+    "delete-listing",
+    "bg-red-500",
+    "text-white",
+    "px-4",
+    "py-2",
+    "rounded",
+    "hover:bg-red-600"
+  );
+  deleteButton.addEventListener("click", () => onDelete(listing.id));
+
+  buttonContainer.append(editButton, deleteButton);
+  return buttonContainer;
+}
+
 // ✅ Handles "View Item" buttons (used on home page)
 export function setupListingButtons() {
   console.log("🔄 Setting up View Item buttons...");
@@ -87,7 +138,6 @@ export function setupProfileButtons() {
   profileButtonsInitialized = true; // ✅ Stops infinite calls
   console.log("✅ Profile buttons initialized!");
 }
-
 
 // ✅ Define event handlers separately
 function handleUpdateAvatar() {

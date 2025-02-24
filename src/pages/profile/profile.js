@@ -11,7 +11,7 @@ let user = JSON.parse(localStorage.getItem("user")) || null;
 
 let avatarInstance = null; // ✅ Declare globally
 
-export function initializeProfilePage(forceRefresh = false) {
+export function initializeProfilePage(forceRefresh = true) {
   if (window.profilePageInitialized && !forceRefresh) {
     console.warn("⚠️ Profile Page already initialized. Skipping re-initialization.");
     return;  // ❌ Stop here to prevent multiple calls
@@ -495,10 +495,10 @@ function toggleAvatarUpdateSection() {
 
 
 // Call this inside initializeProfilePage
-setTimeout(() => {
+/*setTimeout(() => {
   debugEventListeners();
 }, 500);
-
+*/
 
 
 console.log("✅ Profile Page Setup Complete!");
