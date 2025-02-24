@@ -4,7 +4,7 @@ import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Avatar } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
-import { setupProfileButtons } from "@/components/buttons/index.js";
+import { setupProfileButtons, handleViewItemClick } from "@/components/buttons/index.js";
 import { setupListingButtons } from "@/components/buttons/index.js";
 import { setupButtons } from "@/components/buttons/index.js";
 

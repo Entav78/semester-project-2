@@ -72,7 +72,7 @@ export function setupListingButtons() {
   document.addEventListener("click", handleViewItemClick);
 }
 
-function handleViewItemClick(event) {
+export function handleViewItemClick(event) {
   if (!event.target.classList.contains("view-item")) return;
 
   event.preventDefault();
