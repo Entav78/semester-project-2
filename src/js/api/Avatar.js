@@ -149,60 +149,76 @@ export class Avatar {
 
   
 
-  async saveProfileChanges() {
-    console.log("🔄 Saving profile changes...");
+async saveProfileChanges() {
+  console.log("🔄 Saving profile changes...");
 
-    const newBio = document.getElementById("bio")?.value.trim();
-    const newBanner = document.getElementById("banner-url-input")?.value.trim();
-    const authToken = localStorage.getItem("authToken");
-    const userName = JSON.parse(localStorage.getItem("user"))?.userName;
+  const bioInput = document.getElementById("bio-input");
+  const avatarInput = document.getElementById("avatar-url-input");
+  const bannerInput = document.getElementById("banner-url-input");
+  const authToken = localStorage.getItem("authToken");
+  const userName = JSON.parse(localStorage.getItem("user"))?.userName;
 
-    if (!authToken || !userName) {
+  if (!authToken || !userName) {
       console.error("❌ User is not authenticated.");
       return;
-    }
+  }
 
-    const requestBody = {};
-    if (newBio) requestBody.bio = newBio;
-    if (newBanner) requestBody.banner = { url: newBanner, alt: "User Banner" };
+  const newBio = bioInput?.value.trim();
+  const newAvatar = avatarInput?.value.trim();
+  const newBanner = bannerInput?.value.trim();
 
-    console.log("📡 Sending Profile Update Request:", requestBody);
+  const requestBody = {};
+  if (newBio) requestBody.bio = newBio;
+  if (newAvatar) requestBody.avatar = { url: newAvatar, alt: "User Avatar" };  // ✅ Correct format
+  if (newBanner) requestBody.banner = { url: newBanner, alt: "User Banner" };  // ✅ Correct format
 
-    try {
+  console.log("📡 Sending Profile Update Request:", requestBody);
+
+  try {
       const response = await fetch(`${API_PROFILES}/${userName}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-          "X-Noroff-API-Key": API_KEY,
-        },
-        body: JSON.stringify(requestBody),
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+              "X-Noroff-API-Key": API_KEY,
+          },
+          body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) throw new Error("❌ Failed to update profile.");
+      if (!response.ok) throw new Error(`❌ Failed to update profile. Status: ${response.status}`);
 
       const updatedData = await response.json();
       console.log("✅ Profile Updated Successfully!", updatedData);
 
-      if (updatedData.data.bio) document.getElementById("bio").value = updatedData.data.bio;
-      if (updatedData.data.banner?.url) document.getElementById("banner-img").src = updatedData.data.banner.url;
+      // ✅ Update profile elements immediately
+      const avatarImg = document.getElementById("avatar-img");
+      const bioContainer = document.getElementById("bio-container");
+      const bannerImg = document.getElementById("banner-img");
+
+      if (updatedData.data.avatar?.url && avatarImg) {
+          avatarImg.src = updatedData.data.avatar.url;  // ✅ Update avatar immediately
+      }
+      if (updatedData.data.bio && bioContainer) {
+          bioContainer.textContent = updatedData.data.bio;  // ✅ Update bio
+      }
+      if (updatedData.data.banner?.url && bannerImg) {
+          bannerImg.src = updatedData.data.banner.url;  // ✅ Update banner
+      }
 
       alert("✅ Profile changes saved successfully!");
 
       // ✅ Close the edit profile section
-      const editProfileContainer = document.getElementById("edit-profile-container");
-      if (editProfileContainer) {
-        editProfileContainer.classList.add("hidden");
-        console.log("🛠 Edit Profile section closed.");
-      } else {
-        console.warn("⚠️ Edit Profile section not found!");
-      }
+      document.getElementById("edit-profile-container")?.classList.add("hidden");
 
-    } catch (error) {
+      console.log("🛠 Edit Profile section closed.");
+
+  } catch (error) {
       console.error("❌ Error saving profile:", error);
-      alert("❌ Failed to save profile changes.");
-    }
+      alert(`❌ Failed to save profile changes. ${error.message}`);
   }
+}
+
+
 
   updateAvatar(newUrl) {
     if (!newUrl) {
