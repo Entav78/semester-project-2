@@ -11,12 +11,11 @@ export class Filtering {
     this.advancedFilters = document.getElementById("advanced-filters");
     this.applyFiltersBtn = document.getElementById("apply-filters");
     this.searchBar = document.getElementById("search-bar");
-    this.searchBtn = document.getElementById("search-btn");
     this.listingsContainer = document.getElementById("listingsContainer");
     this.paginationContainer = document.getElementById("paginationContainer");
     this.sortDropdown = document.getElementById("sort-dropdown");
 
-    if (!this.categoryFilter || !this.advancedFilters || !this.applyFiltersBtn || !this.searchBar || !this.searchBtn || !this.listingsContainer) {
+    if (!this.categoryFilter || !this.advancedFilters || !this.applyFiltersBtn || !this.searchBar || !this.listingsContainer) {
       console.warn("Filtering elements not found. Skipping setup.");
       return;
     }
@@ -67,7 +66,6 @@ export class Filtering {
     });
 
     this.searchBar.addEventListener("input", () => this.applyFilters());
-    this.searchBtn.addEventListener("click", () => this.applyFilters());
     this.applyFiltersBtn.addEventListener("click", () => {
       console.log("Apply Filters button clicked!");
       this.applyFilters();
