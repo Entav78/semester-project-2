@@ -66,7 +66,7 @@ async function displayUserListings(userName) {
 console.log("✅ User listings displayed successfully!");
 }
 
-// ✅ Function to fetch and display user bids
+// ✅ Function to fetch and display user bids (with listing details)
 async function displayUserBids(userName) {
   console.log("📡 Fetching bids for user:", userName);
 
@@ -78,27 +78,52 @@ async function displayUserBids(userName) {
 
   bidsContainer.innerHTML = "<p>Loading your bids...</p>";
 
-  const response = await fetchUserBids(userName);
-  console.log("📡 Bids API Response:", response);
+  // 🔄 Fetch bids with listing details included
+  const response = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      "X-Noroff-API-Key": API_KEY,
+    },
+  });
 
-  const bids = response.data;
+  if (!response.ok) {
+    console.error("❌ Failed to fetch user bids.");
+    bidsContainer.innerHTML = "<p>Error loading bids.</p>";
+    return;
+  }
+
+  const bidData = await response.json();
+  console.log("📡 Bids API Response with Listings:", bidData);
+
+  const bids = bidData.data;
   if (!Array.isArray(bids) || bids.length === 0) {
     bidsContainer.innerHTML = "<p>No bids placed.</p>";
     return;
   }
 
   bidsContainer.innerHTML = ""; // Clear old content
-  bids.forEach((bid) => {
+
+  // 🛠 Loop through bids and use correct listing data
+  for (const bid of bids) {
+    if (!bid.listing) {
+      console.warn(`⚠️ No listing found for bid on ID: ${bid.id}`);
+      continue;
+    }
+
+    const listing = bid.listing; // ✅ Correctly linked listing
+
+    // ✅ Create bid display
     const bidItem = document.createElement("div");
     bidItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg", "mb-4");
 
     const title = document.createElement("h2");
     title.classList.add("listing-title", "text-xl", "font-bold");
-    title.textContent = bid.listing?.title || "Unknown Item";
+    title.textContent = listing.title || "Unknown Item";
 
     const image = document.createElement("img");
-    image.src = bid.listing?.media?.[0]?.url || "/img/default.jpg";
-    image.alt = bid.listing?.title || "No Image Available";
+    image.src = listing.media?.[0]?.url || "/img/default.jpg";
+    image.alt = listing.title || "No Image Available";
     image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 
     const bidAmount = document.createElement("p");
@@ -108,14 +133,17 @@ async function displayUserBids(userName) {
     const viewButton = document.createElement("button");
     viewButton.classList.add("view-item", "bg-primary", "hover:bg-secondary", "text-white", "px-4", "py-2", "rounded", "mt-2");
     viewButton.textContent = "View Item";
-    viewButton.dataset.id = bid.listing?.id || "";
+    viewButton.dataset.id = listing.id; // ✅ Correctly assign listing ID
 
     bidItem.append(title, image, bidAmount, viewButton);
     bidsContainer.appendChild(bidItem);
-  });
+  }
 
   console.log("✅ Bids displayed successfully!");
 }
+
+
+
 
 
 
