@@ -13,7 +13,7 @@ export class Filtering {
     this.searchBar = document.getElementById("search-bar");
     this.listingsContainer = document.getElementById("listingsContainer");
     this.paginationContainer = document.getElementById("paginationContainer");
-    this.sortDropdown = document.getElementById("sort-dropdown");
+    this.sortDropdown = document.getElementById("sort-dropdown"); // ✅ Fix added!
 
     if (!this.categoryFilter || !this.advancedFilters || !this.applyFiltersBtn || !this.searchBar || !this.listingsContainer) {
       console.warn("Filtering elements not found. Skipping setup.");
@@ -27,7 +27,8 @@ export class Filtering {
 
     this.setupEventListeners();
     this.loadListings();
-  }
+}
+
 
   async loadListings() {
     console.log("Fetching all listings for filtering...");
@@ -54,34 +55,47 @@ export class Filtering {
 }
 
 
-  setupEventListeners() {
-    this.categoryFilter.addEventListener("change", () => {
+setupEventListeners() {
+  this.categoryFilter.addEventListener("change", () => {
       if (this.categoryFilter.value === "multiple") {
-        this.advancedFilters.classList.remove("hidden"); // Show checkboxes
+          this.advancedFilters.classList.remove("hidden"); // Show checkboxes
       } else {
-        this.advancedFilters.classList.add("hidden"); // Hide checkboxes
-        this.clearCheckboxes(); // Clear selected checkboxes when switching
+          this.advancedFilters.classList.add("hidden"); // Hide checkboxes
+          this.clearCheckboxes(); // ✅ Ensure checkboxes are cleared
       }
       this.applyFilters();
-    });
+  });
 
-    this.searchBar.addEventListener("input", () => this.applyFilters());
-    this.applyFiltersBtn.addEventListener("click", () => {
-      console.log("Apply Filters button clicked!");
+  this.searchBar.addEventListener("input", () => this.applyFilters());
+
+  this.applyFiltersBtn.addEventListener("click", () => {
+      console.log("✅ Apply Filters button clicked!");
       this.applyFilters();
-    });
+  });
 
-    if (this.sortDropdown) {
-      this.sortDropdown.addEventListener("change", (event) => this.sortListings(event.target.value));
-    }
-  }
+  if (this.sortDropdown) {
+      this.sortDropdown.addEventListener("change", (event) => {
+          console.log("🔄 Sort dropdown changed. Resetting selected tags...");
+          
+          // ✅ Ensure all tag checkboxes are unchecked
+          this.clearCheckboxes(); 
+          
+          console.log("✅ All multiple tags have been cleared!");
 
-  clearCheckboxes() {
-    document.querySelectorAll("input[name='category']:checked").forEach((checkbox) => {
-      checkbox.checked = false;
-    });
-    console.log("Checkboxes cleared.");
+          // ✅ Apply new sorting AFTER clearing filters
+          this.sortListings(event.target.value);
+          this.applyFilters(); // ✅ Force re-apply filters after clearing tags
+      });
   }
+}
+
+
+clearCheckboxes() {
+  const tagFilters = document.querySelectorAll("input[name='tags']:checked");
+  tagFilters.forEach(tag => tag.checked = false);
+  console.log("✅ Cleared all selected tag checkboxes.");
+}
+
 
   applyFilters() {
     if (!this.listings || this.listings.length === 0) {
