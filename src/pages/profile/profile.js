@@ -69,7 +69,7 @@ console.log("✅ User listings displayed successfully!");
 // ✅ Function to fetch and display user bids
 async function displayUserBids(userName) {
   console.log("📡 Fetching bids for user:", userName);
-  
+
   const bidsContainer = document.getElementById("bidsContainer");
   if (!bidsContainer) {
     console.error("❌ Bids container is missing!");
@@ -90,49 +90,33 @@ async function displayUserBids(userName) {
   bidsContainer.innerHTML = ""; // Clear old content
   bids.forEach((bid) => {
     const bidItem = document.createElement("div");
-    bidItem.classList.add("border", "p-4", "rounded-lg", "shadow-md", "mb-4");
+    bidItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg", "mb-4");
 
-    // ✅ Fetch listing details if available
-    const listing = bid.listing || {};
-    
-    // ✅ Create title
-    const title = document.createElement("h3");
-    title.classList.add("text-lg", "font-semibold");
-    title.textContent = listing.title || "Unknown Item"; 
+    const title = document.createElement("h2");
+    title.classList.add("listing-title", "text-xl", "font-bold");
+    title.textContent = bid.listing?.title || "Unknown Item";
 
-    // ✅ Add an image
     const image = document.createElement("img");
-    image.src = listing.media?.[0]?.url || "/img/default.jpg";
-    image.alt = listing.title || "Unknown Item";
-    image.classList.add("w-full", "h-48", "object-cover", "rounded-lg", "mb-2");
+    image.src = bid.listing?.media?.[0]?.url || "/img/default.jpg";
+    image.alt = bid.listing?.title || "No Image Available";
+    image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 
-    // ✅ Display bid amount
     const bidAmount = document.createElement("p");
-    bidAmount.classList.add("text-gray-600");
+    bidAmount.classList.add("text-gray-600", "mt-2");
     bidAmount.textContent = `Your bid: ${bid.amount} credits`;
 
-    // ✅ Create "View Item" button
     const viewButton = document.createElement("button");
+    viewButton.classList.add("view-item", "bg-primary", "hover:bg-secondary", "text-white", "px-4", "py-2", "rounded", "mt-2");
     viewButton.textContent = "View Item";
-    viewButton.classList.add(
-      "view-item", "bg-primary", "hover:bg-secondary", "text-white",
-      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
-    );
+    viewButton.dataset.id = bid.listing?.id || "";
 
-    // ✅ Ensure the listing has an ID before setting dataset
-    if (listing.id) {
-      viewButton.dataset.id = listing.id;
-    } else {
-      console.warn("⚠️ Listing is missing an ID:", listing);
-    }
-
-    // ✅ Append elements to the bid item
     bidItem.append(title, image, bidAmount, viewButton);
     bidsContainer.appendChild(bidItem);
   });
 
   console.log("✅ Bids displayed successfully!");
 }
+
 
 
 // ✅ Function to refresh avatar section
