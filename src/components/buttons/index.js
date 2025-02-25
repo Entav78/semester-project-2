@@ -96,32 +96,36 @@ export function handleViewItemClick(event) {
   router(itemPagePath);
 }
 
-function toggleEditProfile() {
-  console.log("✏️ Edit Profile button clicked!");
-
+function toggleEditProfile(updateAvatarSection) {
   const editProfileContainer = document.getElementById("edit-profile-container");
-  const updateAvatarSection = document.getElementById("updateAvatarSection");
 
   if (editProfileContainer) {
     editProfileContainer.classList.toggle("hidden");
-  } else {
-    console.warn("⚠️ Edit profile container not found!");
   }
 
   if (updateAvatarSection) {
     updateAvatarSection.classList.toggle("hidden");
-  } else {
-    console.warn("⚠️ Update Avatar section not found!");
   }
 }
+
 
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls
 
 export function setupProfileButtons() {
   if (profileButtonsInitialized) {
-    console.warn("⚠️ Profile buttons already initialized. Skipping...");
-    return; // ✅ Stops multiple setups
+    console.warn("⚠️ Profile buttons already initialized. Removing old event listeners...");
+  
+    // 🚨 Remove old listeners
+    document.getElementById("edit-profile-btn")?.removeEventListener("click", toggleEditProfile);
+    document.getElementById("save-profile-btn")?.removeEventListener("click", handleSaveProfile);
+    document.getElementById("update-avatar-btn")?.removeEventListener("click", handleUpdateAvatar);
+    document.querySelector("[data-tab='listings']")?.removeEventListener("click", showListingsTab);
+    document.querySelector("[data-tab='bids']")?.removeEventListener("click", showBidsTab);
+  
+    profileButtonsInitialized = false; // ✅ Force re-initialization
   }
+  
+  
 
   console.log("🔄 Initializing profile buttons...");
 

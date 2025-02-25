@@ -43,11 +43,27 @@ async function displayUserListings(userName) {
     description.classList.add("text-gray-600", "mt-2");
     description.textContent = listing.description || "No description available.";
 
-    listingItem.append(title, image, description);
-    listingsContainer.appendChild(listingItem);
-  });
+    // ✅ Create the View Item button
+  const viewButton = document.createElement("button");
+  viewButton.textContent = "View Item";
+  viewButton.classList.add(
+    "view-item", "bg-primary", "hover:bg-secondary", "text-white",
+    "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+  );
 
-  console.log("✅ User listings displayed successfully!");
+  // ✅ Ensure listing has an ID before setting dataset
+  if (listing.id) {
+    viewButton.dataset.id = listing.id;
+  } else {
+    console.warn("⚠️ Listing is missing an ID:", listing);
+  }
+
+  // ✅ Append button to listingItem
+  listingItem.append(title, image, description, viewButton);
+  listingsContainer.appendChild(listingItem);
+});
+
+console.log("✅ User listings displayed successfully!");
 }
 
 // ✅ Function to fetch and display user bids
@@ -76,16 +92,48 @@ async function displayUserBids(userName) {
     const bidItem = document.createElement("div");
     bidItem.classList.add("border", "p-4", "rounded-lg", "shadow-md", "mb-4");
 
+    // ✅ Fetch listing details if available
+    const listing = bid.listing || {};
+    
+    // ✅ Create title
     const title = document.createElement("h3");
     title.classList.add("text-lg", "font-semibold");
-    title.textContent = "Unknown Item"; 
+    title.textContent = listing.title || "Unknown Item"; 
 
-    bidItem.append(title);
+    // ✅ Add an image
+    const image = document.createElement("img");
+    image.src = listing.media?.[0]?.url || "/img/default.jpg";
+    image.alt = listing.title || "Unknown Item";
+    image.classList.add("w-full", "h-48", "object-cover", "rounded-lg", "mb-2");
+
+    // ✅ Display bid amount
+    const bidAmount = document.createElement("p");
+    bidAmount.classList.add("text-gray-600");
+    bidAmount.textContent = `Your bid: ${bid.amount} credits`;
+
+    // ✅ Create "View Item" button
+    const viewButton = document.createElement("button");
+    viewButton.textContent = "View Item";
+    viewButton.classList.add(
+      "view-item", "bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+    );
+
+    // ✅ Ensure the listing has an ID before setting dataset
+    if (listing.id) {
+      viewButton.dataset.id = listing.id;
+    } else {
+      console.warn("⚠️ Listing is missing an ID:", listing);
+    }
+
+    // ✅ Append elements to the bid item
+    bidItem.append(title, image, bidAmount, viewButton);
     bidsContainer.appendChild(bidItem);
   });
 
   console.log("✅ Bids displayed successfully!");
 }
+
 
 // ✅ Function to refresh avatar section
 async function refreshAvatarSection(userName) {
