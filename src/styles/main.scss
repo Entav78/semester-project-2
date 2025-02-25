@@ -36,12 +36,12 @@
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
 
+
 html, body {
   height: 100%; // Ensure full height
 }
 
 body {
-  background-color: red;
   display: flex;
   flex-direction: column;
   min-height: 100vh; // Ensure the body takes at least full viewport height

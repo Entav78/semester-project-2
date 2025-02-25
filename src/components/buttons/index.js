@@ -96,17 +96,17 @@ export function handleViewItemClick(event) {
   router(itemPagePath);
 }
 
-function toggleEditProfile(updateAvatarSection) {
-  const editProfileContainer = document.getElementById("edit-profile-container");
+function toggleEditProfile() {
+  const editContainer = document.getElementById("edit-profile-container");
 
-  if (editProfileContainer) {
-    editProfileContainer.classList.toggle("hidden");
+  if (!editContainer) {
+    console.warn("⚠️ Edit profile container not found. It may already be closed.");
+    return;
   }
 
-  if (updateAvatarSection) {
-    updateAvatarSection.classList.toggle("hidden");
-  }
+  editContainer.classList.toggle("hidden");
 }
+
 
 
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls

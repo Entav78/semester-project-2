@@ -28,7 +28,7 @@ async function displayUserListings(userName) {
   listingsContainer.innerHTML = ""; // Clear old content
   data.data.forEach(listing => {
     const listingItem = document.createElement("div");
-    listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg");
+    listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg", "mb-4");
 
     const title = document.createElement("h2");
     title.classList.add("listing-title", "text-xl", "font-bold");
@@ -70,7 +70,7 @@ console.log("✅ User listings displayed successfully!");
 async function displayUserBids(userName) {
   console.log("📡 Fetching bids for user:", userName);
 
-  const bidsContainer = document.getElementById("bidsContainer");
+  const bidsContainer = document.getElementById("bids-container");
   if (!bidsContainer) {
     console.error("❌ Bids container is missing!");
     return;
@@ -147,7 +147,7 @@ async function displayUserBids(userName) {
 
 
 
-// ✅ Function to refresh avatar section
+// ✅ Function to refresh avatar section & profile info
 async function refreshAvatarSection(userName) {
   console.log(`🔄 Refreshing avatar section for: ${userName}`);
 
@@ -158,6 +158,7 @@ async function refreshAvatarSection(userName) {
   }
 
   try {
+    // 🔄 Fetch User Profile
     const response = await fetch(`${API_PROFILES}/${userName}`, {
       method: "GET",
       headers: {
@@ -175,21 +176,85 @@ async function refreshAvatarSection(userName) {
     const userData = await response.json();
     console.log("📡 Refreshed Profile Data:", userData);
 
+    // ✅ Get UI Elements
     const avatarImg = document.getElementById("avatar-img");
-    const bioContainer = document.getElementById("bio");
+    const bioContainer = document.getElementById("bio");;
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
+    const listingsContainer = document.getElementById("total-listings");
+    const winsContainer = document.getElementById("total-wins");
 
+    // ✅ Update UI Elements
     if (avatarImg) avatarImg.src = userData.data.avatar?.url || "https://via.placeholder.com/150";
-    if (bioContainer) bioContainer.textContent = userData.data.bio || "No bio available.";
+    if (bioContainer) bioContainer.textContent = userData.data.bio?.trim() || "No bio available.";
     if (bannerContainer) bannerContainer.src = userData.data.banner?.url || "/img/default-banner.jpg";
     if (creditsContainer) creditsContainer.textContent = `Credits: ${userData.data.credits}`;
 
-    console.log("✅ Avatar section refreshed!");
+    // 🔄 Fetch Total Listings
+    const listingsResponse = await fetch(`${API_PROFILES}/${userName}/listings`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (listingsResponse.ok) {
+      const listingsData = await listingsResponse.json();
+      console.log("📡 Listings Data:", listingsData);
+      if (listingsContainer) {
+        listingsContainer.textContent = `Total Listings: ${listingsData.data.length}`;
+      }
+    } else {
+      console.warn("⚠️ Could not fetch listings.");
+      if (listingsContainer) listingsContainer.textContent = "Total Listings: Error";
+    }
+
+    // 🔄 Fetch Total Wins
+    const bidsResponse = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (bidsResponse.ok) {
+      const bidsData = await bidsResponse.json();
+      console.log("📡 Bids Data:", bidsData);
+
+      const wonBids = bidsData.data.filter(bid => {
+        if (bid.listing && bid.listing.bids) {
+          const highestBid = Math.max(...bid.listing.bids.map(b => b.amount));
+          return bid.amount === highestBid;
+        }
+        return false;
+      });
+
+      if (winsContainer) {
+        winsContainer.textContent = `Total Wins: ${wonBids.length}`;
+      }
+    } else {
+      console.warn("⚠️ Could not fetch wins.");
+      if (winsContainer) winsContainer.textContent = "Total Wins: Error";
+    }
+
+    // ✅ Update Bio
+    if (userData.data.bio && userData.data.bio.trim() !== "") {
+      bioContainer.textContent = userData.data.bio;
+    } else {
+      bioContainer.textContent = "No bio available.";
+    }
+
+    console.log(`✅ Bio Updated: "${bioContainer.textContent}"`);
+    
+    console.log("✅ Avatar section and profile stats refreshed!");
+
   } catch (error) {
     console.error("❌ Error refreshing avatar section:", error);
   }
 }
+
 
 // ✅ Function to initialize the profile page
 export function initializeProfilePage(forceRefresh = true) {

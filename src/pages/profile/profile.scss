@@ -1,4 +1,30 @@
-/*.active-tab {
-  @apply border-b-2 text-blue-500;
+// Ensure both sections have the same structure
+#user-listings-container, 
+#bids-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // Adjust if necessary
 }
-*/
+
+// Ensure all listing items have the same styling
+.listing-item {
+  border: 1px solid var(--border-color, #e5e7eb);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.1));
+  background-color: var(--background, #fff);
+  
+}
+
+// Fix View Item button alignment if necessary
+.view-item {
+  width: 100%;
+  text-align: center;
+}
+
+.debug-test {
+  background-color: red;
+  color: white;
+  font-size: 2rem;
+}
+

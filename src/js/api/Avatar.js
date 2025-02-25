@@ -37,83 +37,116 @@ export class Avatar {
 
   async fetchUserProfile() {
     console.log("🔄 Fetching complete profile data...");
-  
+
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      console.error("❌ No auth token found. Redirecting to login.");
-      window.location.href = "/login";
-      return;
+        console.error("❌ No auth token found. Redirecting to login.");
+        window.location.href = "/login";
+        return;
     }
-  
+
     const payloadBase64 = authToken.split(".")[1];
     const payloadJSON = JSON.parse(atob(payloadBase64));
     const userName = payloadJSON.name;
-  
+
     if (!userName) {
-      console.error("❌ No user name found in token.");
-      return;
+        console.error("❌ No user name found in token.");
+        return;
     }
-  
+
     console.log(`📡 Fetching profile for user: ${userName}`);
-  
+
     try {
-      const response = await fetch(`${API_PROFILES}/${userName}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken.trim()}`,
-          "X-Noroff-API-Key": API_KEY,
-        },
-      });
-  
-      if (!response.ok) {
-        console.error(`❌ Failed to fetch profile - Status: ${response.status}`);
-        throw new Error(`Failed to fetch profile - ${response.statusText}`);
-      }
-  
-      const userData = await response.json();
-      console.log("📡 Full Profile Data Received:", userData);
-  
-      // ✅ Store full profile data in the instance
-      this.profile = userData.data;
-  
-      // ✅ Ensure the UI elements exist before updating
-      const avatarImg = document.getElementById("profile-avatar");
-      const bioContainer = document.getElementById("bio");
-      const bannerContainer = document.getElementById("banner-img");
-      const creditsContainer = document.getElementById("credits");
-      const editProfileContainer = document.getElementById("edit-profile-container"); // ✅ Check if the edit section exists
-      const saveChangesBtn = document.getElementById("save-profile-btn"); // ✅ Ensure the Save button exists
-  
-      console.log("🔍 Checking UI Elements:");
-      console.log("🖼 Avatar Image:", avatarImg);
-      console.log("📝 Bio:", bioContainer);
-      console.log("🎨 Banner:", bannerContainer);
-      console.log("💰 Credits:", creditsContainer);
-      console.log("✏️ Edit Profile Section:", editProfileContainer);
-      console.log("💾 Save Changes Button:", saveChangesBtn);
-  
-      // ✅ Update UI elements only if they exist
-      if (avatarImg) avatarImg.src = this.profile.avatar?.url || "/img/default-avatar.jpg";
-      if (bioContainer) bioContainer.textContent = this.profile.bio || "No bio available.";
-      if (bannerContainer) bannerContainer.src = this.profile.banner?.url || "/img/default-banner.jpg";
-      if (creditsContainer) creditsContainer.textContent = `Credits: ${this.profile.credits || 0}`;
-  
-      // ✅ Ensure Edit Profile section remains visible
-      if (!editProfileContainer) {
-        console.warn("⚠️ Edit Profile section missing! UI might break.");
-      }
-  
-      if (!saveChangesBtn) {
-        console.warn("⚠️ Save Changes button missing! It will not be clickable.");
-      }
-  
-      console.log("✅ Profile Loaded Successfully!");
-  
+        // 🔄 Fetch User Profile
+        const response = await fetch(`${API_PROFILES}/${userName}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken.trim()}`,
+                "X-Noroff-API-Key": API_KEY,
+            },
+        });
+
+        if (!response.ok) {
+            console.error(`❌ Failed to fetch profile - Status: ${response.status}`);
+            throw new Error(`Failed to fetch profile - ${response.statusText}`);
+        }
+
+        const userData = await response.json();
+        console.log("📡 Full Profile Data Received:", userData);
+
+        this.profile = userData.data;
+
+        // ✅ Get UI Elements
+        const avatarImg = document.getElementById("profile-avatar");
+        const bioContainer = document.getElementById("bio");
+        const bannerContainer = document.getElementById("banner-img");
+        const creditsContainer = document.getElementById("credits");
+        const listingsContainer = document.getElementById("total-listings");
+        const winsContainer = document.getElementById("total-wins");
+
+        // ✅ Update UI
+        if (avatarImg) avatarImg.src = this.profile.avatar?.url || "/img/default-avatar.jpg";
+        if (bioContainer) bioContainer.textContent = this.profile.bio?.trim() || "No bio available.";
+        if (bannerContainer) bannerContainer.src = this.profile.banner?.url || "/img/default-banner.jpg";
+        if (creditsContainer) creditsContainer.textContent = `Credits: ${this.profile.credits || 0}`;
+
+        // 🔄 Fetch Total Listings
+        const listingsResponse = await fetch(`${API_PROFILES}/${userName}/listings`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+                "X-Noroff-API-Key": API_KEY,
+            },
+        });
+
+        if (listingsResponse.ok) {
+            const listingsData = await listingsResponse.json();
+            console.log("📡 Listings Data:", listingsData);
+            if (listingsContainer) {
+                listingsContainer.textContent = `Total Listings: ${listingsData.data.length}`;
+            }
+        } else {
+            console.warn("⚠️ Could not fetch listings.");
+            if (listingsContainer) listingsContainer.textContent = "Total Listings: Error";
+        }
+
+        // 🔄 Fetch Total Wins
+        const bidsResponse = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+                "X-Noroff-API-Key": API_KEY,
+            },
+        });
+
+        if (bidsResponse.ok) {
+            const bidsData = await bidsResponse.json();
+            console.log("📡 Bids Data:", bidsData);
+
+            const wonBids = bidsData.data.filter(bid => {
+                if (bid.listing && bid.listing.bids) {
+                    const highestBid = Math.max(...bid.listing.bids.map(b => b.amount));
+                    return bid.amount === highestBid;
+                }
+                return false;
+            });
+
+            if (winsContainer) {
+                winsContainer.textContent = `Total Wins: ${wonBids.length}`;
+            }
+        } else {
+            console.warn("⚠️ Could not fetch wins.");
+            if (winsContainer) winsContainer.textContent = "Total Wins: Error";
+        }
+
+        console.log("✅ Profile Loaded Successfully!");
+
     } catch (error) {
-      console.error("❌ Error fetching profile:", error);
+        console.error("❌ Error fetching profile:", error);
     }
-  }
+}
+
   
 
   async saveProfileChanges() {
