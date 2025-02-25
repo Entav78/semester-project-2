@@ -17,3 +17,5 @@ Profile changes saved! (Not implemented yet)
 close edit profile when clicking on "save changes"
 
 input color forms: 
+
+Check if sass is properly installed

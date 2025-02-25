@@ -97,15 +97,28 @@ export function handleViewItemClick(event) {
 }
 
 function toggleEditProfile() {
-  const editContainer = document.getElementById("edit-profile-container");
+  const editProfileContainer = document.getElementById("edit-profile-container");
 
-  if (!editContainer) {
-    console.warn("⚠️ Edit profile container not found. It may already be closed.");
+  if (!editProfileContainer) {
+    console.warn("⚠️ Edit Profile container not found!");
     return;
   }
 
-  editContainer.classList.toggle("hidden");
+  console.log("🔄 Toggling edit profile...");
+
+  // Check if the container is hidden
+  const isHidden = editProfileContainer.classList.contains("hidden");
+
+  if (isHidden) {
+    console.log("✅ Showing edit profile section...");
+    editProfileContainer.classList.remove("hidden");
+  } else {
+    console.log("🚪 Hiding edit profile section...");
+    editProfileContainer.classList.add("hidden"); // ✅ Hide everything when closing
+  }
 }
+
+
 
 
 

@@ -178,7 +178,7 @@ async function refreshAvatarSection(userName) {
 
     // ✅ Get UI Elements
     const avatarImg = document.getElementById("avatar-img");
-    const bioContainer = document.getElementById("bio");;
+    const bioContainer = document.getElementById("bio-container");;
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
     const listingsContainer = document.getElementById("total-listings");
@@ -246,8 +246,19 @@ async function refreshAvatarSection(userName) {
       bioContainer.textContent = "No bio available.";
     }
 
+    if (bioContainer) {
+      fetchUserProfile() // Assuming this function fetches user data
+        .then(userData => {
+          bioContainer.textContent = userData.bio?.trim() || "No bio available.";
+        })
+        .catch(error => {
+          console.error("❌ Error fetching bio:", error);
+          bioContainer.textContent = "No bio available."; // Show fallback message
+        });
+    }
+
     console.log(`✅ Bio Updated: "${bioContainer.textContent}"`);
-    
+
     console.log("✅ Avatar section and profile stats refreshed!");
 
   } catch (error) {
@@ -301,6 +312,7 @@ export function initializeProfilePage(forceRefresh = true) {
     const bioContainer = document.getElementById("bio"); // ✅ Matches profile.html
     const bannerContainer = document.getElementById("banner-img"); // ✅ Matches profile.html
     const creditsContainer = document.getElementById("user-credits"); // ✅ Matches profile.html
+    const editAvatarBtn = document.getElementById("edit-avatar-btn");
 
     if (avatarImg && avatarInput && avatarButton) {
         console.log("✅ Avatar elements found, creating Avatar instance...");
@@ -311,6 +323,11 @@ export function initializeProfilePage(forceRefresh = true) {
         console.warn("⚠️ Avatar elements not found! Skipping initialization.");
     }
 
+    if (editAvatarBtn) {
+      editAvatarBtn.addEventListener("click", toggleAvatarSection);
+    } else {
+      console.warn("⚠️ Edit Avatar button not found!");
+    }
 
     Promise.all([
       displayUserListings(user.userName),
@@ -330,6 +347,27 @@ export function initializeProfilePage(forceRefresh = true) {
     console.log("✅ Profile Setup Complete!");
   }, 300);
 }
+
+function toggleAvatarSection() {
+  const avatarSection = document.getElementById("updateAvatarSection");
+
+  if (!avatarSection) {
+    console.warn("⚠️ Avatar section not found!");
+    return;
+  }
+
+  console.log("🔄 Toggling avatar section...");
+
+  if (avatarSection.classList.contains("opacity-0")) {
+    console.log("✅ Showing avatar input...");
+    avatarSection.classList.remove("opacity-0", "invisible");
+  } else {
+    console.log("🚪 Hiding avatar input...");
+    avatarSection.classList.add("opacity-0", "invisible");
+  }
+}
+
+
 
 console.log("✅ Profile Page Setup Complete!");
 window.initializeProfilePage = initializeProfilePage;
