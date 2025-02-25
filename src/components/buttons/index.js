@@ -158,10 +158,9 @@ export function setupProfileButtons() {
   }
 
   if (editProfileBtn) {
-    editProfileBtn.removeEventListener("click", toggleEditProfile);
     editProfileBtn.addEventListener("click", toggleEditProfile);
   } else {
-    console.warn("⚠️ 'edit-profile-btn' not found!");
+    console.warn("⚠️ Edit Profile button not found!");
   }
 
   if (saveProfileBtn) {
