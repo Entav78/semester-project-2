@@ -13,3 +13,7 @@ buttonContainer is not in Filtering
 when click on pagination page, move to the top of the page
 
 Profile changes saved! (Not implemented yet)
+
+close edit profile when clicking on "save changes"
+
+input color forms: 

@@ -131,7 +131,7 @@ console.log("populateEditForm() executed!");
    */
   renderForm() {
     this.container.innerHTML = ""; 
-
+    
     // Page Title
     const title = document.createElement("h1");
     title.classList.add("text-xl", "font-bold", "mb-4");

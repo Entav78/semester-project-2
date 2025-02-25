@@ -9,21 +9,29 @@
   </head>
   <body class="bg-background text-text">
     
-    <main id="main-container" class="flex-grow main-content mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl p-4">
+    <main id="main-container" class="flex-grow main-content mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl p-10">
 
-      <h1>This is the login page!</h1>
+      <h1 class="text-xl font-bold text-center mb-6">Login</h1>
       
-      <form id="loginForm">
-        <label>Email</label>
-        <input type="email" name="email" required />
-      
-        <label>Password</label>
-        <input type="password" name="password" required />
-      
-        <button type="submit">Login</button>
+      <form id="loginForm" class="w-full max-w-md bg-gray-100 shadow-lg rounded-lg p-6">
+        <div>
+          <label for="email" class="block font-semibold">Email</label>
+          <input type="email" id="email" name="email" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+  
+        <div>
+          <label for="password" class="block font-semibold">Password</label>
+          <input type="password" id="password" name="password" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+  
+        <button type="submit" class="w-full bg-[#8c6953] text-white py-2 rounded hover:bg-[#5e4030] transition mt-4">
+          Login
+        </button>
       </form>
       
-      <div id="errorMessage" style="color: red;"></div>
+      <div id="errorMessage" class="text-red-500 text-center mt-4"></div>
 
     </main>
     <footer class="bg-accent text-white py-6 mt-8">

@@ -1,5 +1,6 @@
 import { router } from "@/pages/router/router.js";
-import { avatarInstance } from "@/js/api/avatar.js";
+import { avatarInstance } from "@/js/api/Avatar.js";
+ 
 
 //setAvatarInstance(new Avatar());
 
@@ -95,7 +96,25 @@ export function handleViewItemClick(event) {
   router(itemPagePath);
 }
 
-// ✅ Profile Page Buttons (Only runs if user is on profile page)
+function toggleEditProfile() {
+  console.log("✏️ Edit Profile button clicked!");
+
+  const editProfileContainer = document.getElementById("edit-profile-container");
+  const updateAvatarSection = document.getElementById("updateAvatarSection");
+
+  if (editProfileContainer) {
+    editProfileContainer.classList.toggle("hidden");
+  } else {
+    console.warn("⚠️ Edit profile container not found!");
+  }
+
+  if (updateAvatarSection) {
+    updateAvatarSection.classList.toggle("hidden");
+  } else {
+    console.warn("⚠️ Update Avatar section not found!");
+  }
+}
+
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls
 
 export function setupProfileButtons() {
@@ -107,6 +126,7 @@ export function setupProfileButtons() {
   console.log("🔄 Initializing profile buttons...");
 
   // ✅ Select elements
+  const updateAvatarSection = document.getElementById("updateAvatarSection");
   const updateAvatarBtn = document.getElementById("update-avatar-btn");
   const editProfileBtn = document.getElementById("edit-profile-btn");
   const saveProfileBtn = document.getElementById("save-profile-btn");
@@ -116,76 +136,119 @@ export function setupProfileButtons() {
   if (updateAvatarBtn) {
     updateAvatarBtn.removeEventListener("click", handleUpdateAvatar);
     updateAvatarBtn.addEventListener("click", handleUpdateAvatar);
+  } else {
+    console.warn("⚠️ 'update-avatar-btn' not found!");
   }
 
   if (editProfileBtn) {
     editProfileBtn.removeEventListener("click", toggleEditProfile);
     editProfileBtn.addEventListener("click", toggleEditProfile);
+  } else {
+    console.warn("⚠️ 'edit-profile-btn' not found!");
   }
 
   if (saveProfileBtn) {
-    saveProfileBtn.removeEventListener("click", saveProfileChanges);
-    saveProfileBtn.addEventListener("click", saveProfileChanges);
+    saveProfileBtn.removeEventListener("click", handleSaveProfile);
+    saveProfileBtn.addEventListener("click", handleSaveProfile);
+  } else {
+    console.warn("⚠️ 'save-profile-btn' not found!");
   }
 
   if (myListingsTab) {
     myListingsTab.removeEventListener("click", showListingsTab);
     myListingsTab.addEventListener("click", showListingsTab);
+  } else {
+    console.warn("⚠️ 'listings tab' not found!");
   }
 
   if (myBidsTab) {
     myBidsTab.removeEventListener("click", showBidsTab);
     myBidsTab.addEventListener("click", showBidsTab);
+  } else {
+    console.warn("⚠️ 'bids tab' not found!");
   }
 
   profileButtonsInitialized = true; // ✅ Stops infinite calls
   console.log("✅ Profile buttons initialized!");
 }
 
+
+// ✅ Define `handleSaveProfile()` correctly
+function handleSaveProfile() {
+  console.log("🛠 handleSaveProfile() was triggered!");
+  console.log("🔍 Checking avatarInstance before saving:", avatarInstance);
+  
+  if (avatarInstance) {
+    console.log("💾 Save Profile Clicked - Updating profile...");
+    avatarInstance.saveProfileChanges()
+      .then(() => {
+        console.log("✅ Profile changes saved!");
+
+        // ✅ Close Edit Profile Section
+        const editProfileContainer = document.getElementById("edit-profile-container");
+        if (editProfileContainer) {
+          editProfileContainer.classList.add("hidden");
+          console.log("🛠 Edit Profile section closed.");
+        } else {
+          console.warn("⚠️ Edit Profile section not found!");
+        }
+      })
+      .catch(error => console.error("❌ Error updating profile:", error));
+  } else {
+    console.error("❌ avatarInstance is not defined!");
+  }
+}
+
+
+
+
+
 // ✅ Define event handlers separately
 function handleUpdateAvatar() {
   console.log("🖼️ Update Avatar Clicked");
-  const avatarInput = document.getElementById("avatar-url-input").value.trim();
-  if (!avatarInput) {
-    alert("Please enter a valid avatar URL!");
+
+  if (!avatarInstance) {
+    console.error("❌ avatarInstance is not initialized!");
     return;
   }
-  new Avatar(
-    document.getElementById("avatar-img"),
-    document.getElementById("avatar-url-input"),
-    document.getElementById("update-avatar-btn")
-  ).updateAvatar();
+
+  avatarInstance.updateAvatar();
 }
 
-function toggleEditProfile() {
-  const editProfileContainer = document.getElementById("edit-profile-container");
-  const updateAvatarSection = document.getElementById("updateAvatarSection");
 
-  if (editProfileContainer) {
-    editProfileContainer.classList.toggle("hidden");
-  }
 
-  if (updateAvatarSection) {
-    updateAvatarSection.classList.toggle("hidden");
-  }
-}
 
-export function saveProfileChanges() {
+// ✅ Save Profile Changes Handler
+export function saveProfileChangesHandler() {
   console.log("💾 Save Profile Clicked - Updating profile...");
-  if (avatarInstance) {
-    avatarInstance.saveProfileChanges(); // ✅ Call method from Avatar.js
-  } else {
-    console.error("❌ avatarInstance is not defined yet!");
+
+  if (!avatarInstance) {
+    console.error("❌ avatarInstance is not initialized!");
+    return;
   }
+
+  avatarInstance.saveProfileChanges().then(() => {
+    // ✅ Close the Edit Profile section AFTER saving
+    const editProfileContainer = document.getElementById("edit-profile-container");
+    if (editProfileContainer) {
+      editProfileContainer.classList.add("hidden");
+      console.log("🛠 Edit Profile section closed.");
+    } else {
+      console.warn("⚠️ Edit Profile section not found!");
+    }
+  });
 }
 
-// ✅ Ensure Save Profile Button has an event listener
+// ✅ Attach event listener directly (NO DOMContentLoaded)
 const saveProfileBtn = document.getElementById("save-profile-btn");
-
 if (saveProfileBtn) {
-  saveProfileBtn.removeEventListener("click", saveProfileChanges);
-  saveProfileBtn.addEventListener("click", saveProfileChanges);
+  saveProfileBtn.removeEventListener("click", saveProfileChangesHandler);
+  saveProfileBtn.addEventListener("click", saveProfileChangesHandler);
+} else {
+  console.warn("⚠️ 'save-profile-btn' not found. Event listener not attached.");
 }
+
+
 
 function showListingsTab() {
   console.log("📜 My Listings Clicked");
