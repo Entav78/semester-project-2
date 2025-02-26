@@ -87,11 +87,11 @@ function loadUserBids() {
 
 loadUserBids();
 
-// ✅ Function to fetch and display user bids (with listing details)
-async function displayUserBids(userName) {
-  console.log("📡 Fetching bids for user:", userName);
-  console.log("🔍 All Bids from Profile:", data.bids);
 
+
+// ✅ Function to fetch and display user bids (with listing details)
+async function displayUserBids(bids) {
+  console.log("📡 Fetching bids for user:", bids); // ✅ Now uses `bids` from function parameter
 
   const bidsContainer = document.getElementById("bids-container");
   if (!bidsContainer) {
@@ -101,37 +101,19 @@ async function displayUserBids(userName) {
 
   bidsContainer.innerHTML = "<p>Loading your bids...</p>";
 
-  // 🔄 Fetch bids with listing details included
-  const response = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      "X-Noroff-API-Key": API_KEY,
-    },
-  });
-
-  if (!response.ok) {
-    console.error("❌ Failed to fetch user bids.");
-    bidsContainer.innerHTML = "<p>Error loading bids.</p>";
-    return;
-  }
-
-  const bidData = await response.json();
-  console.log("📡 Bids API Response with Listings:", bidData);
-
-  const bids = bidData.data;
-  if (!Array.isArray(bids) || bids.length === 0) {
+  if (!bids || !Array.isArray(bids) || bids.length === 0) {
     bidsContainer.innerHTML = "<p>No bids placed.</p>";
     return;
   }
 
   bidsContainer.innerHTML = ""; // Clear old content
 
-  // 🛠 Loop through bids and use correct listing data
   for (const bid of bids) {
-    if (!bid.listing) {
-      console.warn(`⚠️ No listing found for bid on ID: ${bid.id}`);
-      continue;
+    console.log("🔍 Checking bid:", bid);
+
+    if (!bid.listing || !bid.listing.id) {
+      console.warn(`⚠️ No valid listing found for bid ID: ${bid.id}`, bid);
+      continue; // Skip bids without a listing
     }
 
     const listing = bid.listing; // ✅ Correctly linked listing
@@ -164,6 +146,8 @@ async function displayUserBids(userName) {
 
   console.log("✅ Bids displayed successfully!");
 }
+
+
 
 
 
@@ -301,21 +285,21 @@ export function initializeProfilePage(forceRefresh = true) {
     }
 
     console.log("🛠 Checking if Avatar elements exist...");
-    const avatarImg = document.getElementById("avatar-img"); // ✅ Matches profile.html
-    const avatarInput = document.getElementById("avatar-url-input"); // ✅ Matches profile.html
-    const avatarButton = document.getElementById("update-avatar-btn"); // ✅ Matches profile.html
-    const bioContainer = document.getElementById("bio"); // ✅ Matches profile.html
-    const bannerContainer = document.getElementById("banner-img"); // ✅ Matches profile.html
-    const creditsContainer = document.getElementById("user-credits"); // ✅ Matches profile.html
+    const avatarImg = document.getElementById("avatar-img");
+    const avatarInput = document.getElementById("avatar-url-input");
+    const avatarButton = document.getElementById("update-avatar-btn");
+    const bioContainer = document.getElementById("bio");
+    const bannerContainer = document.getElementById("banner-img");
+    const creditsContainer = document.getElementById("user-credits");
     const editAvatarBtn = document.getElementById("edit-avatar-btn");
 
     if (avatarImg && avatarInput && avatarButton) {
-        console.log("✅ Avatar elements found, creating Avatar instance...");
-        const avatar = new Avatar(avatarImg, avatarInput, avatarButton, bioContainer, bannerContainer, creditsContainer);
-        setAvatarInstance(avatar);
-        console.log("✅ Avatar instance set:", avatar);
+      console.log("✅ Avatar elements found, creating Avatar instance...");
+      const avatar = new Avatar(avatarImg, avatarInput, avatarButton, bioContainer, bannerContainer, creditsContainer);
+      setAvatarInstance(avatar);
+      console.log("✅ Avatar instance set:", avatar);
     } else {
-        console.warn("⚠️ Avatar elements not found! Skipping initialization.");
+      console.warn("⚠️ Avatar elements not found! Skipping initialization.");
     }
 
     if (editAvatarBtn) {
@@ -324,15 +308,26 @@ export function initializeProfilePage(forceRefresh = true) {
       console.warn("⚠️ Edit Avatar button not found!");
     }
 
+    // ✅ Fetch User Bids and Pass Them to `displayUserBids()`
+    fetchUserBids(user.userName)
+      .then(bids => {
+        if (!bids || bids.length === 0) {
+          console.warn("⚠️ No bids found.");
+        } else {
+          console.log("🔍 All Bids:", bids);
+          displayUserBids(bids); // ✅ Now passing bids correctly
+        }
+      })
+      .catch(error => console.error("❌ Error fetching user bids:", error));
+
+    // ✅ Run other profile setup functions in parallel
     Promise.all([
       displayUserListings(user.userName),
-      displayUserBids(user.userName),
-      refreshAvatarSection(user.userName), // ✅ No fetchUserProfile call anymore!
+      refreshAvatarSection(user.userName),
     ])
       .then(() => console.log("✅ Profile Data Loaded Successfully"))
       .catch(error => console.error("❌ Error loading profile:", error))
       .finally(hideLoader);
-    
 
     setupProfileButtons();
     setupListingButtons();
@@ -340,6 +335,8 @@ export function initializeProfilePage(forceRefresh = true) {
     console.log("✅ Profile Setup Complete!");
   }, 300);
 }
+
+
 
 function toggleAvatarSection() {
   const avatarSection = document.getElementById("updateAvatarSection");

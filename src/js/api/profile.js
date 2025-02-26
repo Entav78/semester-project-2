@@ -1,4 +1,4 @@
-import { API_KEY } from "@/js/api/constants.js";
+import { API_KEY, API_PROFILES } from "@/js/api/constants.js";
 import { getUserListings, getUserBids } from "@/js/api/constants.js";
 
 
@@ -50,17 +50,19 @@ export async function fetchUserListings(userName) {
 
 // 🛠️ Fetch user bids
 export async function fetchUserBids(userName) {
-  // ✅ Ensure authToken is retrieved inside function
+  console.log(`📡 Fetching user bids for: ${userName}`);
+
   const authToken = localStorage.getItem("authToken");
   if (!authToken) {
-    console.error("No auth token available.");
+    console.error("❌ No auth token available.");
     throw new Error("Unauthorized: No token provided.");
   }
 
   try {
-    const response = await fetch(getUserBids(userName), {
+    // ✅ Ensure `_listings=true` is in the URL to include listing details
+    const response = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
       headers: {
-        "Authorization": `Bearer ${authToken}`, // Bearer token
+        "Authorization": `Bearer ${authToken}`,
         "X-Noroff-API-Key": API_KEY,
         "Content-Type": "application/json",
       },
@@ -68,19 +70,21 @@ export async function fetchUserBids(userName) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error(`Error fetching bids:`, errorData);
+      console.error(`❌ Error fetching bids:`, errorData);
       throw new Error(errorData.errors?.[0]?.message || `Failed to fetch bids: ${response.status}`);
     }
 
     const responseData = await response.json();
-    console.log("📡 Full Bids Data:", responseData); // ✅ Debugging
+    console.log("📡 Full Bids Data (with listings):", responseData);
 
-    return responseData.data; // ✅ Extract and return only the bids array
+    return responseData.data; // ✅ Return only bids array
   } catch (error) {
-    console.error("Failed to fetch bids:", error.message);
-    return null;
+    console.error("❌ Failed to fetch bids:", error.message);
+    return [];
   }
 }
+
+
 
 
 
