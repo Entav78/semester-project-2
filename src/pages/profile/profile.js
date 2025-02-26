@@ -150,10 +150,60 @@ async function displayUserBids(bids) {
 
 
 
+async function refreshAvatarSection(userName) {
+  console.log(`🔄 Refreshing avatar section for: ${userName}`);
+
+  const authToken = localStorage.getItem("authToken");
+  if (!authToken || !userName) {
+    console.error("❌ Missing authentication or userName.");
+    return;
+  }
+
+  try {
+    // 🔄 Fetch User Profile
+    const response = await fetch(`${API_PROFILES}/${userName}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (!response.ok) throw new Error("❌ Failed to fetch profile data.");
+
+    const userData = await response.json();
+    console.log("📡📡📡 Full Profile Data Received:", userData);
+    console.log("💰💰💰 Extracted User Credits:", userData?.data?.credits);
+
+    // ✅ Ensure creditsContainer exists in DOM
+    const creditsContainer = document.getElementById("user-credits");
+
+    if (!creditsContainer) {
+      console.error("❌ Credits container NOT FOUND in the DOM! Maybe it's loading too late?");
+      return;
+    }
+
+    // ✅ Update Credits in UI
+    const credits = userData?.data?.credits ?? "N/A";
+    console.log("💰💰💰💰 Updating user credits in the UI:", credits);
+    creditsContainer.textContent = `Credits: ${credits}`;
+
+    // ✅ Debug: Force another update after DOM loads
+    setTimeout(() => {
+      console.log("🔄 Forcing credits refresh...");
+      creditsContainer.textContent = `Credits: ${userData?.data?.credits ?? "N/A"}`;
+      console.log("✅ Credits after forced refresh:", creditsContainer.textContent);
+    }, 500);
+
+  } catch (error) {
+    console.error("❌ Error refreshing avatar section:", error);
+  }
+}
 
 
 
 
+/*
 async function refreshAvatarSection(userName) {
   console.log(`🔄 Refreshing avatar section for: ${userName}`);
 
@@ -177,6 +227,9 @@ async function refreshAvatarSection(userName) {
 
     const userData = await response.json();
     console.log("📡 Profile Data:", userData);
+    console.log("📡 Full Profile Data Before Updating Credits:", userData);
+    console.log("💰 Fetched User Credits:", userData?.data?.credits);
+
 
     // ✅ Get UI Elements
     const avatarImg = document.getElementById("avatar-img");
@@ -186,12 +239,16 @@ async function refreshAvatarSection(userName) {
     const listingsContainer = document.getElementById("total-listings");
     const winsContainer = document.getElementById("total-wins");
 
+    
+
     // ✅ Update UI Elements
     if (avatarImg) avatarImg.src = userData.data.avatar?.url || "/img/default-avatar.jpg";
     if (bioContainer) bioContainer.textContent = userData.data.bio?.trim() || "No bio available.";
     if (bannerImg) bannerImg.src = userData.data.banner?.url || "/img/default-banner.jpg";
     if (creditsContainer) creditsContainer.textContent = `Credits: ${userData.data.credits || 0}`;
 
+    console.log("📡 Full Profile Data Before Updating Credits:", userData);
+    console.log("💰 Fetched User Credits:", userData?.data?.credits);
     // 🔄 Fetch Total Listings
     const listingsResponse = await fetch(`${API_PROFILES}/${userName}/listings`, {
       headers: {
@@ -243,7 +300,7 @@ async function refreshAvatarSection(userName) {
     console.error("❌ Error refreshing avatar section:", error);
   }
 }
-
+*/
 
 
 // ✅ Function to initialize the profile page
@@ -291,6 +348,7 @@ export function initializeProfilePage(forceRefresh = true) {
     const bioContainer = document.getElementById("bio");
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
+    const totalListingsContainer = document.getElementById("total-listings");
     const editAvatarBtn = document.getElementById("edit-avatar-btn");
 
     if (avatarImg && avatarInput && avatarButton) {
@@ -308,14 +366,67 @@ export function initializeProfilePage(forceRefresh = true) {
       console.warn("⚠️ Edit Avatar button not found!");
     }
 
-    // ✅ Fetch User Bids and Pass Them to `displayUserBids()`
+    // ✅ Fetch & Display Total Listings
+fetch(`${API_PROFILES}/${user.userName}/listings`, {
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${authToken}`,
+    "X-Noroff-API-Key": API_KEY,
+  },
+})
+.then(response => {
+  if (!response.ok) throw new Error("❌ Failed to fetch listings.");
+  return response.json();
+})
+.then(listingsData => {
+  console.log("📡 Listings Data:", listingsData); // ✅ Ensure this logs correctly
+
+  const totalListingsContainer = document.getElementById("total-listings");
+
+  if (totalListingsContainer) {
+    totalListingsContainer.textContent = `Total Listings: ${listingsData.data.length || 0}`;
+  } else {
+    console.warn("⚠️ totalListingsContainer not found in DOM!");
+  }
+})
+.catch(error => {
+  console.error("❌ Error fetching total listings:", error);
+  const totalListingsContainer = document.getElementById("total-listings");
+  if (totalListingsContainer) totalListingsContainer.textContent = "Total Listings: Error";
+});
+
+
+    // ✅ Fetch & Display Total Listings
+    fetch(`${API_PROFILES}/${user.userName}/listings`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("❌ Failed to fetch listings.");
+      return response.json();
+    })
+    .then(listingsData => {
+      console.log("📡 Listings Data:", listingsData);
+      if (totalListingsContainer) {
+        totalListingsContainer.textContent = `Total Listings: ${listingsData.data.length}`;
+      }
+    })
+    .catch(error => {
+      console.error("❌ Error fetching total listings:", error);
+      if (totalListingsContainer) totalListingsContainer.textContent = "Total Listings: Error";
+    });
+
+    // ✅ Fetch User Bids & Display Them
     fetchUserBids(user.userName)
       .then(bids => {
         if (!bids || bids.length === 0) {
           console.warn("⚠️ No bids found.");
         } else {
           console.log("🔍 All Bids:", bids);
-          displayUserBids(bids); // ✅ Now passing bids correctly
+          displayUserBids(bids);
         }
       })
       .catch(error => console.error("❌ Error fetching user bids:", error));
@@ -323,7 +434,6 @@ export function initializeProfilePage(forceRefresh = true) {
     // ✅ Run other profile setup functions in parallel
     Promise.all([
       displayUserListings(user.userName),
-      refreshAvatarSection(user.userName),
     ])
       .then(() => console.log("✅ Profile Data Loaded Successfully"))
       .catch(error => console.error("❌ Error loading profile:", error))
@@ -331,12 +441,12 @@ export function initializeProfilePage(forceRefresh = true) {
 
     setupProfileButtons();
     setupListingButtons();
+    refreshAvatarSection(user.userName);
+
 
     console.log("✅ Profile Setup Complete!");
   }, 300);
 }
-
-
 
 function toggleAvatarSection() {
   const avatarSection = document.getElementById("updateAvatarSection");
