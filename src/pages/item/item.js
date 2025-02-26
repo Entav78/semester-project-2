@@ -45,7 +45,7 @@ export function initializeItemPage() {
 
     // Create elements instead of using innerHTML (for security)
     const title = document.createElement("h1");
-    title.classList.add("text-2xl", "font-bold");
+    title.classList.add("text-3xl", "font-bold", "text-text", "text-center", "mb-4");
     title.textContent = item.title || "Untitled";
 
     // Image Handling Fix
@@ -58,10 +58,10 @@ export function initializeItemPage() {
  //  Correct line
 
     image.alt = item.title || "No image available";
-    image.classList.add("w-full", "max-w-md", "rounded-lg", "shadow-md");
+    image.classList.add("w-full", "max-w-lg", "rounded-lg", "shadow-lg", "mx-auto", "border", "border-primary");
 
     const description = document.createElement("p");
-    description.classList.add("text-gray-600", "mt-2");
+    description.classList.add("text-text", "text-centre", "mt-4", "leading-relaxed", "p-4", "rounded-lg", "shadow-md");
     description.textContent = item.description || "No description available.";
 
     //  Get User Credits from Local Storage
@@ -76,12 +76,32 @@ export function initializeItemPage() {
 const highestBid = data.bids?.length ? Math.max(...data.bids.map(bid => bid.amount)) : "No bids yet";
 
 const currentBidElement = document.createElement("p");
-currentBidElement.classList.add("font-bold", "mt-4");
+currentBidElement.classList.add(
+  "font-semibold",
+  "text-center",
+  "mt-6",  // ✅ Top margin
+  "mb-4",  // ✅ Bottom margin to create space before auctionEnd
+  "p-4",
+  //"bg-soft",
+  "rounded-lg",
+  "shadow-inner",
+  "text-text"
+);
 currentBidElement.textContent = `Current Highest Bid: ${highestBid} credits`;
 
 // ✅ Auction Status (Ended or Active)
 const auctionEnd = document.createElement("p");
-auctionEnd.classList.add("mt-2", "font-bold");
+auctionEnd.classList.add(
+  "text-text",
+  "font-bold",
+  //"bg-soft",
+  "p-3",
+  "rounded-lg",
+  "shadow-md",
+  "text-center", 
+  "uppercase",
+  "tracking-wide"
+);
 
 // Check if auction has ended
 if (data.endsAt) {
@@ -90,10 +110,12 @@ if (data.endsAt) {
 
   if (auctionEndTime < now) {
     auctionEnd.textContent = "SOLD / AUCTION ENDED";
-    auctionEnd.classList.add("text-gray-700", "bg-yellow-300", "p-2", "rounded-lg");
+    auctionEnd.classList.add(
+      "text-white", "bg-coffee",
+    );
   } else {
     auctionEnd.textContent = `Auction Ends: ${auctionEndTime.toLocaleString()}`;
-    auctionEnd.classList.add("text-red-500");
+    auctionEnd.classList.add("text-text");
   }
 } else {
   auctionEnd.textContent = "No deadline set";
@@ -116,7 +138,18 @@ if (!bidInput) {
   bidInput.type = "number";
   bidInput.placeholder = "Enter your bid";
   bidInput.id = "bid-input"; //  Unique ID
-  bidInput.classList.add("form-input", "mt-4", "border", "p-2", "rounded");
+  bidInput.classList.add(
+    "bg-soft",           // Light background
+    "border", "border-text",  // Subtle border color
+    "text-text",         // Matching text color
+    "p-3",              // Padding for better spacing
+    "rounded-lg",       // Soft, rounded corners
+    "w-full",           // Makes it responsive
+    "focus:outline-none", "focus:ring-2", "focus:ring-accent", // Focus effect
+    "transition",        // Smooth transition effect
+    "mt-6"
+  );
+  
   itemContainer.append(bidInput); // Append only if it's missing
 }
 
@@ -126,7 +159,24 @@ let bidButton = document.getElementById("place-bid-btn");
 if (!bidButton) {
   bidButton = document.createElement("button");
   bidButton.textContent = "Place Bid";
-  bidButton.classList.add("btn", "btn-primary", "mt-2");
+  bidButton.classList.add(
+    "bg-primary",        // Button background color
+    "text-white",        // White text for contrast
+    "px-4", "py-2",      // Padding for better clickability
+    "rounded-lg",        // Rounded corners
+    "font-semibold",     // Bold font
+    "shadow-md",         // Adds a slight depth effect
+    "hover:bg-accent",   // Darker brown on hover
+    "transition",
+    "mt-6",
+    "active:scale-95",
+    "w-full",        // ✅ Makes button take full width
+  "max-w-xs",      // ✅ Limits the width for a clean look
+  "mx-auto",       // ✅ Centers it horizontally
+  "block",         // ✅ Ensures it behaves like a block element
+  "text-center"        
+  );
+  
   bidButton.id = "place-bid-btn"; // Add ID to prevent duplicates
   itemContainer.append(bidButton); //  Add the button only if it's missing
 }

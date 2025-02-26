@@ -37,7 +37,8 @@ async function displayUserListings(userName) {
     const image = document.createElement("img");
     image.src = listing.media?.[0]?.url || "/img/default.jpg";
     image.alt = listing.title;
-    image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
+    image.classList.add("w-full", "rounded-lg", "shadow-md", "max-h-[500px]", "object-cover");
+
 
     const description = document.createElement("p");
     description.classList.add("text-gray-600", "mt-2");

@@ -102,8 +102,8 @@ applyFilters() {
   const tagMappings = {
     "vehicles & parts": "cars",
     "vehicle": "cars",
-    "watch": "watches",
-    "timekeeper": "watches",
+    "watch": "jewelry",
+    "timekeeper": "jewelry",
     "technology": "tech",
     "electronics": "tech",
     "furniture": "home decor",
@@ -189,31 +189,34 @@ applyFilters() {
 
 
 
-  sortListings(sortBy) {
-    if (!this.filteredListings || this.filteredListings.length === 0) {
-      console.warn("No listings available for sorting.");
-      return;
-    }
-
-    switch (sortBy) {
-      case "endingSoon":
-        this.filteredListings.sort((a, b) => new Date(a.endsAt) - new Date(b.endsAt));
-        break;
-      case "newest":
-        this.filteredListings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      case "highestBid":
-        this.filteredListings.sort((a, b) => (b.highestBid || 0) - (a.highestBid || 0));
-        break;
-      case "lowestBid":
-        this.filteredListings.sort((a, b) => (a.highestBid || 0) - (b.highestBid || 0));
-        break;
-      default:
-        break;
-    }
-
-    this.renderFilteredListings();
+sortListings(sortBy) {
+  if (!this.filteredListings || this.filteredListings.length === 0) {
+    console.warn("⚠️ No listings available for sorting.");
+    return;
   }
+
+  switch (sortBy) {
+    case "endingSoon":
+      this.filteredListings.sort((a, b) => new Date(a.endsAt) - new Date(b.endsAt));
+      break;
+    case "newest":
+      this.filteredListings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      break;
+    case "highestBid":
+      this.filteredListings.sort((a, b) => (b.highestBid ?? 0) - (a.highestBid ?? 0)); // ✅ Default to 0 if undefined
+      break;
+    case "lowestBid":
+      this.filteredListings.sort((a, b) => (a.highestBid ?? 0) - (b.highestBid ?? 0)); // ✅ Default to 0 if undefined
+      break;
+    default:
+      console.warn("⚠️ Unknown sorting method:", sortBy);
+      break;
+  }
+
+  this.renderFilteredListings();
+  this.renderPaginationControls();
+}
+
 
   renderFilteredListings() {
     this.listingsContainer.innerHTML = ""; // Clear previous results
@@ -240,6 +243,8 @@ applyFilters() {
       const title = document.createElement("h2");
       title.classList.add("listing-title", "text-xl", "font-bold");
       title.textContent = listing.title;
+
+      
 
       // Handle Image
       const image = document.createElement("img");
