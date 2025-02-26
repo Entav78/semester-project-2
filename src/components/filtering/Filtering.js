@@ -27,6 +27,8 @@ export class Filtering {
 
     this.setupEventListeners();
     this.loadListings();
+
+    
 }
 
 
@@ -57,37 +59,32 @@ export class Filtering {
 
 setupEventListeners() {
   this.categoryFilter.addEventListener("change", () => {
-      if (this.categoryFilter.value === "multiple") {
-          this.advancedFilters.classList.remove("hidden"); // Show checkboxes
-      } else {
-          this.advancedFilters.classList.add("hidden"); // Hide checkboxes
-          this.clearCheckboxes(); // ✅ Ensure checkboxes are cleared
-      }
-      this.applyFilters();
+    if (this.categoryFilter.value === "multiple") {
+      this.advancedFilters.classList.remove("hidden");
+    } else {
+      this.advancedFilters.classList.add("hidden");
+      this.clearCheckboxes();
+    }
+    this.applyFilters(); // ✅ This one is fine
   });
 
   this.searchBar.addEventListener("input", () => this.applyFilters());
-
-  this.applyFiltersBtn.addEventListener("click", () => {
-      console.log("✅ Apply Filters button clicked!");
-      this.applyFilters();
-  });
+  this.applyFiltersBtn.addEventListener("click", () => this.applyFilters());
 
   if (this.sortDropdown) {
-      this.sortDropdown.addEventListener("change", (event) => {
-          console.log("🔄 Sort dropdown changed. Resetting selected tags...");
-          
-          // ✅ Ensure all tag checkboxes are unchecked
-          this.clearCheckboxes(); 
-          
-          console.log("✅ All multiple tags have been cleared!");
+    this.sortDropdown.addEventListener("change", (event) => {
+      console.log("🔄 Sort dropdown changed. Resetting selected tags...");
+      this.clearCheckboxes();
+      console.log("✅ All tags have been reset!");
 
-          // ✅ Apply new sorting AFTER clearing filters
-          this.sortListings(event.target.value);
-          this.applyFilters(); // ✅ Force re-apply filters after clearing tags
-      });
+      // ✅ Avoid infinite loop: Only call applyFilters **after** sorting is done
+      this.sortListings(event.target.value);
+      this.renderFilteredListings();
+      this.renderPaginationControls(); 
+    });
   }
 }
+
 
 
 clearCheckboxes() {
@@ -97,19 +94,39 @@ clearCheckboxes() {
 }
 
 
-  applyFilters() {
-    if (!this.listings || this.listings.length === 0) {
-      console.warn("No listings available for filtering.");
+applyFilters() {
+  console.log("🔍 Applying Filters...");
+  
+  // ✅ Check if listings exist
+  if (!this.listings || this.listings.length === 0) {
+      console.warn("⚠️ No listings found! Are they being loaded?");
       return;
-    }
+  }
+  
+  console.log("✅ All Listings Before Filtering:", this.listings);
+
 
     const query = this.searchBar.value.toLowerCase();
     console.log("🔍 Search Query:", query);
 
-    const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
-      .map(checkbox => checkbox.value.toLowerCase());
+    const selectedDropdownTag = this.categoryFilter.value.toLowerCase(); 
+console.log("📌 Selected Dropdown Tag:", selectedDropdownTag);
 
-    console.log("Selected Tags:", selectedTags);
+const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
+  .map(checkbox => checkbox.value.toLowerCase());
+
+// ✅ Ensure dropdown value is added, but ignore "all" and empty values
+if (selectedDropdownTag && selectedDropdownTag !== "all") {
+  selectedTags.push(selectedDropdownTag);
+}
+
+
+console.log("📌 Updated Selected Tags:", selectedTags);
+;
+
+console.log("✅ Selected Tags:", selectedTags);
+
+    
 
     // Debug BEFORE filtering - Show only 5 items
     console.log("🔍 Before Filtering (First 5 Listings):", this.listings.slice(0, 5).map(listing => ({
@@ -261,7 +278,15 @@ clearCheckboxes() {
 }
 
 
+
+
 renderPaginationControls() {
+  if (this.filteredListings.length === 0) {
+    console.warn("⚠️ No listings matched the filters! Showing all instead.");
+    this.filteredListings = [...this.listings]; // ✅ Show all if filtering removes everything
+    this.currentPage = 1; // ✅ Reset to page 1 if no listings were found
+  }
+  
   this.paginationContainer.innerHTML = ""; // Clear existing pagination
 
   const totalPages = Math.ceil(this.filteredListings.length / this.itemsPerPage);
@@ -300,7 +325,11 @@ renderPaginationControls() {
 
   // 🔹 Append buttons to container
   paginationButtons.forEach((btn) => this.paginationContainer.appendChild(btn));
+
+  console.log(`✅ Pagination Updated: ${this.currentPage} / ${totalPages}`);
 }
+
+
 
 createPaginationButton(text, page, isActive = false) {
   const button = document.createElement("button");
@@ -338,6 +367,7 @@ createEllipsis() {
     this.renderFilteredListings();
     this.renderPaginationControls();
   }
+  
 }
 
 
