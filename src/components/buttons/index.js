@@ -99,26 +99,31 @@ export function handleViewItemClick(event) {
 
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls
 
-export function setupProfileButtons() {
-  console.log("🔄 Initializing profile buttons...");
-  console.log("🔄 Running setupProfileButtons()... Checking save-profile-btn:");
-  const myListingsBtn = document.querySelector("[data-tab='listings']");
-  const myBidsBtn = document.querySelector("[data-tab='bids']");
+export function setupProfileButtons(attempt = 1) {
+  console.log(`🔄 Initializing profile buttons... (Attempt ${attempt}/5)`);
 
-  if (!myListingsBtn || !myBidsBtn) {
-    console.warn("⚠️ My Listings or My Bids button is missing! Retrying in 500ms...");
-    setTimeout(() => setupProfileButtons(), 500);
+  const editProfileBtn = document.getElementById("edit-profile-btn");
+  const saveProfileBtn = document.getElementById("save-profile-btn");
+
+  if (!editProfileBtn || !saveProfileBtn) {
+    console.warn(`⚠️ Some profile buttons are missing! Retrying in 500ms... (Attempt ${attempt}/5)`);
+
+    if (attempt < 5) {
+      setTimeout(() => setupProfileButtons(attempt + 1), 500);
+    } else {
+      console.error("❌ Profile buttons NOT found after 5 attempts! Check HTML.");
+    }
     return;
   }
 
-  myListingsBtn.removeEventListener("click", showListingsTab);
-  myListingsBtn.addEventListener("click", showListingsTab);
+  // 🚨 Remove old listeners to prevent duplicate bindings
+  saveProfileBtn.removeEventListener("click", handleSaveProfile);
 
-  myBidsBtn.removeEventListener("click", showBidsTab);
-  myBidsBtn.addEventListener("click", showBidsTab);
-  console.log("🔍 save-profile-btn:", document.getElementById("save-profile-btn"));
-  console.log("✅ My Listings & My Bids buttons initialized!");
+  // ✅ Attach event listeners
+  saveProfileBtn.addEventListener("click", handleSaveProfile);
+  console.log("✅ Event listener attached to save-profile-btn!");
 }
+
 
 
 
