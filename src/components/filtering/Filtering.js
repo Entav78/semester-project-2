@@ -96,6 +96,8 @@ clearCheckboxes() {
 
 applyFilters() {
   console.log("🔍 Applying Filters...");
+  console.log("🛠 API Tags in Listings:", this.listings.map(l => l.tags));
+
   
   // ✅ Check if listings exist
   if (!this.listings || this.listings.length === 0) {
@@ -109,7 +111,15 @@ applyFilters() {
     const query = this.searchBar.value.toLowerCase();
     console.log("🔍 Search Query:", query);
 
-    const selectedDropdownTag = this.categoryFilter.value.toLowerCase(); 
+    let selectedDropdownTag = this.categoryFilter.value.toLowerCase();
+
+  // ✅ Convert plural to singular if necessary
+  if (selectedDropdownTag.endsWith("s")) {
+    selectedDropdownTag = selectedDropdownTag.slice(0, -1);
+  }
+
+console.log("📌 Updated Dropdown Tag (Singular):", selectedDropdownTag);
+ 
 console.log("📌 Selected Dropdown Tag:", selectedDropdownTag);
 
 const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
