@@ -67,6 +67,26 @@ async function displayUserListings(userName) {
 console.log("✅ User listings displayed successfully!");
 }
 
+function loadUserBids() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.userName) {
+    console.warn("⚠️ No user found in localStorage.");
+    return;
+  }
+
+  fetchUserBids(user.userName).then(bids => {
+    if (!bids || bids.length === 0) {
+      console.warn("⚠️ No bids found.");
+      return;
+    }
+
+    console.log("🔍 All Bids:", bids); // ✅ Check if you get all 4 bids
+    displayUserBids(bids);
+  });
+}
+
+loadUserBids();
+
 // ✅ Function to fetch and display user bids (with listing details)
 async function displayUserBids(userName) {
   console.log("📡 Fetching bids for user:", userName);

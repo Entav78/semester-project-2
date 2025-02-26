@@ -50,6 +50,8 @@ export async function fetchUserListings(userName) {
 
 // 🛠️ Fetch user bids
 export async function fetchUserBids(userName) {
+  // ✅ Ensure authToken is retrieved inside function
+  const authToken = localStorage.getItem("authToken");
   if (!authToken) {
     console.error("No auth token available.");
     throw new Error("Unauthorized: No token provided.");
@@ -70,12 +72,18 @@ export async function fetchUserBids(userName) {
       throw new Error(errorData.errors?.[0]?.message || `Failed to fetch bids: ${response.status}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    console.log("📡 Full Bids Data:", responseData); // ✅ Debugging
+
+    return responseData.data; // ✅ Extract and return only the bids array
   } catch (error) {
     console.error("Failed to fetch bids:", error.message);
     return null;
   }
 }
+
+
+
 
 
 
