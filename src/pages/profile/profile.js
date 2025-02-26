@@ -173,7 +173,17 @@ async function refreshAvatarSection(userName) {
 
     const userData = await response.json();
     console.log("📡📡📡 Full Profile Data Received:", userData);
-    console.log("💰💰💰 Extracted User Credits:", userData?.data?.credits);
+    console.log("📡 📡📡📡Checking user bio:", userData?.data?.bio);
+
+    const bioContainer = document.getElementById("bio-container");
+
+    if (bioContainer) {
+      bioContainer.textContent = userData?.data?.bio?.trim() || "No bio available.";
+      console.log("✅ Bio updated:", bioContainer.textContent);
+    } else {
+      console.warn("⚠️ Bio container NOT FOUND in the DOM!");
+    }
+
 
     // ✅ Ensure creditsContainer exists in DOM
     const creditsContainer = document.getElementById("user-credits");

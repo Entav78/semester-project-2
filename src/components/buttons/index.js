@@ -101,7 +101,7 @@ let profileButtonsInitialized = false; // ✅ Prevent multiple calls
 
 export function setupProfileButtons() {
   console.log("🔄 Initializing profile buttons...");
-
+  console.log("🔄 Running setupProfileButtons()... Checking save-profile-btn:");
   const myListingsBtn = document.querySelector("[data-tab='listings']");
   const myBidsBtn = document.querySelector("[data-tab='bids']");
 
@@ -116,7 +116,7 @@ export function setupProfileButtons() {
 
   myBidsBtn.removeEventListener("click", showBidsTab);
   myBidsBtn.addEventListener("click", showBidsTab);
-
+  console.log("🔍 save-profile-btn:", document.getElementById("save-profile-btn"));
   console.log("✅ My Listings & My Bids buttons initialized!");
 }
 
