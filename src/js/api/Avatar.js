@@ -1,5 +1,7 @@
 import { API_PROFILES } from "@/js/api/constants.js";
 import { API_KEY } from "./constants";
+import { toggleEditProfile } from "@/pages/profile/profile.js";
+
 
 export let avatarInstance = null; // ✅ Ensure it's exported globally
 
@@ -152,75 +154,97 @@ export class Avatar {
 async saveProfileChanges() {
   console.log("🔄 Saving profile changes...");
 
+  // ✅ Fetch input elements
   const bioInput = document.getElementById("bio-input");
   const avatarInput = document.getElementById("avatar-url-input");
   const bannerInput = document.getElementById("banner-url-input");
-  const authToken = localStorage.getItem("authToken");
-  const userName = JSON.parse(localStorage.getItem("user"))?.userName;
 
-  if (!authToken || !userName) {
-      console.error("❌ User is not authenticated.");
-      return;
+  // ✅ Extract values
+  const newBio = bioInput?.value.trim() || "";
+  const newAvatar = avatarInput?.value.trim() || "";
+  const newBanner = bannerInput?.value.trim() || "";
+
+  console.log("📡 Attempting to update profile with:", { newBio, newAvatar, newBanner });
+
+  // ✅ Check for valid input
+  if (!newAvatar && !newBio && !newBanner) {
+    console.error("❌ No profile changes detected.");
+    alert("❌ Please enter a new avatar URL, bio, or banner.");
+    return;
   }
 
-  const newBio = bioInput?.value.trim();
-  const newAvatar = avatarInput?.value.trim();
-  const newBanner = bannerInput?.value.trim();
+  // ✅ Get user & authentication data
+  const user = JSON.parse(localStorage.getItem("user"));
+  const authToken = localStorage.getItem("authToken")?.trim();
 
+  if (!authToken || !user?.userName) {
+    console.error("❌ Missing authentication token or username.");
+    alert("❌ You must be logged in to update your profile.");
+    return;
+  }
+
+  // ✅ Construct request body
   const requestBody = {};
   if (newBio) requestBody.bio = newBio;
-  if (newAvatar) requestBody.avatar = { url: newAvatar, alt: "User Avatar" };  // ✅ Correct format
-  if (newBanner) requestBody.banner = { url: newBanner, alt: "User Banner" };  // ✅ Correct format
+  if (newAvatar) requestBody.avatar = { url: newAvatar };  // ✅ Correct format
+  if (newBanner) requestBody.banner = { url: newBanner };  // ✅ Correct format
 
   console.log("📡 Sending Profile Update Request:", requestBody);
 
   try {
-      const response = await fetch(`${API_PROFILES}/${userName}`, {
-          method: "PUT",
-          headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-              "X-Noroff-API-Key": API_KEY,
-          },
-          body: JSON.stringify(requestBody),
-      });
+    const response = await fetch(`${API_PROFILES}/${user.userName}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-      if (!response.ok) throw new Error(`❌ Failed to update profile. Status: ${response.status}`);
+    if (!response.ok) throw new Error(`❌ Failed to update profile. Status: ${response.status}`);
 
-      const updatedData = await response.json();
-      console.log("✅ Profile Updated Successfully!", updatedData);
+    const updatedData = await response.json();
+    console.log("✅ Profile Updated Successfully!", updatedData);
 
-      // ✅ Update profile elements immediately
+    // ✅ Update profile elements immediately
+    if (updatedData.data) {
       const avatarImg = document.getElementById("avatar-img");
       const bioContainer = document.getElementById("bio-container");
       const bannerImg = document.getElementById("banner-img");
 
       if (updatedData.data.avatar?.url && avatarImg) {
-          avatarImg.src = updatedData.data.avatar.url;  // ✅ Update avatar immediately
+        avatarImg.src = updatedData.data.avatar.url;
+        console.log("✅ Avatar updated in UI:", updatedData.data.avatar.url);
       }
       if (updatedData.data.bio && bioContainer) {
-          bioContainer.textContent = updatedData.data.bio;  // ✅ Update bio
+        bioContainer.textContent = updatedData.data.bio;
+        console.log("✅ Bio updated in UI:", updatedData.data.bio);
       }
       if (updatedData.data.banner?.url && bannerImg) {
-          bannerImg.src = updatedData.data.banner.url;  // ✅ Update banner
+        bannerImg.src = updatedData.data.banner.url;
+        console.log("✅ Banner updated in UI:", updatedData.data.banner.url);
       }
+    }
 
-      alert("✅ Profile changes saved successfully!");
+    alert("✅ Profile changes saved successfully!");
 
-      // ✅ Close the edit profile section
-      document.getElementById("edit-profile-container")?.classList.add("hidden");
+    // ✅ Close the edit profile section
+    document.getElementById("edit-profile-container")?.classList.add("hidden");
 
-      console.log("🛠 Edit Profile section closed.");
+    console.log("🛠 Edit Profile section closed.");
 
   } catch (error) {
-      console.error("❌ Error saving profile:", error);
-      alert(`❌ Failed to save profile changes. ${error.message}`);
+    console.error("❌ Error saving profile:", error);
+    alert(`❌ Failed to save profile changes. ${error.message}`);
   }
 }
 
 
-
   updateAvatar(newUrl) {
+    console.log("🔍 Avatar Input Element:", this.inputElement);
+console.log("🔍 Avatar Input Value:", this.inputElement?.value);
+
     if (!newUrl) {
       console.warn("⚠️ No avatar URL provided.");
       return;
@@ -252,6 +276,8 @@ async saveProfileChanges() {
       })
       .then((data) => {
         console.log("✅ Avatar updated successfully!", data);
+        console.log("🔍 API Response Data:", updatedData);
+
         this.imgElement.src = newUrl; // ✅ Update UI with new image
         document.getElementById("edit-profile-container").classList.add("hidden"); // ✅ Hide section
         alert("✅ Avatar updated successfully!");

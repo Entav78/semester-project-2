@@ -247,11 +247,60 @@ function showBidsTab() {
 // ✅ Ensure these functions are available for imports (if needed)
 export { showListingsTab, showBidsTab };
 
+// ✅ Function to fetch and update the profile
+async function fetchAndUpdateProfile(userName) {
+  console.log(`📡 Fetching profile for: ${userName}`);
+
+  const authToken = localStorage.getItem("authToken")?.trim();
+  if (!authToken || !userName) {
+    console.error("❌ Missing authentication token or username.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_PROFILES}/${userName}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`❌ Failed to fetch profile. Status: ${response.status}`);
+    }
+
+    const userData = await response.json();
+    console.log("✅ Profile fetched successfully!", userData);
+
+    // ✅ Update UI elements
+    const avatarImg = document.getElementById("avatar-img");
+    const bioContainer = document.getElementById("bio-container");
+    const bannerImg = document.getElementById("banner-img");
+
+    if (userData.data.avatar?.url && avatarImg) {
+      avatarImg.src = userData.data.avatar.url;  // ✅ Update avatar
+    }
+    if (userData.data.bio && bioContainer) {
+      bioContainer.textContent = userData.data.bio;  // ✅ Update bio
+    }
+    if (userData.data.banner?.url && bannerImg) {
+      bannerImg.src = userData.data.banner.url;  // ✅ Update banner
+    }
+
+    console.log("✅ Profile UI updated successfully!");
+
+  } catch (error) {
+    console.error("❌ Error fetching profile:", error);
+  }
+}
 
 
 
 // ✅ Function to initialize the profile page
 export function initializeProfilePage(forceRefresh = true) {
+  console.log("✅ Initializing Profile Page...");
   if (window.profilePageInitialized && !forceRefresh) {
     console.warn("⚠️ Profile Page already initialized. Skipping re-initialization.");
     return;
@@ -265,6 +314,8 @@ export function initializeProfilePage(forceRefresh = true) {
   setTimeout(() => {
     const authToken = localStorage.getItem("authToken");
     let user = JSON.parse(localStorage.getItem("user"));
+   // fetchAndUpdateProfile(user.userName);
+
 
     if (!user || !user.userName) {
       console.warn("User not found. Checking token...");
@@ -289,9 +340,22 @@ export function initializeProfilePage(forceRefresh = true) {
     }
 
     console.log("🛠 Checking if Avatar elements exist...");
+
+    // ✅ Insert the new fetch function here 👇
+    fetchAndUpdateProfile(user.userName);
+
+    // ✅ Fetch & Display User Listings
+    displayUserListings(user.userName);
+
+    // ✅ Fetch & Display User Bids
+    fetchUserBids(user.userName).then(displayUserBids);
+
+    
+
+    
     const avatarImg = document.getElementById("avatar-img");
     const avatarInput = document.getElementById("avatar-url-input");
-    const avatarButton = document.getElementById("update-avatar-btn");
+    const saveProfileBtn = document.getElementById("save-profile-btn");
     const bioContainer = document.getElementById("bio");
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
@@ -303,9 +367,9 @@ export function initializeProfilePage(forceRefresh = true) {
     console.log("🔍 save-profile-btn🔍:", document.getElementById("save-profile-btn"));
 
 
-    if (avatarImg && avatarInput && avatarButton) {
+    if (avatarImg && avatarInput && saveProfileBtn) {
       console.log("✅ Avatar elements found, creating Avatar instance...");
-      const avatar = new Avatar(avatarImg, avatarInput, avatarButton, bioContainer, bannerContainer, creditsContainer);
+      const avatar = new Avatar(avatarImg, avatarInput, saveProfileBtn, bioContainer, bannerContainer, creditsContainer);
       setAvatarInstance(avatar);
       console.log("✅ Avatar instance set:", avatar);
     } else {
@@ -346,6 +410,7 @@ fetch(`${API_PROFILES}/${user.userName}/listings`, {
   const totalListingsContainer = document.getElementById("total-listings");
   if (totalListingsContainer) totalListingsContainer.textContent = "Total Listings: Error";
 });
+
 
 
     // ✅ Fetch & Display Total Listings
@@ -397,10 +462,11 @@ fetch(`${API_PROFILES}/${user.userName}/listings`, {
 
 
     console.log("✅ Profile Setup Complete!");
+    hideLoader();
   }, 300);
 }
 
-function toggleEditProfile() {
+export function toggleEditProfile() {
   const editProfileContainer = document.getElementById("edit-profile-container");
 
   if (!editProfileContainer) {
@@ -409,9 +475,9 @@ function toggleEditProfile() {
   }
 
   console.log("🔄 Toggling Edit Profile section...");
-
   editProfileContainer.classList.toggle("hidden");
 }
+
 
 
 
@@ -420,4 +486,5 @@ console.log("✅ Profile Page Setup Complete!");
 window.initializeProfilePage = initializeProfilePage;
 
 
+export { fetchAndUpdateProfile };
 
