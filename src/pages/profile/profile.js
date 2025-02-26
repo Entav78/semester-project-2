@@ -70,6 +70,8 @@ console.log("✅ User listings displayed successfully!");
 // ✅ Function to fetch and display user bids (with listing details)
 async function displayUserBids(userName) {
   console.log("📡 Fetching bids for user:", userName);
+  console.log("🔍 All Bids from Profile:", data.bids);
+
 
   const bidsContainer = document.getElementById("bids-container");
   if (!bidsContainer) {
