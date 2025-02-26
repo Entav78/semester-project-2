@@ -25,7 +25,7 @@
 }
 */
 
-
+/*
 @use "mixins";
 @use "custom";
 
@@ -36,7 +36,8 @@
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
 
-
+*/
+/*
 html, body {
   height: 100%; // Ensure full height
 }
@@ -55,9 +56,16 @@ footer {
   margin-top: auto; // Ensures it stays at the bottom
 }
 
+*/
 
 
 
+/*
+.main {
+  .bg-blue-500
+}
 
 
-
+.h1 {
+  @apply text-red-500;
+}*/

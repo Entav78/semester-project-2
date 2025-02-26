@@ -25,7 +25,7 @@ export class Avatar {
 
     this.buttonElement.addEventListener("click", () => {
       this.updateAvatar();
-      toggleAvatarUpdateSection();
+      toggleEditProfile();
     });
 
     console.log("✅ Avatar instance is being set!");
@@ -253,7 +253,7 @@ async saveProfileChanges() {
       .then((data) => {
         console.log("✅ Avatar updated successfully!", data);
         this.imgElement.src = newUrl; // ✅ Update UI with new image
-        document.getElementById("updateAvatarSection").classList.add("hidden"); // ✅ Hide section
+        document.getElementById("edit-profile-container").classList.add("hidden"); // ✅ Hide section
         alert("✅ Avatar updated successfully!");
       })
       .catch((error) => console.error("❌ Error updating avatar:", error));

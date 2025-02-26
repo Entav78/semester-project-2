@@ -202,105 +202,42 @@ async function refreshAvatarSection(userName) {
 
 
 
+// ✅ Function to Show "My Listings" Tab
+function showListingsTab() {
+  console.log("📜 My Listings Clicked");
 
-/*
-async function refreshAvatarSection(userName) {
-  console.log(`🔄 Refreshing avatar section for: ${userName}`);
+  const listingsTab = document.getElementById("listingsTab");
+  const bidsTab = document.getElementById("bidsTab");
 
-  const authToken = localStorage.getItem("authToken");
-  if (!authToken || !userName) {
-    console.error("❌ Missing authentication or userName.");
+  if (!listingsTab || !bidsTab) {
+    console.warn("⚠️ Listings or Bids tab not found in the DOM!");
     return;
   }
 
-  try {
-    // 🔄 Fetch User Profile
-    const response = await fetch(`${API_PROFILES}/${userName}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-        "X-Noroff-API-Key": API_KEY,
-      },
-    });
-
-    if (!response.ok) throw new Error("❌ Failed to fetch profile data.");
-
-    const userData = await response.json();
-    console.log("📡 Profile Data:", userData);
-    console.log("📡 Full Profile Data Before Updating Credits:", userData);
-    console.log("💰 Fetched User Credits:", userData?.data?.credits);
-
-
-    // ✅ Get UI Elements
-    const avatarImg = document.getElementById("avatar-img");
-    const bioContainer = document.getElementById("bio-container");
-    const bannerImg = document.getElementById("banner-img");
-    const creditsContainer = document.getElementById("user-credits");
-    const listingsContainer = document.getElementById("total-listings");
-    const winsContainer = document.getElementById("total-wins");
-
-    
-
-    // ✅ Update UI Elements
-    if (avatarImg) avatarImg.src = userData.data.avatar?.url || "/img/default-avatar.jpg";
-    if (bioContainer) bioContainer.textContent = userData.data.bio?.trim() || "No bio available.";
-    if (bannerImg) bannerImg.src = userData.data.banner?.url || "/img/default-banner.jpg";
-    if (creditsContainer) creditsContainer.textContent = `Credits: ${userData.data.credits || 0}`;
-
-    console.log("📡 Full Profile Data Before Updating Credits:", userData);
-    console.log("💰 Fetched User Credits:", userData?.data?.credits);
-    // 🔄 Fetch Total Listings
-    const listingsResponse = await fetch(`${API_PROFILES}/${userName}/listings`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-        "X-Noroff-API-Key": API_KEY,
-      },
-    });
-
-    if (listingsResponse.ok) {
-      const listingsData = await listingsResponse.json();
-      console.log("📡 Listings Data:", listingsData);
-      if (listingsContainer) listingsContainer.textContent = `Total Listings: ${listingsData.data.length}`;
-    } else {
-      console.warn("⚠️ Could not fetch listings.");
-      if (listingsContainer) listingsContainer.textContent = "Total Listings: Error";
-    }
-
-    // 🔄 Fetch Total Wins
-    const bidsResponse = await fetch(`${API_PROFILES}/${userName}/bids?_listings=true`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-        "X-Noroff-API-Key": API_KEY,
-      },
-    });
-
-    if (bidsResponse.ok) {
-      const bidsData = await bidsResponse.json();
-      console.log("📡 Bids Data:", bidsData);
-
-      const wonBids = bidsData.data.filter(bid => {
-        if (bid.listing?.bids) {
-          const highestBid = Math.max(...bid.listing.bids.map(b => b.amount));
-          return bid.amount === highestBid;
-        }
-        return false;
-      });
-
-      if (winsContainer) winsContainer.textContent = `Total Wins: ${wonBids.length}`;
-    } else {
-      console.warn("⚠️ Could not fetch wins.");
-      if (winsContainer) winsContainer.textContent = "Total Wins: Error";
-    }
-
-    console.log("✅ Avatar section and profile stats refreshed!");
-
-  } catch (error) {
-    console.error("❌ Error refreshing avatar section:", error);
-  }
+  listingsTab.classList.remove("hidden");
+  bidsTab.classList.add("hidden");
 }
-*/
+
+// ✅ Function to Show "My Bids" Tab
+function showBidsTab() {
+  console.log("🎯 My Bids Clicked");
+
+  const listingsTab = document.getElementById("listingsTab");
+  const bidsTab = document.getElementById("bidsTab");
+
+  if (!listingsTab || !bidsTab) {
+    console.warn("⚠️ Listings or Bids tab not found in the DOM!");
+    return;
+  }
+
+  bidsTab.classList.remove("hidden");
+  listingsTab.classList.add("hidden");
+}
+
+// ✅ Ensure these functions are available for imports (if needed)
+export { showListingsTab, showBidsTab };
+
+
 
 
 // ✅ Function to initialize the profile page
@@ -349,7 +286,12 @@ export function initializeProfilePage(forceRefresh = true) {
     const bannerContainer = document.getElementById("banner-img");
     const creditsContainer = document.getElementById("user-credits");
     const totalListingsContainer = document.getElementById("total-listings");
-    const editAvatarBtn = document.getElementById("edit-avatar-btn");
+    const editProfileBtn = document.getElementById("edit-profile-btn");
+    
+    console.log("🔍 avatar-img:🔍", document.getElementById("avatar-img"));
+    console.log("🔍 avatar-url-input🔍:", document.getElementById("avatar-url-input"));
+    console.log("🔍 save-profile-btn🔍:", document.getElementById("save-profile-btn"));
+
 
     if (avatarImg && avatarInput && avatarButton) {
       console.log("✅ Avatar elements found, creating Avatar instance...");
@@ -360,8 +302,8 @@ export function initializeProfilePage(forceRefresh = true) {
       console.warn("⚠️ Avatar elements not found! Skipping initialization.");
     }
 
-    if (editAvatarBtn) {
-      editAvatarBtn.addEventListener("click", toggleAvatarSection);
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener("click", toggleEditProfile);
     } else {
       console.warn("⚠️ Edit Avatar button not found!");
     }
@@ -448,24 +390,19 @@ fetch(`${API_PROFILES}/${user.userName}/listings`, {
   }, 300);
 }
 
-function toggleAvatarSection() {
-  const avatarSection = document.getElementById("updateAvatarSection");
+function toggleEditProfile() {
+  const editProfileContainer = document.getElementById("edit-profile-container");
 
-  if (!avatarSection) {
-    console.warn("⚠️ Avatar section not found!");
-    return;
+  if (!editProfileContainer) {
+    console.warn("⚠️ Edit Profile section not found! Check your HTML.");
+    return; // Prevent further execution
   }
 
-  console.log("🔄 Toggling avatar section...");
+  console.log("🔄 Toggling Edit Profile section...");
 
-  if (avatarSection.classList.contains("opacity-0")) {
-    console.log("✅ Showing avatar input...");
-    avatarSection.classList.remove("opacity-0", "invisible");
-  } else {
-    console.log("🚪 Hiding avatar input...");
-    avatarSection.classList.add("opacity-0", "invisible");
-  }
+  editProfileContainer.classList.toggle("hidden");
 }
+
 
 
 

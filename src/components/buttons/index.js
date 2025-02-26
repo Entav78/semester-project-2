@@ -1,5 +1,6 @@
 import { router } from "@/pages/router/router.js";
 import { avatarInstance } from "@/js/api/Avatar.js";
+//import { showListingsTab, showBidsTab } from "@/pages/profile/profile.js";
  
 
 //setAvatarInstance(new Avatar());
@@ -96,97 +97,30 @@ export function handleViewItemClick(event) {
   router(itemPagePath);
 }
 
-function toggleEditProfile() {
-  const editProfileContainer = document.getElementById("edit-profile-container");
-
-  if (!editProfileContainer) {
-    console.warn("⚠️ Edit Profile container not found!");
-    return;
-  }
-
-  console.log("🔄 Toggling edit profile...");
-
-  // Check if the container is hidden
-  const isHidden = editProfileContainer.classList.contains("hidden");
-
-  if (isHidden) {
-    console.log("✅ Showing edit profile section...");
-    editProfileContainer.classList.remove("hidden");
-  } else {
-    console.log("🚪 Hiding edit profile section...");
-    editProfileContainer.classList.add("hidden"); // ✅ Hide everything when closing
-  }
-}
-
-
-
-
-
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls
 
 export function setupProfileButtons() {
-  if (profileButtonsInitialized) {
-    console.warn("⚠️ Profile buttons already initialized. Removing old event listeners...");
-  
-    // 🚨 Remove old listeners
-    document.getElementById("edit-profile-btn")?.removeEventListener("click", toggleEditProfile);
-    document.getElementById("save-profile-btn")?.removeEventListener("click", handleSaveProfile);
-    document.getElementById("update-avatar-btn")?.removeEventListener("click", handleUpdateAvatar);
-    document.querySelector("[data-tab='listings']")?.removeEventListener("click", showListingsTab);
-    document.querySelector("[data-tab='bids']")?.removeEventListener("click", showBidsTab);
-  
-    profileButtonsInitialized = false; // ✅ Force re-initialization
-  }
-  
-  
-
   console.log("🔄 Initializing profile buttons...");
 
-  // ✅ Select elements
-  const updateAvatarSection = document.getElementById("updateAvatarSection");
-  const updateAvatarBtn = document.getElementById("update-avatar-btn");
-  const editProfileBtn = document.getElementById("edit-profile-btn");
-  const saveProfileBtn = document.getElementById("save-profile-btn");
-  const myListingsTab = document.querySelector("[data-tab='listings']");
-  const myBidsTab = document.querySelector("[data-tab='bids']");
+  const myListingsBtn = document.querySelector("[data-tab='listings']");
+  const myBidsBtn = document.querySelector("[data-tab='bids']");
 
-  if (updateAvatarBtn) {
-    updateAvatarBtn.removeEventListener("click", handleUpdateAvatar);
-    updateAvatarBtn.addEventListener("click", handleUpdateAvatar);
-  } else {
-    console.warn("⚠️ 'update-avatar-btn' not found!");
+  if (!myListingsBtn || !myBidsBtn) {
+    console.warn("⚠️ My Listings or My Bids button is missing! Retrying in 500ms...");
+    setTimeout(() => setupProfileButtons(), 500);
+    return;
   }
 
-  if (editProfileBtn) {
-    editProfileBtn.addEventListener("click", toggleEditProfile);
-  } else {
-    console.warn("⚠️ Edit Profile button not found!");
-  }
+  myListingsBtn.removeEventListener("click", showListingsTab);
+  myListingsBtn.addEventListener("click", showListingsTab);
 
-  if (saveProfileBtn) {
-    saveProfileBtn.removeEventListener("click", handleSaveProfile);
-    saveProfileBtn.addEventListener("click", handleSaveProfile);
-  } else {
-    console.warn("⚠️ 'save-profile-btn' not found!");
-  }
+  myBidsBtn.removeEventListener("click", showBidsTab);
+  myBidsBtn.addEventListener("click", showBidsTab);
 
-  if (myListingsTab) {
-    myListingsTab.removeEventListener("click", showListingsTab);
-    myListingsTab.addEventListener("click", showListingsTab);
-  } else {
-    console.warn("⚠️ 'listings tab' not found!");
-  }
-
-  if (myBidsTab) {
-    myBidsTab.removeEventListener("click", showBidsTab);
-    myBidsTab.addEventListener("click", showBidsTab);
-  } else {
-    console.warn("⚠️ 'bids tab' not found!");
-  }
-
-  profileButtonsInitialized = true; // ✅ Stops infinite calls
-  console.log("✅ Profile buttons initialized!");
+  console.log("✅ My Listings & My Bids buttons initialized!");
 }
+
+
 
 
 // ✅ Define `handleSaveProfile()` correctly
@@ -250,7 +184,7 @@ export function saveProfileChangesHandler() {
       editProfileContainer.classList.add("hidden");
       console.log("🛠 Edit Profile section closed.");
     } else {
-      console.warn("⚠️ Edit Profile section not found!");
+      console.warn("⚠️ Edit Profile container not found!");
     }
   });
 }

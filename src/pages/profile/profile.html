@@ -9,58 +9,54 @@
 <body class="profile-page bg-background text-text">
 
   <main id="main-container" class="flex-grow main-content mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl p-4">
-    <h1 class="text-xl font-bold">This is the profile page</h1>
+    
+    
+    <!-- Welcome Message -->
+<h1 class="text-lg sm:text-xl font-bold text-center mt-4">
+  Welcome to your profile, <span id="user-name">Loading...</span>
+</h1>
 
- <!-- Profile Info Section -->
-<div id="profile-info" class="p-4 bg-soft rounded-lg shadow-md">
-  <h2 class="text-xl font-bold">Profile Information</h2>
+<!-- Profile Info Section -->
+<div id="profile-info" class="p-4 bg-soft rounded-lg shadow-md w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto transition-all duration-300">
+  
+  <!-- Avatar (Centered) -->
+  <div class="flex flex-col items-center">
+    <img id="avatar-img" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full" src="/src/img/Sasha.jpg" alt="User Avatar" />
+  </div>
 
-  <!-- Avatar Section -->
-  <div class="avatar-section flex items-center space-x-4">
-    <img id="avatar-img" class="w-24 h-24 rounded-full" src="/src/img/Sasha.jpg" alt="User Avatar" />
-    <p id="user-credits" class="text-lg font-bold text-emerald-500">Credits: Loading...</p>
+  <!-- Bio (Centered, Ensuring It Loads) -->
+  <p id="bio-container" class="mt-2 italic text-text text-sm sm:text-base text-center">Loading bio...</p>
 
-    <!-- Edit Profile Button -->
-    <button id="edit-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
+  <!-- Stats Section -->
+  <div class="flex justify-between items-center mt-3">
+    <p id="user-credits" class="text-sm sm:text-lg font-bold text-emerald-500">Credits: Loading...</p>
+    <p id="total-listings" class="text-text text-sm sm:text-base">Total Listings: Loading...</p>
+  </div>
+
+  <!-- Edit Profile Button (Moved to Bottom-Right) -->
+  <div class="flex justify-end mt-4">
+    <button id="edit-profile-btn" class="px-3 py-1 sm:px-4 sm:py-2 rounded bg-primary hover:bg-secondary text-white transition">
       Edit Profile
     </button>
   </div>
-  
-  <div id="updateAvatarSection" class="flex flex-col mt-4 opacity-0 invisible">
-    <label for="avatar-url">Avatar URL:</label>
-    
-    <button id="update-avatar-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition">
-      Update Avatar
-    </button>
-  </div>
-  
-  <!-- Editable Bio -->
-  <p id="bio-container" class="mt-2 italic text-text">Loading bio...</p>
 
   <!-- Edit Profile Form (Initially Hidden) -->
-  <div id="edit-profile-container" class="hidden">
-    <label for="bio">Bio:</label>
-    <textarea id="bio-input" class="form-textarea border border-soft rounded p-2"></textarea>
+  <div id="edit-profile-container" class="hidden mt-4">
+    <label for="bio" class="text-sm sm:text-base">Bio:</label>
+    <textarea id="bio-input" class="form-textarea border border-soft rounded p-2 text-sm sm:text-base w-full"></textarea>
 
-    <label for="avatar-url">Avatar URL:</label>
-    <input type="text" id="avatar-url-input" class="form-input border border-soft rounded p-2" placeholder="Enter new avatar URL">
+    <label for="banner-img" class="text-sm sm:text-base mt-2">Profile Banner:</label>
+    <input type="text" id="banner-url-input" class="form-input border border-soft rounded p-2 text-sm sm:text-base w-full" placeholder="Enter new banner URL">
 
-    <label for="banner-img">Profile Banner:</label>
-    <input type="text" id="banner-url-input" class="form-input border border-soft rounded p-2" placeholder="Enter new banner URL">
-
-    <button id="save-profile-btn" class="px-4 py-2 rounded bg-primary hover:bg-secondary text-white transition mt-4">
-        Save Changes
+    <button id="save-profile-btn" class="px-3 py-1 sm:px-4 sm:py-2 rounded bg-primary hover:bg-secondary text-white transition mt-3">
+      Save Changes
     </button>
-</div>
-
-  
-
-  <!-- Listings & Wins -->
-  <div class="mt-4">
-    <p id="total-listings" class="text-text">Total Listings: Loading...</p>
-    <p id="user-wins" class="text-text">Total Wins: Loading...</p>
   </div>
 </div>
+
+
+
+
 
 
     
