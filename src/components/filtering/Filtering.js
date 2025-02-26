@@ -98,75 +98,93 @@ applyFilters() {
   console.log("🔍 Applying Filters...");
   console.log("🛠 API Tags in Listings:", this.listings.map(l => l.tags));
 
-  
+  // ✅ Map API tags to more user-friendly names
+  const tagMappings = {
+    "vehicles & parts": "cars",
+    "vehicle": "cars",
+    "watch": "watches",
+    "timekeeper": "watches",
+    "technology": "tech",
+    "electronics": "tech",
+    "furniture": "home decor",
+    "decor": "home decor",
+    "artauctionapp": "art",
+    "bff": "fashion", // 🤷‍♂️ Looks like BFF is a fashion thing?
+  };
+
   // ✅ Check if listings exist
   if (!this.listings || this.listings.length === 0) {
-      console.warn("⚠️ No listings found! Are they being loaded?");
-      return;
+    console.warn("⚠️ No listings found! Are they being loaded?");
+    return;
   }
-  
+
   console.log("✅ All Listings Before Filtering:", this.listings);
 
+  const query = this.searchBar.value.toLowerCase();
+  console.log("🔍 Search Query:", query);
 
-    const query = this.searchBar.value.toLowerCase();
-    console.log("🔍 Search Query:", query);
-
-    let selectedDropdownTag = this.categoryFilter.value.toLowerCase();
+  let selectedDropdownTag = this.categoryFilter.value.toLowerCase();
 
   // ✅ Convert plural to singular if necessary
   if (selectedDropdownTag.endsWith("s")) {
     selectedDropdownTag = selectedDropdownTag.slice(0, -1);
   }
 
-console.log("📌 Updated Dropdown Tag (Singular):", selectedDropdownTag);
- 
-console.log("📌 Selected Dropdown Tag:", selectedDropdownTag);
+  console.log("📌 Updated Dropdown Tag (Singular):", selectedDropdownTag);
 
-const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
-  .map(checkbox => checkbox.value.toLowerCase());
+  const selectedTags = Array.from(document.querySelectorAll("input[name='tags']:checked"))
+    .map(checkbox => checkbox.value.toLowerCase());
 
-// ✅ Ensure dropdown value is added, but ignore "all" and empty values
-if (selectedDropdownTag && selectedDropdownTag !== "all") {
-  selectedTags.push(selectedDropdownTag);
+  // ✅ Ensure dropdown value is added, but ignore "all" and empty values
+  if (selectedDropdownTag && selectedDropdownTag !== "all") {
+    selectedTags.push(selectedDropdownTag);
+  }
+
+  console.log("📌 Updated Selected Tags:", selectedTags);
+
+  // ✅ Before filtering - Debug first 5 items
+  console.log(
+    "🔍 Before Filtering (First 5 Listings):",
+    this.listings.slice(0, 5).map((listing) => ({
+      title: listing.title,
+      endsAt: listing.endsAt || "Missing endsAt",
+    }))
+  );
+
+  this.listingsContainer.innerHTML = ""; // ✅ Clear listings display
+
+  this.filteredListings = this.listings.filter((listing) => {
+    const title = listing.title.toLowerCase();
+    const description = listing.description?.toLowerCase() || "";
+
+    // ✅ Normalize API tags using mappings
+    const cleanedTags = listing.tags
+      ? listing.tags.map(tag => tagMappings[tag.toLowerCase().trim()] || tag.toLowerCase().trim())
+      : [];
+
+    console.log("🧹 Cleaned Tags for Listing:", listing.title, cleanedTags);
+
+    const matchesSearch = query === "" || title.includes(query) || description.includes(query);
+    const matchesTags =
+      selectedTags.length === 0 || cleanedTags.some(tag => selectedTags.includes(tag));
+
+    return matchesSearch && matchesTags;
+  });
+
+  // ✅ After filtering - Debug first 5 items
+  console.log(
+    "After Filtering (First 5 Listings):",
+    this.filteredListings.slice(0, 5).map((listing) => ({
+      title: listing.title,
+      endsAt: listing.endsAt || "Missing endsAt",
+    }))
+  );
+
+  this.currentPage = 1; // ✅ Reset to page 1
+  this.renderFilteredListings();
+  this.renderPaginationControls();
 }
 
-
-console.log("📌 Updated Selected Tags:", selectedTags);
-;
-
-console.log("✅ Selected Tags:", selectedTags);
-
-    
-
-    // Debug BEFORE filtering - Show only 5 items
-    console.log("🔍 Before Filtering (First 5 Listings):", this.listings.slice(0, 5).map(listing => ({
-      title: listing.title,
-      endsAt: listing.endsAt || "Missing endsAt"
-    })));
-
-    this.listingsContainer.innerHTML = ""; // Clear current listings display
-
-    this.filteredListings = this.listings.filter((listing) => {
-      const title = listing.title.toLowerCase();
-      const description = listing.description?.toLowerCase() || "";
-      const tags = listing.tags ? listing.tags.map(tag => tag.toLowerCase()) : [];
-
-      const matchesSearch = query === "" || title.includes(query) || description.includes(query);
-      const matchesTags = selectedTags.length === 0 || tags.some(tag => selectedTags.includes(tag));
-
-      return matchesSearch && matchesTags;
-    });
-
-    // Debug AFTER filtering - Show only 5 items
-    console.log("After Filtering (First 5 Listings):", this.filteredListings.slice(0, 5).map(listing => ({
-      title: listing.title,
-      endsAt: listing.endsAt || "Missing endsAt"
-    })));
-
-    this.currentPage = 1; // Reset to page 1 on filter change
-    this.renderFilteredListings();
-    this.renderPaginationControls();
-}
 
 
 
