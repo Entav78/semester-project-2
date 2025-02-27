@@ -1,4 +1,4 @@
-import { API_LISTINGS, API_KEY } from "@/js/api/constants.js";
+import { API_LISTINGS, API_PROFILES, API_KEY } from "@/js/api/constants.js";
 import { router } from "@/pages/router/router.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { createListingButton, createManageListingButtons } from "@/components/buttons/index.js";
@@ -277,6 +277,7 @@ console.log("populateEditForm() executed!");
     hideLoader();
   }
   
+  
 
   /**
    * Render Listings with Edit and Delete Buttons
@@ -510,40 +511,46 @@ showSuccessOptions() {
    * Handle Listing Deletion
    */
   async handleDeleteListing(listingId) {
-    if (!listingId) {
-      console.error("❌ No listing ID provided for deletion! Ensure `listingId` is passed correctly.");
-      return;
-    }
-  
     console.log(`🗑️ Attempting to delete listing ID: ${listingId}`);
   
-    const confirmDelete = confirm(`Are you sure you want to delete listing ID: ${listingId}?`);
+    const confirmDelete = confirm("Are you sure you want to delete this listing?");
     if (!confirmDelete) return;
   
     showLoader();
   
     try {
-      console.log(`📡 Sending DELETE request to API for listing ID: ${listingId}`);
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        console.error("❌ No Auth Token. Cannot delete listing.");
+        this.showMessage("You must be logged in to delete a listing!", "red");
+        hideLoader();
+        return;
+      }
   
+      console.log(`📡 Sending DELETE request to API for listing ID: ${listingId}`);
       const response = await fetch(`${API_LISTINGS}/${listingId}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
-          "X-Noroff-API-Key": API_KEY
+          "Authorization": `Bearer ${authToken.trim()}`,
+          "X-Noroff-API-Key": API_KEY,
         },
       });
   
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("❌ API DELETE failed:", errorData);
-        throw new Error(`Failed to delete listing with ID: ${listingId}`);
-      }
+      if (!response.ok) throw new Error("Failed to delete listing");
   
       console.log(`✅ Listing ${listingId} successfully deleted!`);
-      alert(`✅ Listing ${listingId} deleted successfully!`);
   
-      // ✅ Refresh the listings after deletion
-      await this.fetchUserListings();
+      // ✅ Remove the deleted listing from UI instantly
+      document.querySelector(`[data-id="${listingId}"]`)?.parentElement?.remove();
+  
+      this.showMessage("Listing deleted successfully!", "green");
+  
+      // ✅ Redirect to Profile after successful delete
+      setTimeout(() => {
+        window.history.pushState({}, "", "/profile");
+        router("/profile");
+      }, 1000);
+  
     } catch (error) {
       console.error("❌ Error deleting listing:", error);
       this.showMessage("Failed to delete listing!", "red");
@@ -551,6 +558,7 @@ showSuccessOptions() {
   
     hideLoader();
   }
+  
   
   
   
