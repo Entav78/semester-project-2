@@ -1,6 +1,7 @@
 import { router } from "@/pages/router/router.js";
 import { avatarInstance } from "@/js/api/Avatar.js";
 import { toggleEditProfile } from "@/pages/profile/profile.js";
+import { deleteListingById } from "@/pages/manageListings/ManageListings.js";
 //import { showListingsTab, showBidsTab } from "@/pages/profile/profile.js";
  
 
@@ -35,37 +36,45 @@ export function createListingButton() {
   return button;
 }
 
-export function createManageListingButtons(listing, onDelete, onEdit) {
+
+export function createManageListingButtons(listing) {
   const buttonContainer = document.createElement("div");
   buttonContainer.classList.add("flex", "gap-2", "mt-2");
 
-  // Edit Button
+  // ✅ Edit Button
   const editButton = document.createElement("button");
-editButton.textContent = "Edit Listing";
-editButton.classList.add("bg-primary", "hover:bg-secondary", "text-white",
-      "text-lg", "font-semibold", "px-4", "py-2", "rounded");
-editButton.dataset.id = listing.id;
+  editButton.textContent = "Edit Listing";
+  editButton.classList.add(
+    "bg-primary", "hover:bg-secondary", "text-white",
+    "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+  );
+  editButton.dataset.id = listing.id;
 
-editButton.addEventListener("click", () => {
-  console.log(`Editing listing: ${listing.id}`);
-  window.history.pushState({}, "", `/manageListings?id=${listing.id}`); // ✅ Pass listing ID
-  router(`/manageListings?id=${listing.id}`); // Navigate to manageListings
-});
+  editButton.addEventListener("click", () => {
+    console.log(`Editing listing: ${listing.id}`);
+    window.history.pushState({}, "", `/manageListings?id=${listing.id}`);
+    router(`/manageListings?id=${listing.id}`);
+  });
 
-
-  // Delete Button
+  // ✅ Delete Button
   const deleteButton = document.createElement("button");
   deleteButton.textContent = "Delete";
   deleteButton.classList.add(
-    "delete-listing",
-    "bg-primary", "hover:bg-secondary", "text-white",
-      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+    "delete-listing", "bg-primary", "hover:bg-secondary", "text-white",
+    "text-lg", "font-semibold", "px-4", "py-2", "rounded"
   );
-  deleteButton.addEventListener("click", () => onDelete(listing.id));
+
+  // ✅ Ensure `listing.id` is passed correctly
+  deleteButton.addEventListener("click", () => {
+    console.log(`🗑️ Delete button clicked for listing ID: ${listing.id}`);
+    deleteListingById(listing.id);
+  });
 
   buttonContainer.append(editButton, deleteButton);
   return buttonContainer;
 }
+
+
 
 // ✅ Handles "View Item" buttons (used on home page)
 export function setupListingButtons() {

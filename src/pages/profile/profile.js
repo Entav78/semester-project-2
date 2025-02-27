@@ -48,49 +48,37 @@ async function displayUserListings(userName) {
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("flex", "gap-2", "mt-2");
 
-      // ✅ Create the View Item button
+    // ✅ View Item Button
     const viewButton = document.createElement("button");
     viewButton.textContent = "View Item";
     viewButton.classList.add(
       "view-item", "bg-primary", "hover:bg-secondary", "text-white",
       "text-lg", "font-semibold", "px-4", "py-2", "rounded"
     );
-/* Already have these in button/index.js in buttonContainer
-    const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
-    editButton.classList.add(
-      "edit-item", "bg-primary", "hover:bg-secondary", "text-white",
-      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
-    );
+    if (listing.id) {
+      viewButton.dataset.id = listing.id;
+    } else {
+      console.warn("⚠️ Listing is missing an ID:", listing);
+    }
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.classList.add(
-      "delete-item", "bg-accent", "hover:bg-secondary", "text-white",
-      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
-    );
+    // ✅ Add Edit & Delete Buttons from `createManageListingButtons`
+    const manageButtons = createManageListingButtons(listing, (id) => handleDeleteListing(id));
+
+    buttonContainer.append(viewButton, manageButtons);
+    listingItem.append(title, image, description, buttonContainer);
+    listingsContainer.appendChild(listingItem);
 
 
-    buttonContainer.append(viewButton, editButton, deleteButton);*/
-    
-// ✅ Ensure listing has an ID before setting dataset
-if (listing.id) {
-  viewButton.dataset.id = listing.id;
-} else {
-  console.warn("⚠️ Listing is missing an ID:", listing);
+    });
+
+
+
+function handleEditListing(listingId) {
+  console.log(`✏️ Editing listing ID: ${listingId}`);
+  window.history.pushState({}, "", `/manageListings?id=${listingId}`);
+  router(`/manageListings?id=${listingId}`);
 }
 
-const manageButtons = createManageListingButtons(
-  listing,
-  (id) => handleDeleteListing(id),
-  (id) => handleEditListing(id)
-);
-
-buttonContainer.append(viewButton, manageButtons);
-listingItem.append(title, image, description, buttonContainer);
-listingsContainer.appendChild(listingItem);
-
-});
 
 console.log("✅ User listings displayed successfully!");
 }

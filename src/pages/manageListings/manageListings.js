@@ -11,6 +11,8 @@ export class ManageListings {
     this.container = container;
     this.formMessage = null;
     
+    window.manageListingsInstance = this;
+    
     // ✅ Extract listing ID from URL (for editing)
     const params = new URLSearchParams(window.location.search);
     this.listingId = params.get("id"); 
@@ -215,7 +217,11 @@ console.log("populateEditForm() executed!");
         deleteButton.textContent = "Delete Listing";
         deleteButton.classList.add("w-full", "bg-accent", "text-white", "py-2", "rounded", "hover:bg-secondary", "mt-2");
         
-        deleteButton.addEventListener("click", () => this.handleDeleteListing());
+        deleteButton.addEventListener("click", () => {
+          console.log(`🗑️ Delete button clicked. Listing ID: ${this.listingId}`);
+          this.handleDeleteListing(this.listingId);
+        });
+        
 
         form.append(deleteButton);
     }
@@ -237,34 +243,40 @@ console.log("populateEditForm() executed!");
   async fetchUserListings() {
     console.log("Fetching user listings...");
     showLoader();
-
+  
     try {
       const authToken = localStorage.getItem("authToken");
-      if (!authToken) {
-        console.error("No Auth Token. Cannot fetch listings.");
+      const user = JSON.parse(localStorage.getItem("user"));
+  
+      if (!authToken || !user || !user.userName) {
+        console.error("❌ No Auth Token or username. Cannot fetch listings.");
         this.showMessage("You must be logged in to manage listings!", "red");
         hideLoader();
         return;
       }
-
-      const response = await fetch(`${API_LISTINGS}/user`, {
+  
+      console.log(`📡 Fetching listings for user: ${user.userName}`);
+  
+      const response = await fetch(`${API_PROFILES}/${user.userName}/listings`, {
         headers: { 
           "Authorization": `Bearer ${authToken.trim()}`,
           "X-Noroff-API-Key": API_KEY
         },
       });
-
-      if (!response.ok) throw new Error("Failed to fetch listings");
-
-      this.listings = await response.json();
+  
+      if (!response.ok) throw new Error("❌ Failed to fetch listings");
+  
+      const data = await response.json();
+      this.listings = data.data; // ✅ Ensure correct data extraction
       this.renderListings();
     } catch (error) {
-      console.error("Error fetching user listings:", error);
+      console.error("❌ Error fetching user listings:", error);
       this.showMessage("Failed to fetch listings!", "red");
     }
-
+  
     hideLoader();
   }
+  
 
   /**
    * Render Listings with Edit and Delete Buttons
@@ -273,8 +285,13 @@ console.log("populateEditForm() executed!");
     const listingsContainer = document.createElement("div");
     listingsContainer.id = "listingsContainer";
     listingsContainer.classList.add("mt-6");
-
+  
     this.listings.forEach((listing) => {
+      if (!listing.id) {
+        console.warn("⚠️ Skipping listing with missing ID:", listing);
+        return;
+      }
+  
       const listingItem = document.createElement("div");
       listingItem.classList.add(
         "bg-soft", "border", "border-accent",
@@ -282,25 +299,34 @@ console.log("populateEditForm() executed!");
         "hover:shadow-xl", "transition-shadow", "duration-200",
         "flex", "flex-col", "justify-between", "h-full"
       );
-      
+  
       const title = document.createElement("h2");
       title.classList.add("listing-title", "text-xl", "font-bold", "min-h-[3rem]");
-
       title.textContent = listing.title;
-
-      // ✅ Use imported Edit/Delete buttons
-      const buttonContainer = createManageListingButtons(
-        listing,
-        this.handleDeleteListing.bind(this),
-        this.handleEditListing.bind(this)
+  
+      // ✅ Create Delete Button
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.classList.add(
+        "delete-listing", "bg-primary", "hover:bg-secondary", "text-white",
+        "text-lg", "font-semibold", "px-4", "py-2", "rounded"
       );
-
-      listingItem.append(title, buttonContainer);
+  
+      deleteButton.dataset.id = listing.id; // ✅ Store ID in button
+  
+      deleteButton.addEventListener("click", () => {
+        console.log(`🗑️ Delete button clicked for listing ID: ${listing.id}`);
+        this.handleDeleteListing(listing.id); // ✅ Pass the correct ID
+      });
+  
+      listingItem.append(title, deleteButton);
       listingsContainer.appendChild(listingItem);
     });
-
+  
     this.container.appendChild(listingsContainer);
   }
+  
+  
 
   async handleCreateListing(event) {
     event.preventDefault();
@@ -484,12 +510,21 @@ showSuccessOptions() {
    * Handle Listing Deletion
    */
   async handleDeleteListing(listingId) {
-    const confirmDelete = confirm("Are you sure you want to delete this listing?");
+    if (!listingId) {
+      console.error("❌ No listing ID provided for deletion! Ensure `listingId` is passed correctly.");
+      return;
+    }
+  
+    console.log(`🗑️ Attempting to delete listing ID: ${listingId}`);
+  
+    const confirmDelete = confirm(`Are you sure you want to delete listing ID: ${listingId}?`);
     if (!confirmDelete) return;
-
+  
     showLoader();
-
+  
     try {
+      console.log(`📡 Sending DELETE request to API for listing ID: ${listingId}`);
+  
       const response = await fetch(`${API_LISTINGS}/${listingId}`, {
         method: "DELETE",
         headers: {
@@ -497,20 +532,29 @@ showSuccessOptions() {
           "X-Noroff-API-Key": API_KEY
         },
       });
-
-      if (!response.ok) throw new Error("Failed to delete listing");
-
-      console.log("Listing successfully deleted!");
-      this.showMessage("Listing deleted successfully!", "green");
-
-      await this.fetchUserListings(); // Refresh list after deletion
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("❌ API DELETE failed:", errorData);
+        throw new Error(`Failed to delete listing with ID: ${listingId}`);
+      }
+  
+      console.log(`✅ Listing ${listingId} successfully deleted!`);
+      alert(`✅ Listing ${listingId} deleted successfully!`);
+  
+      // ✅ Refresh the listings after deletion
+      await this.fetchUserListings();
     } catch (error) {
-      console.error("Error deleting listing:", error);
+      console.error("❌ Error deleting listing:", error);
       this.showMessage("Failed to delete listing!", "red");
     }
-
+  
     hideLoader();
   }
+  
+  
+  
+  
 
   /**
    * Handle Listing Editing (Redirects to Edit Page)
@@ -568,6 +612,7 @@ showSuccessOptions() {
 
 
 
+
   /**
    * Display Success or Error Message
    */
@@ -578,6 +623,28 @@ showSuccessOptions() {
   }
 }
 
+
+
+
+
+
+
+export function deleteListingById(listingId) {
+  if (!window.manageListingsInstance) {
+    console.error("❌ ManageListings instance NOT FOUND. Ensure `initializeManageListingsPage()` runs on page load.");
+    return;
+  }
+
+  if (!listingId) {
+    console.error("❌ Invalid listing ID: Received `undefined` in deleteListingById()");
+    return;
+  }
+
+  console.log(`🗑️ Attempting to delete listing ID: ${listingId}`);
+  window.manageListingsInstance.handleDeleteListing(listingId);
+}
+
+
 /**
  * Initialize the Manage Listings Page
  */
@@ -587,10 +654,5 @@ export function initializeManageListingsPage() {
   if (!mainContainer) return;
   new ManageListings(mainContainer);
 }
-
-
-
-
-
 
 
