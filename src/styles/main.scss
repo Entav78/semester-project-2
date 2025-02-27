@@ -13,19 +13,7 @@
 @tailwind components;
 @tailwind utilities;
 */
-/* Manually generate ALL Tailwind colors */
-/*
-@layer utilities {
-  .text-red-500 { color: red !important; }
-  .bg-red-500 { background-color: red !important; }
-  .text-blue-500 { color: blue !important; }
-  .bg-blue-500 { background-color: blue !important; }
-  .text-green-500 { color: green !important; }
-  .bg-green-500 { background-color: green !important; }
-}
-*/
 
-/*
 @use "mixins";
 @use "custom";
 
@@ -36,36 +24,3 @@
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
 
-*/
-/*
-html, body {
-  height: 100%; // Ensure full height
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; // Ensure the body takes at least full viewport height
-}
-
-main {
-  flex: 1; // Pushes the footer down if the content is short
-}
-
-footer {
-  margin-top: auto; // Ensures it stays at the bottom
-}
-
-*/
-
-
-
-/*
-.main {
-  .bg-blue-500
-}
-
-
-.h1 {
-  @apply text-red-500;
-}*/

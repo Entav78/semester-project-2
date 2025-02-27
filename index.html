@@ -11,71 +11,69 @@
   <body class="flex flex-col min-h-full bg-background text-text">
   <div id="navigation-container"></div> <!-- Navigation loads here -->
   <main id="main-container" class="flex-grow main-content mx-auto max-w-full lg:max-w-6xl xl:max-w-7xl p-4">
-    <div id="filter-container">
-      <label for="sort-dropdown">Sort By:</label>
-        <select id="sort-dropdown">
-          <option value="endingSoon">Ending Soon</option>
-          <option value="newest">Newest Listings</option>
-          <option value="highestBid">Highest Bid</option>
-          <option value="lowestBid">Lowest Bid</option>
-        </select>
-
-      <label for="search-bar" class="block text-lg font-bold mb-2">Search Listings</label>
-      <div class="flex gap-2">
-        <input type="text" id="search-bar" placeholder="Search for items..." class="p-3 border rounded-lg shadow-sm w-full">
-      </div>
-    
-      <!-- Dropdown for Single/Multiple Tag Selection -->
-      <label for="tag-filter" class="block text-lg font-bold mt-4">Filter by Tags</label>
-      <select id="category-filter" class="p-3 border rounded-lg shadow-sm w-full">
-        <option value="">All Listings</option>
-        <option value="multiple">Multiple Tags</option>
-        <option value="Art">Art</option>
-        <option value="Watches">Watches</option>
-        <option value="Jewelry">Jewelry</option>
-        <option value="Vintage">Vintage</option>
-        <option value="Fashion">Fashion</option>
-        <option value="Cars">Cars</option>
-        <option value="Interiors">Interiors</option>
-        <option value="Decor">Decor</option>
-        <option value="Games">Games</option>
-        <option value="Books">Books</option>
-        <option value="Toys">Toys</option>
-        <option value="Sports">Sports</option>
-        <option value="Collectibles and Memorabilia">Collectibles and Memorabilia</option>
-      </select>
-    
-      <!-- Hidden Advanced Filters -->
-      <div id="advanced-filters" class="hidden p-4 mt-3 border rounded-lg shadow-md bg-white">
-        <h3 class="text-lg font-bold mb-2">Select Multiple Tags</h3>
-    
-        <div class="grid grid-cols-2 gap-2"> 
-          <label><input type="checkbox" name="tags" value="Art"> Art</label>
-          <label><input type="checkbox" name="tags" value="Watches"> Watches</label>
-          <label><input type="checkbox" name="tags" value="Jewelry"> Jewelry</label>
-          <label><input type="checkbox" name="tags" value="Vintage"> Vintage</label>
-          <label><input type="checkbox" name="tags" value="Fashion"> Fashion</label>
-          <label><input type="checkbox" name="tags" value="Cars"> Cars</label>
-          <label><input type="checkbox" name="tags" value="Interiors"> Interiors</label>
-          <label><input type="checkbox" name="tags" value="Decor"> Decor</label>
-          <label><input type="checkbox" name="tags" value="Games"> Games</label>
-          <label><input type="checkbox" name="tags" value="Books"> Books</label>
-          <label><input type="checkbox" name="tags" value="Toys"> Toys</label>
-          <label><input type="checkbox" name="tags" value="Sports"> Sports</label>
-          <label><input type="checkbox" name="tags" value="Collectibles and Memorabilia"> Collectibles and Memorabilia</label>
+    <h1 class="text-2xl text-center font-bold text-dark mt-6">Welcome To The Auction House!</h1>
+    <div id="filter-container" class="bg-light p-3 rounded-md shadow-sm border border-muted">
+      <div class="flex flex-col gap-2">
+        
+        <!-- Search Bar -->
+        <div>
+          <label for="search-bar" class="block text-xs font-medium text-muted">Search Listings</label>
+          <input type="text" id="search-bar" placeholder="Search..."
+            class="w-full p-2 border border-muted rounded-md bg-white shadow-sm text-sm focus:outline-none focus:ring-1 focus:ring-secondary">
         </div>
     
-        <button id="apply-filters" class="mt-3 bg-blue-500 text-white p-2 rounded-lg">Apply Filters</button>
+        <!-- Category Filter -->
+        <div>
+          <label for="category-filter" class="block text-xs font-medium text-muted">Filter by Tags</label>
+          <select id="category-filter"
+            class="w-full p-2 border border-muted rounded-md bg-white shadow-sm text-sm focus:outline-none focus:ring-1 focus:ring-secondary">
+            <option value="">All Listings</option>
+            <option value="multiple">Multiple Tags</option>
+            <option value="Art">Art</option>
+            <option value="Watches">Watches</option>
+            <option value="Jewelry">Jewelry</option>
+            <option value="Vintage">Vintage</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Cars">Cars</option>
+            <option value="Interiors">Interiors</option>
+            <option value="Decor">Decor</option>
+            <option value="Games">Games</option>
+            <option value="Books">Books</option>
+            <option value="Toys">Toys</option>
+            <option value="Sports">Sports</option>
+            <option value="Collectibles and Memorabilia">Collectibles</option>
+          </select>
+        </div>
+    
+        <!-- Advanced Filters (Hidden by Default) -->
+        <div id="advanced-filters" class="hidden p-2 mt-2 border border-muted rounded-md shadow-sm bg-white">
+          <h3 class="text-xs font-medium text-muted mb-2">Select Multiple Tags</h3>
+    
+          <div class="grid grid-cols-2 gap-1 text-muted text-xs">
+            <label><input type="checkbox" name="tags" value="Art" class="mr-1"> Art</label>
+            <label><input type="checkbox" name="tags" value="Watches" class="mr-1"> Watches</label>
+            <label><input type="checkbox" name="tags" value="Jewelry" class="mr-1"> Jewelry</label>
+            <label><input type="checkbox" name="tags" value="Vintage" class="mr-1"> Vintage</label>
+            <label><input type="checkbox" name="tags" value="Fashion" class="mr-1"> Fashion</label>
+            <label><input type="checkbox" name="tags" value="Cars" class="mr-1"> Cars</label>
+            <label><input type="checkbox" name="tags" value="Interiors" class="mr-1"> Interiors</label>
+            <label><input type="checkbox" name="tags" value="Decor" class="mr-1"> Decor</label>
+            <label><input type="checkbox" name="tags" value="Games" class="mr-1"> Games</label>
+            <label><input type="checkbox" name="tags" value="Books" class="mr-1"> Books</label>
+            <label><input type="checkbox" name="tags" value="Toys" class="mr-1"> Toys</label>
+            <label><input type="checkbox" name="tags" value="Sports" class="mr-1"> Sports</label>
+            <label><input type="checkbox" name="tags" value="Collectibles and Memorabilia" class="mr-1"> Collectibles</label>
+          </div>
+    
+          <button id="apply-filters" class="mt-2 bg-primary text-white p-2 rounded-md hover:bg-secondary text-xs transition">Apply</button>
+        </div>
       </div>
     </div>
-    
-    <h1 class="text-xl font-bold">Welcome</h1>
     
     <!-- Listings container -->
     <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 bg-background">
     
     </div>
-
 
     <!-- Pagination controls -->
     <div id="paginationContainer" class="flex justify-center space-x-4 mt-4"></div>
