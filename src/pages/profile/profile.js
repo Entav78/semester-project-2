@@ -44,24 +44,45 @@ async function displayUserListings(userName) {
     description.classList.add("text-gray-600", "mt-2");
     description.textContent = listing.description || "No description available.";
 
-    // ✅ Create the View Item button
-  const viewButton = document.createElement("button");
-  viewButton.textContent = "View Item";
-  viewButton.classList.add(
-    "view-item", "bg-primary", "hover:bg-secondary", "text-white",
-    "text-lg", "font-semibold", "px-4", "py-2", "rounded"
-  );
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("flex", "gap-2", "mt-2");
 
-  // ✅ Ensure listing has an ID before setting dataset
-  if (listing.id) {
-    viewButton.dataset.id = listing.id;
-  } else {
-    console.warn("⚠️ Listing is missing an ID:", listing);
-  }
+      // ✅ Create the View Item button
+    const viewButton = document.createElement("button");
+    viewButton.textContent = "View Item";
+    viewButton.classList.add(
+      "view-item", "bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+    );
 
-  // ✅ Append button to listingItem
-  listingItem.append(title, image, description, viewButton);
-  listingsContainer.appendChild(listingItem);
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.classList.add(
+      "edit-item", "bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+    );
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add(
+      "delete-item", "bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
+    );
+
+
+    buttonContainer.append(viewButton, editButton, deleteButton);
+    
+// ✅ Ensure listing has an ID before setting dataset
+if (listing.id) {
+  viewButton.dataset.id = listing.id;
+} else {
+  console.warn("⚠️ Listing is missing an ID:", listing);
+}
+
+// ✅ Append buttonContainer to listingItem instead of separate buttons
+listingItem.append(title, image, description, buttonContainer);
+listingsContainer.appendChild(listingItem);
+
 });
 
 console.log("✅ User listings displayed successfully!");
