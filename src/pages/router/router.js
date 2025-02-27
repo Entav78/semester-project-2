@@ -29,7 +29,6 @@ export async function router(pathname = window.location.pathname) {
             document.body.appendChild(mainContainer);
         }
 
-        // Ensure navigation updates
         if (window.mainNavigation) {
             console.log("Updating Navigation...");
             window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
@@ -58,7 +57,7 @@ async function loadPage(path, htmlPath, jsModule, initFunction) {
   console.clear();
   console.log(`Loading Page: ${path}`);
 
-  clearPage(); // Clears and replaces `main-container`
+  clearPage();
 
   try {
     const response = await fetch(htmlPath);
@@ -80,7 +79,6 @@ async function loadPage(path, htmlPath, jsModule, initFunction) {
       console.log("Successfully replaced #main-container");
     }
 
-    // Dynamically Import and Initialize Page Script
     const module = await import(/* @vite-ignore */ jsModule);
     console.log("Loaded Module:", module);
 
@@ -93,15 +91,13 @@ async function loadPage(path, htmlPath, jsModule, initFunction) {
 
     console.log(`Successfully loaded ${path}`);
 
-    // ✅ Re-initialize View Item buttons after each page change
     setupListingButtons();
     console.log("✅ setupListingButtons() re-initialized!");
 
-  } catch (error) {
-    console.error(`Error loading page (${path}):`, error);
-  }
-}
-
+        } catch (error) {
+            console.error(`Error loading page (${path}):`, error);
+        }
+    }
 
     try {
         switch (cleanPathname) {
@@ -151,54 +147,6 @@ async function loadPage(path, htmlPath, jsModule, initFunction) {
                   .catch(error => console.error("❌ Error loading Item Page:", error));
               break;
                   
-            /*    
-            case "/item":
-                console.log("Item Page Detected");
-                
-                // ✅ Ensure itemId is present before loading the page
-                const params = new URLSearchParams(window.location.search);
-                const itemId = params.get("id");
-
-                if (!itemId) {
-                    console.error("❌ Item ID is missing! Cannot load item page.");
-                    return;
-                }
-
-                console.log(`✅ Extracted Item ID: ${itemId}`);
-
-                loadPage("/item", "/src/pages/item/item.html", "/src/pages/item/item.js", "initializeItemPage")
-                    .then(() => {
-                        console.log("Re-initializing navigation on Item Page...");
-                
-                        if (!window.mainNavigation) {
-                            console.log("Navigation missing! Re-creating it...");
-                            const mainNav = document.getElementById("main-nav");
-                            const sidebarNav = document.getElementById("sidebar-nav");
-                            const loginInstance = new Login();
-                                
-                            if (mainNav) {
-                                window.mainNavigation = new Navigation(
-                                    mainNav,
-                                    Boolean(localStorage.getItem("authToken")),
-                                    loginInstance.handleLogout.bind(loginInstance)
-                                );
-                            }
-                
-                            if (sidebarNav) {
-                                window.sidebarNavigation = new Navigation(
-                                    sidebarNav,
-                                    Boolean(localStorage.getItem("authToken")),
-                                    loginInstance.handleLogout.bind(loginInstance)
-                                );
-                            }
-                        }
-                
-                        if (window.mainNavigation) {
-                            window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-                        }
-                    }); 
-                break;
-                */
             default:
                 console.log("Page Not Found - Loading 404");
                 loadPage("/404", "/src/pages/notFound.html", "/src/pages/notFound.js", "initializeNotFoundPage");

@@ -8,13 +8,12 @@ import { createListingButton, createManageListingButtons } from "@/components/bu
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
 
-// ✅ Function to fetch and display user listings
 async function displayUserListings(userName) {
   console.log(`📡 Fetching listings for user: ${userName}`);
 
   const listingsContainer = document.getElementById("user-listings-container");
   if (!listingsContainer) {
-    console.error("❌ Listings container not found!");
+    console.error("Listings container not found!");
     return;
   }
 
@@ -26,7 +25,7 @@ async function displayUserListings(userName) {
     return;
   }
 
-  listingsContainer.innerHTML = ""; // Clear old content
+  listingsContainer.innerHTML = ""; 
   data.data.forEach(listing => {
     const listingItem = document.createElement("div");
     listingItem.classList.add("listing-item", "border", "p-4", "rounded-lg", "shadow-lg", "mb-4");
@@ -48,7 +47,6 @@ async function displayUserListings(userName) {
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("flex", "gap-2", "mt-2");
 
-    // ✅ View Item Button
     const viewButton = document.createElement("button");
     viewButton.textContent = "View Item";
     viewButton.classList.add(
@@ -61,53 +59,46 @@ async function displayUserListings(userName) {
       console.warn("⚠️ Listing is missing an ID:", listing);
     }
 
-    // ✅ Add Edit & Delete Buttons from `createManageListingButtons`
     const manageButtons = createManageListingButtons(listing, (id) => handleDeleteListing(id));
 
     buttonContainer.append(viewButton, manageButtons);
     listingItem.append(title, image, description, buttonContainer);
     listingsContainer.appendChild(listingItem);
-
-
     });
 
 
-
-function handleEditListing(listingId) {
-  console.log(`✏️ Editing listing ID: ${listingId}`);
-  window.history.pushState({}, "", `/manageListings?id=${listingId}`);
-  router(`/manageListings?id=${listingId}`);
-}
-
-
-console.log("✅ User listings displayed successfully!");
-}
-
-function loadUserBids() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user || !user.userName) {
-    console.warn("⚠️ No user found in localStorage.");
-    return;
-  }
-
-  fetchUserBids(user.userName).then(bids => {
-    if (!bids || bids.length === 0) {
-      console.warn("⚠️ No bids found.");
-      return;
+    function handleEditListing(listingId) {
+      console.log(`✏️ Editing listing ID: ${listingId}`);
+      window.history.pushState({}, "", `/manageListings?id=${listingId}`);
+      router(`/manageListings?id=${listingId}`);
     }
 
-    console.log("🔍 All Bids:", bids); // ✅ Check if you get all 4 bids
-    displayUserBids(bids);
-  });
-}
+    console.log("✅ User listings displayed successfully!");
+    }
+
+    function loadUserBids() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.userName) {
+        console.warn("⚠️ No user found in localStorage.");
+        return;
+      }
+
+    fetchUserBids(user.userName).then(bids => {
+      if (!bids || bids.length === 0) {
+        console.warn("⚠️ No bids found.");
+        return;
+      }
+
+      console.log("🔍 All Bids:", bids); 
+      displayUserBids(bids);
+    });
+  }
 
 loadUserBids();
 
 
-
-// ✅ Function to fetch and display user bids (with listing details)
 async function displayUserBids(bids) {
-  console.log("📡 Fetching bids for user:", bids); // ✅ Now uses `bids` from function parameter
+  console.log("📡 Fetching bids for user:", bids); 
 
   const bidsContainer = document.getElementById("bids-container");
   if (!bidsContainer) {
