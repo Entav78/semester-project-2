@@ -16,6 +16,8 @@
   Welcome to your profile, <span id="user-name">Loading...</span>
 </h1>
 
+
+
 <!-- Profile Info Section -->
 <div id="profile-info" class="p-4 bg-soft rounded-lg shadow-md w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto transition-all duration-300">
   
@@ -24,7 +26,7 @@
     <img id="avatar-img" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full" src="/src/img/Sasha.jpg" alt="User Avatar" />
   </div>
 
-  <!-- Bio (Centered, Ensuring It Loads) -->
+  <!-- Bio (Centered) -->
   <p id="bio-container" class="mt-2 italic text-text text-sm sm:text-base text-center">Loading bio...</p>
 
   <!-- Stats Section -->
@@ -36,33 +38,38 @@
   <!-- Edit Profile Form (Initially Hidden) -->
   <div id="edit-profile-container" class="hidden mt-4 w-full max-w-3xl mx-auto">
 
-  <!-- Avatar URL Input -->
-  <label for="avatar-url-input" class="block font-semibold">Avatar URL:</label>
-  <input type="text" id="avatar-url-input" class="form-input border border-soft rounded p-2 w-full"
-    placeholder="Enter new avatar URL">
+    <!-- Avatar URL Input -->
+    <label for="avatar-url-input" class="block font-semibold">Avatar URL:</label>
+    <input type="text" id="avatar-url-input" class="form-input border border-soft rounded p-2 w-full"
+      placeholder="Enter new avatar URL">
 
-  <!-- Bio Input -->
-  <label for="bio-input" class="block mt-2 font-semibold">Bio:</label>
-  <textarea id="bio-input" class="form-input border border-soft rounded p-2 w-full"
-    placeholder="Enter your bio"></textarea>
+    <!-- Bio Input -->
+    <label for="bio-input" class="block mt-2 font-semibold">Bio:</label>
+    <textarea id="bio-input" class="form-input border border-soft rounded p-2 w-full"
+      placeholder="Enter your bio"></textarea>
 
-  <!-- Profile Banner Input -->
-  <label for="banner-url-input" class="block mt-2 font-semibold">Profile Banner:</label>
-  <input type="text" id="banner-url-input" class="form-input border border-soft rounded p-2 w-full"
-    placeholder="Enter new banner URL">
+    <!-- Profile Banner Input -->
+    <label for="banner-url-input" class="block mt-2 font-semibold">Profile Banner:</label>
+    <input type="text" id="banner-url-input" class="form-input border border-soft rounded p-2 w-full"
+      placeholder="Enter new banner URL">
 
-  <!-- Save Button (Visible only when editing) -->
+    <!-- Save Button (Visible only when editing) -->
+    <div class="flex gap-4 justify-center mt-4">
+      <button id="save-profile-btn" class="flex-1 px-6 py-2 rounded-lg bg-primary hover:bg-secondary text-white transition text-lg font-semibold">
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  <!-- Always Visible: Edit Profile Button (Outside Hidden Container) -->
   <div class="flex gap-4 justify-center mt-4">
-    <button id="save-profile-btn" class="flex-1 px-6 py-2 rounded-lg bg-primary hover:bg-secondary text-white transition text-lg font-semibold">
-      Save Changes
+    <button id="edit-profile-btn" class="flex-1 px-6 py-2 rounded-lg bg-primary hover:bg-secondary text-white transition text-lg font-semibold">
+      Edit Profile
     </button>
-</div>
+  </div>
+
 </div>
 
-<!-- Always Visible: Edit Profile Button -->
-<button id="edit-profile-btn" class="flex-1 px-6 py-2 rounded-lg bg-primary hover:bg-secondary text-white transition text-lg font-semibold">
-  Edit Profile
-</button>
 
 
 
