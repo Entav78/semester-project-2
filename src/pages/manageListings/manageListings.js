@@ -381,6 +381,7 @@ console.log("populateEditForm() executed!");
       event.target.reset();
       document.getElementById("mediaPreview").innerHTML = "";
       this.showSuccessOptions();
+      alert("🎉 Listing created successfully! The auction floor awaits your masterpiece! 🏆", "success");
       
       window.history.pushState({}, "", "/profile");
       router("/profile");
