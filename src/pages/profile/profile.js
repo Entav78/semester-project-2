@@ -213,36 +213,29 @@ async function refreshAvatarSection(userName) {
 
 
 // ✅ Function to Show "My Listings" Tab
+function toggleTab(tabToShow, tabToHide, logMessage) {
+  console.log(logMessage);
+
+  const showTab = document.getElementById(tabToShow);
+  const hideTab = document.getElementById(tabToHide);
+
+  if (!showTab || !hideTab) {
+    console.warn(`⚠️ ${tabToShow} or ${tabToHide} tab not found in the DOM!`);
+    return;
+  }
+
+  showTab.classList.remove("hidden");
+  hideTab.classList.add("hidden");
+}
+
 function showListingsTab() {
-  console.log("📜 My Listings Clicked");
-
-  const listingsTab = document.getElementById("listingsTab");
-  const bidsTab = document.getElementById("bidsTab");
-
-  if (!listingsTab || !bidsTab) {
-    console.warn("⚠️ Listings or Bids tab not found in the DOM!");
-    return;
-  }
-
-  listingsTab.classList.remove("hidden");
-  bidsTab.classList.add("hidden");
+  toggleTab("listingsTab", "bidsTab", "📜 My Listings Clicked");
 }
 
-// ✅ Function to Show "My Bids" Tab
 function showBidsTab() {
-  console.log("🎯 My Bids Clicked");
-
-  const listingsTab = document.getElementById("listingsTab");
-  const bidsTab = document.getElementById("bidsTab");
-
-  if (!listingsTab || !bidsTab) {
-    console.warn("⚠️ Listings or Bids tab not found in the DOM!");
-    return;
-  }
-
-  bidsTab.classList.remove("hidden");
-  listingsTab.classList.add("hidden");
+  toggleTab("bidsTab", "listingsTab", "🎯 My Bids Clicked");
 }
+
 
 // ✅ Ensure these functions are available for imports (if needed)
 export { showListingsTab, showBidsTab };
@@ -467,6 +460,7 @@ fetch(`${API_PROFILES}/${user.userName}/listings`, {
 }
 
 export function toggleEditProfile() {
+  console.log("🚀 toggleEditProfile() is EXECUTING! Check DOM...");
   const editProfileContainer = document.getElementById("edit-profile-container");
 
   if (!editProfileContainer) {

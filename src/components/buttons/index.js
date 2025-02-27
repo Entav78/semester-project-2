@@ -1,5 +1,6 @@
 import { router } from "@/pages/router/router.js";
 import { avatarInstance } from "@/js/api/Avatar.js";
+import { toggleEditProfile } from "@/pages/profile/profile.js";
 //import { showListingsTab, showBidsTab } from "@/pages/profile/profile.js";
  
 
@@ -104,10 +105,11 @@ export function setupProfileButtons(attempt = 1) {
 
   const editProfileBtn = document.getElementById("edit-profile-btn");
   const saveProfileBtn = document.getElementById("save-profile-btn");
+  const myListingsBtn = document.querySelector("[data-tab='listings']");
+  const myBidsBtn = document.querySelector("[data-tab='bids']");
 
-  if (!editProfileBtn || !saveProfileBtn) {
+  if (!editProfileBtn || !saveProfileBtn || !myListingsBtn || !myBidsBtn) {
     console.warn(`⚠️ Some profile buttons are missing! Retrying in 500ms... (Attempt ${attempt}/5)`);
-
     if (attempt < 5) {
       setTimeout(() => setupProfileButtons(attempt + 1), 500);
     } else {
@@ -116,13 +118,21 @@ export function setupProfileButtons(attempt = 1) {
     return;
   }
 
-  // 🚨 Remove old listeners to prevent duplicate bindings
-  saveProfileBtn.removeEventListener("click", handleSaveProfile);
+  // ✅ Remove ALL event listeners by cloning the button
+  const newEditProfileBtn = editProfileBtn.cloneNode(true);
+  editProfileBtn.parentNode.replaceChild(newEditProfileBtn, editProfileBtn);
 
-  // ✅ Attach event listeners
+  // ✅ Attach event listeners properly
+  newEditProfileBtn.addEventListener("click", toggleEditProfile);
   saveProfileBtn.addEventListener("click", handleSaveProfile);
-  console.log("✅ Event listener attached to save-profile-btn!");
+  myListingsBtn.addEventListener("click", showListingsTab);
+  myBidsBtn.addEventListener("click", showBidsTab);
+
+  console.log("✅ Profile buttons initialized!");
 }
+
+
+
 
 
 
