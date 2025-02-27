@@ -4,6 +4,7 @@ import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Avatar, setAvatarInstance, avatarInstance } from "@/js/api/Avatar.js";
 import { router } from "@/pages/router/router.js";
 import { setupProfileButtons, handleViewItemClick, setupButtons, setupListingButtons } from "@/components/buttons/index.js";
+import { createListingButton, createManageListingButtons } from "@/components/buttons/index.js";
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
 
@@ -54,7 +55,7 @@ async function displayUserListings(userName) {
       "view-item", "bg-primary", "hover:bg-secondary", "text-white",
       "text-lg", "font-semibold", "px-4", "py-2", "rounded"
     );
-
+/* Already have these in button/index.js in buttonContainer
     const editButton = document.createElement("button");
     editButton.textContent = "Edit";
     editButton.classList.add(
@@ -65,12 +66,12 @@ async function displayUserListings(userName) {
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.classList.add(
-      "delete-item", "bg-primary", "hover:bg-secondary", "text-white",
+      "delete-item", "bg-accent", "hover:bg-secondary", "text-white",
       "text-lg", "font-semibold", "px-4", "py-2", "rounded"
     );
 
 
-    buttonContainer.append(viewButton, editButton, deleteButton);
+    buttonContainer.append(viewButton, editButton, deleteButton);*/
     
 // ✅ Ensure listing has an ID before setting dataset
 if (listing.id) {
@@ -79,7 +80,13 @@ if (listing.id) {
   console.warn("⚠️ Listing is missing an ID:", listing);
 }
 
-// ✅ Append buttonContainer to listingItem instead of separate buttons
+const manageButtons = createManageListingButtons(
+  listing,
+  (id) => handleDeleteListing(id),
+  (id) => handleEditListing(id)
+);
+
+buttonContainer.append(viewButton, manageButtons);
 listingItem.append(title, image, description, buttonContainer);
 listingsContainer.appendChild(listingItem);
 

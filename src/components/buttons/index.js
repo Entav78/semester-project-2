@@ -42,7 +42,8 @@ export function createManageListingButtons(listing, onDelete, onEdit) {
   // Edit Button
   const editButton = document.createElement("button");
 editButton.textContent = "Edit Listing";
-editButton.classList.add("bg-yellow-500", "text-white", "px-4", "py-2", "rounded", "mt-2");
+editButton.classList.add("bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded");
 editButton.dataset.id = listing.id;
 
 editButton.addEventListener("click", () => {
@@ -57,12 +58,8 @@ editButton.addEventListener("click", () => {
   deleteButton.textContent = "Delete";
   deleteButton.classList.add(
     "delete-listing",
-    "bg-red-500",
-    "text-white",
-    "px-4",
-    "py-2",
-    "rounded",
-    "hover:bg-red-600"
+    "bg-primary", "hover:bg-secondary", "text-white",
+      "text-lg", "font-semibold", "px-4", "py-2", "rounded"
   );
   deleteButton.addEventListener("click", () => onDelete(listing.id));
 
