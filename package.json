@@ -2,13 +2,12 @@
   "name": "semester-project-2",
   "version": "1.0.0",
   "description": "My semester project 2. year",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "concurrently \"npm run css\" \"npm run serve\"",
     "clean": "rm -rf dist",
     "build-preview": "npm run clean && npm run build && npm run serve",
-    "build": "npm run clean && npm run css:build && cp -r src/js dist/js && cp index.html dist/index.html",
-
+   "build": "npm run clean && npm run css:build && cp index.html dist/index.html && cp -r src/js dist/js && cp -r src/pages dist/pages && cp -r public dist/public",
     "css": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --watch",
     "css:build": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --minify",
     "serve": "npx http-server ./dist -p 8080",

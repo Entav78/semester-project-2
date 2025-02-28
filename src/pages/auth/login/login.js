@@ -1,5 +1,5 @@
-import { router } from "@/pages/router/router.js"; // Import the router function
-import { Login } from "@/js/api/login.js";
+import { router } from "./../pages/router/router.js"; // Import the router function
+import { Login } from "./../js/api/login.js";
 
 const loginInstance = new Login(); // Create an instance for use in this file
 

@@ -1,6 +1,6 @@
-import { Pagination } from "@components/pagination/Pagination.js";
-import { Listing } from "@/models/Listing.js";
-import { API_LISTINGS } from "@/js/api/constants.js";
+//import { Pagination } from "./../components/pagination/Pagination.js";
+import { Listing } from "./../models/Listing.js";
+import { API_LISTINGS } from "./../js/api/constants.js";
 
 
 const ITEMS_PER_PAGE = 9;

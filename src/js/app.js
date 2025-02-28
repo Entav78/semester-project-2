@@ -1,11 +1,11 @@
-import { Navigation } from "../components/navigation/index.js";
-import { router } from "../pages/router/router.js";
+import { Navigation } from "./components/navigation/navigation.js";
+import { router } from "../../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
-import { initializeLoginPage } from "../pages/auth/login/login.js";
-import { Login } from "./js/api/login.js";
-//import { initializeItemPage } from "./pages/item/item.js";
-import { initializeHomePage } from "../pages/home/index.js"; 
-import { Avatar } from "../js/api/Avatar.js";
+import { initializeLoginPage } from "../../pages/auth/login/login.js";
+import { Login } from "./../js/api/login.js";
+//import { initializeItemPage } from ".././pages/item/item.js";
+import { initializeHomePage } from "../pages/home/home.js"; 
+import { Avatar } from "./../js/api/Avatar.js";
 import "../styles/main.css";
 
 console.log("Initializing App...");

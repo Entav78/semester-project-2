@@ -1,5 +1,5 @@
-import { API_REGISTER } from "@/js/api/constants.js";
-import { router } from "@/pages/router/router.js"; // Import the router
+import { API_REGISTER } from "./../js/api/constants.js";
+import { router } from "./../pages/router/router.js"; // Import the router
 
 export class Register {
   async register(data) {

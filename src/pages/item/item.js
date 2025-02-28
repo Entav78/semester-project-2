@@ -1,6 +1,6 @@
-import { API_LISTINGS } from "@/js/api/constants.js";
-import { Listing } from "@/models/listing.js";
-import { Bidding } from "@/js/api/Bidding.js"; //  Import Bidding class
+import { API_LISTINGS } from "./js/api/constants.js";
+import { Listing } from "./models/listing.js";
+import { Bidding } from "./js/api/Bidding.js"; //  Import Bidding class
 
 export function initializeItemPage() {
   console.log("Initializing Item Page...");

@@ -1,5 +1,5 @@
-import { basePath } from "@/js/api/constants.js";
-import { setupListingButtons } from "@/components/buttons/buttons.js";
+import { basePath } from "./js/api/constants.js";
+import { setupListingButtons } from "./components/buttons/buttons.js";
 
 console.log("Raw URL:", window.location.href);
 console.log("Extracted Query Params:", window.location.search);
@@ -49,7 +49,7 @@ export async function router(pathname = window.location.pathname) {
         .replace("/src/pages/profile/profile", "/profile")
         .replace("/src/pages/manageListings/manageListings", "/manageListings")
         .replace("/src/pages/item/item", "/item")
-        .replace("/src/pages/home/index", "/");
+        .replace("/src/pages/home/home", "/");
 
     console.log("Clean Pathname:", cleanPathname);
     console.log("Final Resolved Path:", cleanPathname);
@@ -107,7 +107,7 @@ async function loadPage(path, htmlPath, jsModule, initFunction) {
         switch (cleanPathname) {
             case "/":
                 console.log("Home Page Detected");
-                loadPage("/", "/src/index.html", "/src/pages/home/index.js", "initializeHomePage");
+                loadPage("/", "/src/index.html", "/src/pages/home/home.js", "initializeHomePage");
                 break;
 
             case "/login":

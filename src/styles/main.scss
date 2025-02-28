@@ -2,12 +2,12 @@
 @use "mixins";
 @use "custom";
 
-@use "@/components/buttons/buttons.scss"; 
-@use "@/components/navigation/navigation.scss"; 
-@use "@/pages/home/index.scss"; 
-@use "@/pages/profile/profile.scss";
-@use "@/pages/auth/register/register.scss";
-@use "@/pages/auth/login/login.scss";
+@use "./components/buttons/buttons.scss"; 
+@use "./components/navigation/navigation.scss"; 
+@use "./pages/home/home.scss"; 
+@use "./pages/profile/profile.scss";
+@use "./pages/auth/register/register.scss";
+@use "./pages/auth/login/login.scss";
 
 @tailwind base;
 @tailwind components;
@@ -18,12 +18,12 @@
 @use "mixins";
 @use "custom";
 
-@use "@/components/buttons/buttons.scss"; 
-@use "@/components/navigation/navigation.scss"; 
-@use "@/pages/home/index.scss"; 
-@use "@/pages/profile/profile.scss";
-@use "@/pages/auth/register/register.scss";
-@use "@/pages/auth/login/login.scss";
+@use "./components/buttons/buttons.scss"; 
+@use "./components/navigation/navigation.scss"; 
+@use "./pages/home/home.scss"; 
+@use "./pages/profile/profile.scss";
+@use "./pages/auth/register/register.scss";
+@use "./pages/auth/login/login.scss";
 
 body {
   border: 5px solid red !important;

@@ -1,6 +1,6 @@
-import { fetchAllListings } from "@/js/api/listings.js";
-import { router } from "@/pages/router/router.js";
-//import { Pagination } from "@/js/components/pagination/Pagination.js";
+import { fetchAllListings } from "./../js/api/listings.js";
+//import { router } from "./../pages/router/router.js";
+//import { Pagination } from "./../js/components/pagination/Pagination.js";
 
 
 export class Filtering {
