@@ -1,5 +1,5 @@
-import { basePath } from "./js/api/constants.js";
-import { setupListingButtons } from "./components/buttons/buttons.js";
+import { basePath } from "./api/constants.js";
+import { setupListingButtons } from "./../buttons/buttons.js";
 
 console.log("Raw URL:", window.location.href);
 console.log("Extracted Query Params:", window.location.search);

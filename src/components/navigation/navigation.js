@@ -1,6 +1,6 @@
-import { router } from "./../pages/router/router.js";
-import { basePath } from "./../js/api/constants.js";
-import { Login } from "./../js/api/login.js";
+import { router } from "/pages/router/router.js";
+import { basePath } from "/js/api/constants.js";
+import { Login } from "/js/api/login.js";
 
 const loginInstance = new Login(); // Create an instance of the Login class
 
@@ -155,7 +155,7 @@ export function setupSidebar() {
 
 
 /**
- * ✅ Function to dynamically load navigation from `navigation/index.html`
+ * ✅ Function to dynamically load navigation from `navigation/navigation.html`
  */
 export async function loadNavigation() {
   const navContainer = document.getElementById("navigation-container");
@@ -166,7 +166,7 @@ export async function loadNavigation() {
   }
 
   try {
-    const response = await fetch("/src/components/navigation/index.html");
+    const response = await fetch("/src/components/navigation/navigation.html");
     if (!response.ok) throw new Error("Failed to load navigation");
 
     const navHTML = await response.text();

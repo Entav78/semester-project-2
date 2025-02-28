@@ -1,4 +1,4 @@
-import { API_LOGIN } from "./../js/api/constants.js";
+import { API_LOGIN } from "/js/api/constants.js";
 
 export class Login {
   async login(data) {
