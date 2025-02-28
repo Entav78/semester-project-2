@@ -1,5 +1,5 @@
 import { fetchAndRenderListings } from "@/js/api/listings.js";
-import { setupListingButtons } from "@/components/buttons/index.js";
+import { setupListingButtons } from "@/components/buttons/buttons.js";
 import { showLoader, hideLoader } from "@/components/loader/loader.js";
 import { Filtering } from "@/components/filtering/Filtering.js";
 import { Pagination } from "@/components/pagination/Pagination.js";
