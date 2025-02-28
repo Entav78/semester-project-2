@@ -24,3 +24,6 @@
 @use "@/pages/auth/register/register.scss";
 @use "@/pages/auth/login/login.scss";
 
+body {
+  border: 5px solid red !important;
+}

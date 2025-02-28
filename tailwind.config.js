@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{html,js,scss}"],
+  content: ["./index.html", "./src/**/*.{html,js,scss}"],
   safelist: [
     "hidden",
     "translate-x-full",

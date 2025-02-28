@@ -4,17 +4,16 @@
   "description": "My semester project 2. year",
   "main": "index.js",
   "scripts": {
-  "start": "concurrently \"npm run dev\" \"npm run css\"",
-  "dev": "vite",
-  "clean": "rm -rf dist",
-  "build-preview": "npm run clean && npm run build && npm run preview",
-  "build": "vite build && npm run css:build",
-  "css": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --watch",
-  "css:build": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --minify",
-  "serve": "vite preview",
-  "test": "echo \"Error: no test specified\" && exit 1"
-}
-,
+    "start": "concurrently \"npm run css\" \"npm run serve\"",
+    "clean": "rm -rf dist",
+    "build-preview": "npm run clean && npm run build && npm run serve",
+    "build": "npm run clean && npm run css:build && cp -r src/js dist/js && cp index.html dist/index.html",
+
+    "css": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --watch",
+    "css:build": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --minify",
+    "serve": "npx http-server ./dist -p 8080",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Entav78/semester-project-2.git"
@@ -30,6 +29,7 @@
     "autoprefixer": "^10.4.20",
     "concurrently": "^9.1.2",
     "esbuild": "^0.25.0",
+    "http-server": "^14.1.1",
     "postcss": "^8.5.3",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^16.1.0",
@@ -37,8 +37,7 @@
     "prettier": "^3.4.2",
     "sass": "^1.83.4",
     "sass-embedded": "^1.83.4",
-    "tailwindcss": "^3.4.17",
-    "vite": "^6.1.1"
+    "tailwindcss": "^3.4.17"
   },
   "dependencies": {
     "ansi-regex": "^5.0.1",
