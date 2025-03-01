@@ -1,11 +1,11 @@
 //import { Pagination } from "./../components/pagination/Pagination.js";
-import { Listing } from "./../models/Listing.js";
-import { API_LISTINGS } from "./../js/api/constants.js";
+import { Listing } from "../../models/Listing.js";
+import { API_LISTINGS } from "./constants.js";
 
 
 const ITEMS_PER_PAGE = 9;
 let allListings = [];
-let currentPage = 1;
+//let currentPage = 1;
 
 export async function fetchAllListings() {
   console.log("🔄 Fetching ALL listings...");

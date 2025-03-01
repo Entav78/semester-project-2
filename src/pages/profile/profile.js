@@ -1,10 +1,10 @@
-import { API_LISTINGS, API_PROFILES, API_KEY } from "./js/api/constants.js";
-import { fetchUserListings, fetchUserBids } from "./js/api/profile.js";
-import { showLoader, hideLoader } from "./components/loader/loader.js";
-import { Avatar, setAvatarInstance, avatarInstance } from "./js/api/Avatar.js";
-import { router } from "./pages/router/router.js";
-import { setupProfileButtons, handleViewItemClick, setupButtons, setupListingButtons } from "./../components/buttons/buttons.js";
-import { createListingButton, createManageListingButtons } from "../components/buttons/buttons.js";
+import { API_LISTINGS, API_PROFILES, API_KEY } from "../../js/api/constants.js";
+import { fetchUserListings, fetchUserBids } from "../../js/api/profile.js";
+import { showLoader, hideLoader } from "../../components/loader/loader.js";
+import { Avatar, setAvatarInstance /*, avatarInstance*/ } from "../../js/api/Avatar.js";
+import { router } from "../router/router.js";
+import { setupProfileButtons,/* handleViewItemClick,*/ setupButtons, setupListingButtons } from "../../components/buttons/buttons.js";
+import {/* createListingButton,*/ createManageListingButtons } from "../../components/buttons/buttons.js";
 
 let user = JSON.parse(localStorage.getItem("user")) || null;
 

@@ -1,6 +1,4 @@
-import { API_KEY, API_PROFILES } from "./../js/api/constants.js";
-import { getUserListings, getUserBids } from "./../js/api/constants.js";
-
+import { API_KEY, API_PROFILES, getUserListings/*, getUserBids*/ } from "./constants.js";
 
 // Get user details from localStorage
 const user = JSON.parse(localStorage.getItem("user"));

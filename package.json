@@ -7,8 +7,8 @@
     "start": "concurrently \"npm run css\" \"npm run serve\"",
     "clean": "rm -rf dist",
     "build-preview": "npm run clean && npm run build && npm run serve",
-   "build": "npm run clean && npm run css:build && cp -r src/js dist/js && cp -r src/pages dist/pages && cp -r src/components dist/components && cp index.html dist/index.html",
-
+   "build": "npm run clean && npm run css:build && cp -r src/models dist/models && cp -r src/js dist/js && cp -r src/pages dist/pages && cp -r src/components dist/components && cp index.html dist/index.html && cp public/favicon.ico dist/favicon.ico",
+   "dev": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --watch",
 
     "css": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --watch",
     "css:build": "npx tailwindcss -i ./src/styles/main.css -o ./dist/assets/main.css --minify",
@@ -55,6 +55,7 @@
     "cssesc": "^3.0.0",
     "dependency-graph": "^0.11.0",
     "detect-libc": "^1.0.3",
+    "dotenv": "^16.3.1",
     "emoji-regex": "^8.0.0",
     "escalade": "^3.2.0",
     "fast-glob": "^3.3.3",

@@ -1,8 +1,9 @@
-import { router } from "./../pages/router/router.js";
-import { avatarInstance } from "./../js/api/Avatar.js";
-import { toggleEditProfile } from "./../pages/profile/profile.js";
-import { deleteListingById } from "./../pages/manageListings/ManageListings.js";
-//import { showListingsTab, showBidsTab } from "./../pages/profile/profile.js";
+import { router } from "../../pages/router/router.js";
+import { avatarInstance } from "../../js/api/Avatar.js";
+import { toggleEditProfile } from "../../pages/profile/profile.js";
+import { deleteListingById } from "../../pages/manageListings/manageListings.js";
+// import { showListingsTab, showBidsTab } from "../../pages/profile/profile.js";
+
  
 
 //setAvatarInstance(new Avatar());

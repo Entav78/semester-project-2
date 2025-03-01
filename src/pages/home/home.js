@@ -1,9 +1,10 @@
-import { fetchAndRenderListings } from "./../js/api/listings.js";
-import { setupListingButtons } from "./../components/buttons/buttons.js";
-import { showLoader, hideLoader } from "./../components/loader/loader.js";
-import { Filtering } from "./../components/filtering/Filtering.js";
-import { Pagination } from "./../components/pagination/Pagination.js";
-import { setupSidebar } from "./../components/navigation/navigation.js"; 
+import { fetchAndRenderListings } from "../../js/api/listings.js";
+import { setupListingButtons } from "../../components/buttons/buttons.js";
+import { showLoader, hideLoader } from "../../components/loader/loader.js";
+import { Filtering } from "../../components/filtering/Filtering.js";
+import { Pagination } from "../../components/pagination/Pagination.js";
+import { setupSidebar } from "../../components/navigation/navigation.js";
+
 
 const ITEMS_PER_PAGE = 9;
 let currentPage = 1;
