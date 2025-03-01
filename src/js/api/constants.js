@@ -1,5 +1,3 @@
-
-
 export const API_KEY = "b1daef81-f82b-4fa8-888b-135fdb584411"; 
 console.log("API Key Loaded:", API_KEY); // Remove before deployment!
 

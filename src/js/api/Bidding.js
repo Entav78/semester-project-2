@@ -1,4 +1,4 @@
-import { API_LISTINGS, API_KEY } from "./../api/constants.js";
+import { API_LISTINGS, API_KEY } from "../../js/api/constants.js";
 
 export class Bidding {
   constructor(listingId, buttonElement, inputElement) {

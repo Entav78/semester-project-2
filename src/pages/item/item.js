@@ -1,4 +1,4 @@
-import { API_LISTINGS } from "../../api/constants.js";
+import { API_LISTINGS } from "../../js/api/constants.js";
 import { Listing } from "../../models/listing.js";
 import { Bidding } from "../../js/api/Bidding.js";
 

@@ -2,6 +2,8 @@ import { router } from "../../pages/router/router.js";
 import { avatarInstance } from "../../js/api/Avatar.js";
 import { toggleEditProfile } from "../../pages/profile/profile.js";
 import { deleteListingById } from "../../pages/manageListings/manageListings.js";
+import { basePath } from "../../js/api/constants.js";
+
 // import { showListingsTab, showBidsTab } from "../../pages/profile/profile.js";
 
  
@@ -97,8 +99,9 @@ export function handleViewItemClick(event) {
     console.error("❌ No item ID found on button.");
     return;
   }
+  console.log("✅ basePath in buttons.js:", basePath);
 
-  const itemPagePath = `/item?id=${itemId}`;
+  const itemPagePath = `${basePath}/item?id=${itemId}`;
   console.log(`🚀 Navigating to Item Page: ${itemPagePath}`);
 
   window.history.pushState({}, "", itemPagePath);

@@ -132,7 +132,7 @@ export async function router(pathname = window.location.pathname) {
                 break;
 
             case "item":
-                loadPage("/item", `${basePath}/pages/item/item.html`, `${basePath}/pages/item/item.js`, "initializeItemPage")
+                loadPage("/item", `${basePath}/pages/item/item.html`, `.${basePath}/pages/item/item.js`, "initializeItemPage")
                     .then(() => {
                         console.log("🔄 Re-initializing navigation on Item Page...");
                         if (window.mainNavigation) {
