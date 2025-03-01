@@ -166,7 +166,8 @@ export async function loadNavigation() {
   }
 
   try {
-    const response = await fetch("/src/components/navigation/navigation.html");
+    const response = await fetch("/components/navigation/navigation.html");
+
     if (!response.ok) throw new Error("Failed to load navigation");
 
     const navHTML = await response.text();
