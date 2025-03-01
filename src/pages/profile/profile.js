@@ -36,7 +36,7 @@ async function displayUserListings(userName) {
     title.textContent = listing.title;
 
     const image = document.createElement("img");
-    image.src = listing.media?.[0]?.url || "/img/default.jpg";
+    image.src = listing.media?.[0]?.url || "/assets/default.jpg";
     image.alt = listing.title;
     image.classList.add("w-full", "rounded-lg", "shadow-md", "max-h-[500px]", "object-cover");
 
@@ -143,7 +143,7 @@ async function displayUserBids(bids) {
     title.textContent = listing.title || "Unknown Item";
 
     const image = document.createElement("img");
-    image.src = listing.media?.[0]?.url || "/img/default.jpg";
+    image.src = listing.media?.[0]?.url || "/assets/default.jpg";
     image.alt = listing.title || "No Image Available";
     image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 

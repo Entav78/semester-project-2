@@ -248,7 +248,7 @@ sortListings(sortBy) {
 
       // Handle Image
       const image = document.createElement("img");
-      image.src = (listing.media?.length > 0 && typeof listing.media[0] === "object") ? listing.media[0].url : "/img/default.jpg";
+      image.src = (listing.media?.length > 0 && typeof listing.media[0] === "object") ? listing.media[0].url : "/assets/default.jpg";
       image.alt = listing.title || "No image available";
       image.classList.add("w-full", "h-48", "object-cover", "rounded-lg");
 

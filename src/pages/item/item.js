@@ -1,6 +1,6 @@
-import { API_LISTINGS } from "./js/api/constants.js";
-import { Listing } from "./models/listing.js";
-import { Bidding } from "./js/api/Bidding.js"; //  Import Bidding class
+import { API_LISTINGS } from "../../api/constants.js";
+import { Listing } from "../../models/listing.js";
+import { Bidding } from "../../js/api/Bidding.js";
 
 export function initializeItemPage() {
   console.log("Initializing Item Page...");
@@ -54,7 +54,7 @@ export function initializeItemPage() {
     console.log("Media Data:", data.media);
     console.log("First Image URL:", data.media?.[0]?.url);
 
-    image.src = itemData.media?.[0]?.url || "/src/img/Sasha.jpg";  
+    image.src = itemData.media?.[0]?.url || "/assets/Sasha.jpg";  
  //  Correct line
 
     image.alt = item.title || "No image available";

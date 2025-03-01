@@ -74,10 +74,12 @@ export class Navigation {
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
-          console.log(`Navigating to: ${path}`);
-          window.history.pushState({}, "", path);
-          router(path);
+          const fullPath = `${basePath}${path}`;
+          console.log(`Navigating to: ${fullPath}`);
+          window.history.pushState({}, "", fullPath);
+          router(fullPath);
         });
+        
       }
 
       const listItem = document.createElement("li");

@@ -1,4 +1,4 @@
-import { Register } from "/js/api/register.js";
+import { Register } from "../../../js/api/register.js";
 
 export function initializeRegisterPage() {
   console.log("Register page script executing...");
