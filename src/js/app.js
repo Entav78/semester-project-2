@@ -7,7 +7,7 @@ import { Login } from "./../js/api/login.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
-//import { basePath } from "./js/api/constants.js";
+import { basePath } from "../js/api/constants.js";
 
 /*// Load CSS
 const link = document.createElement("link");
