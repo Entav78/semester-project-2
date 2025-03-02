@@ -1,6 +1,6 @@
-import { router } from "/pages/router/router.js";
+import { router } from "/semester-project-2/dist/pages/router/router.js";
 import { basePath } from "/semester-project-2/dist/js/api/constants.js";
-import { Login } from "/js/api/login.js";
+import { Login } from "/semester-project-2/dist/js/api/login.js";
 
 const loginInstance = new Login(); // Create an instance of the Login class
 
