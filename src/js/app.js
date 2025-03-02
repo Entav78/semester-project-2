@@ -1,4 +1,4 @@
-import { Navigation } from "../components/navigation/navigation.js";
+import { Navigation } from "../../components/navigation/navigation.js";
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
 import { initializeLoginPage } from "../../pages/auth/login/login.js";
@@ -22,7 +22,7 @@ document.body.appendChild(script);
 
 export const basePath =
 window.location.hostname === "localhost" ? "" : "/semester-project-2/";
-console.log("Initializing App...");
+console.log("✅ basePath is:", basePath);
 
 // Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
