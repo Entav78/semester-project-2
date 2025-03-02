@@ -170,8 +170,8 @@ export async function router(pathname = window.location.pathname) {
             default:
                 console.log("❌ Page Not Found - Loading 404");
                 loadPage("/404", 
-                    `${basePath}/pages/notFound.html`.replace(/\/\//g, "/"), 
-                    `${basePath}/pages/notFound.js`.replace(/\/\//g, "/"), 
+                    `${basePath}../pages/notFound.html`.replace(/\/\//g, "/"), 
+                    `${basePath}../pages/notFound.js`.replace(/\/\//g, "/"), 
                     "initializeNotFoundPage"
                 ).catch(error => console.error("❌ Error loading 404 Page:", error));
                 break;

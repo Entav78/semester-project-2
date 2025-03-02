@@ -1,5 +1,4 @@
 import { Navigation } from "/semester-project-2/src/components/navigation/navigation.js"; // ✅ Fix for GitHub Pages
-
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
 import { initializeLoginPage } from "/semester-project-2/src/pages/auth/login/login.js";
@@ -7,7 +6,6 @@ import { Login } from "./../js/api/login.js";
 //import { initializeItemPage } from ".../pages/item/item.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
-
 import { basePath } from "/semester-project-2/dist/js/api/constants.js"; // ✅ Fix import path
 
 console.log("✅ basePath is:", basePath);
