@@ -107,7 +107,7 @@ export async function fetchAndRenderListings(page = 1, filterQuery = "") {
       title.classList.add("listing-title", "text-xl", "font-bold", "min-h-[3rem]"); 
       title.textContent = listing.title; 
     
-      const defaultImagePath = "/assets/default.jpg";
+      const defaultImagePath = "/semester-project-2/dist/assets/default.jpg";
     
       const imageUrl =
         Array.isArray(listing.media) && listing.media.length > 0 && typeof listing.media[0] === "object"
