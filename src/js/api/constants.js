@@ -1,15 +1,20 @@
-export const API_KEY = "b1daef81-f82b-4fa8-888b-135fdb584411"; 
-console.log("API Key Loaded:", API_KEY); // Remove before deployment!
+export let API_KEY = "";
+
+fetch("/config.json")
+  .then(response => response.json())
+  .then(config => {
+    API_KEY = config.API_KEY;
+    console.log("✅ API Key Loaded:", API_KEY);
+  })
+  .catch(error => console.error("❌ Failed to load API Key:", error));
+
+export const API_BASE = "https://v2.api.noroff.dev";
 
 
-//export { API_KEY };
 export const basePath =
   window.location.hostname.includes("127.0.0.1") || window.location.hostname.includes("localhost")
     ? "" // LOCAL: Use root "/"
     : "/semester-project-2"; // GITHUB: Use "/semester-project-2"
-
-
-export const API_BASE = "https://v2.api.noroff.dev";
 
 // Auction Endpoints
 export const API_AUCTION = `${API_BASE}/auction`;
@@ -33,4 +38,4 @@ export const API_LOGIN = `${API_AUTH}/login`;
 export const getListingById = (id, seller = false, bids = false) =>
   `${API_LISTINGS}/${id}?_seller=${seller}&_bids=${bids}`;
 
-console.log("API Key Loaded:", API_KEY); // REMOVE BEFORE DELIVERY!
+

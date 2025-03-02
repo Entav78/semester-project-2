@@ -22,7 +22,7 @@ console.log("window.sidebarNavigation:", window.sidebarNavigation);
 
 const mainNav = document.getElementById("main-nav");
 const sidebarNav = document.getElementById("sidebar-nav");
-
+console.log("Sidebar nav in home/app:", sidebarNav);
 // Create an instance of `Login` to access handleLogout()
 const loginInstance = new Login();
 

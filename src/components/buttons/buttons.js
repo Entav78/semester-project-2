@@ -104,8 +104,11 @@ export function handleViewItemClick(event) {
   const itemPagePath = `${basePath}/item?id=${itemId}`;
   console.log(`🚀 Navigating to Item Page: ${itemPagePath}`);
 
-  window.history.pushState({}, "", itemPagePath);
-  router(itemPagePath);
+  if (window.location.pathname !== itemPagePath) {
+    window.history.pushState({}, "", itemPagePath);
+    router(itemPagePath);
+}
+
 }
 
 let profileButtonsInitialized = false; // ✅ Prevent multiple calls

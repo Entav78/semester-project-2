@@ -3,6 +3,8 @@ import { setupListingButtons } from "../../components/buttons/buttons.js";
 
 console.log("Raw URL:", window.location.href);
 console.log("Extracted Query Params:", window.location.search);
+console.log("🔍 Current basePath:", basePath);
+
 
 export async function router(pathname = window.location.pathname) {
     console.log("Router running");
@@ -131,27 +133,30 @@ export async function router(pathname = window.location.pathname) {
                 loadPage("/manageListings", `${basePath}/pages/manageListings/manageListings.html`, `${basePath}/pages/manageListings/manageListings.js`, "initializeManageListingsPage");
                 break;
 
-            case "item":
-                loadPage("/item", `${basePath}/pages/item/item.html`, `.${basePath}/pages/item/item.js`, "initializeItemPage")
-                    .then(() => {
-                        console.log("🔄 Re-initializing navigation on Item Page...");
-                        if (window.mainNavigation) {
-                            window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-                        }
-                    })
-                    .catch(error => console.error("❌ Error loading Item Page:", error));
-                break;
+                case "item":
+                    loadPage("/item", `${basePath}/pages/item/item.html`, `${basePath}/pages/item/item.js`, "initializeItemPage")
+                        .then(() => {
+                            console.log("🔄 Re-initializing navigation on Item Page...");
+                            if (window.mainNavigation) {
+                                window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+                            }
+                        })
+                        .catch(error => console.error("❌ Error loading Item Page:", error));
+                    break;
+                
 
             default:
                 console.log("❌ Page Not Found - Loading 404");
-                loadPage("/404", `${basePath}/pages/notFound.html`, `${basePath}/pages/notFound.js`, "initializeNotFoundPage");
+                loadPage("/404", `${basePath}/pages/notFound.html`, `${basePath}/pages/notFound.js`, "initializeNotFoundPage")
+                    .catch(error => console.error("❌ Error loading 404 Page:", error));
+                break;
         }
     } catch (error) {
         console.error("❌ Router Error:", error.message);
     }
 }
 
-
-
-
+// ✅ Run the router immediately
+router(window.location.pathname);
+                    
 
