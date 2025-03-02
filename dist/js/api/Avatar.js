@@ -1,4 +1,4 @@
-import { API_KEY, API_PROFILES } from from `${basePath}/js/api/constants.js`;
+import { API_KEY, API_PROFILES } from "/semester-project-2/dist/js/api/constants.js";
 import { toggleEditProfile } from "../../pages/profile/profile.js";
 
 
