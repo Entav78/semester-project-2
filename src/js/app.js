@@ -12,13 +12,13 @@ import { basePath } from "./js/api/constants.js";
 // Load CSS
 const link = document.createElement("link");
 link.rel = "stylesheet";
-link.href = `${basePath}assets/main.css`;  // ✅ Now includes ./dist/
+link.href = `${basePath}assets/main.css`;  // ✅ Now correct for GitHub Pages
 document.head.appendChild(link);
 
-// Load JS
 const script = document.createElement("script");
-script.src = `${basePath}js/app.js`;  // ✅ Now includes ./dist/
+script.src = `${basePath}js/app.js`;  // ✅ Now correct for GitHub Pages
 document.body.appendChild(script);
+
 
 
 console.log("Initializing App...");
