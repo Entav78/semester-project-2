@@ -31,8 +31,9 @@ export class Navigation {
     if (window.sidebarNavigation) window.sidebarNavigation.updateNavbar(false);
 
     console.log("Redirecting to Home...");
-    window.history.pushState({}, "", "/");
-    router("/");
+    const homePath = "/".replace(/\/\//g, "/");
+    window.history.pushState({}, "", homePath);
+    router(homePath);
 
     setTimeout(() => {
       console.log("Reloading navigation...");
@@ -60,6 +61,7 @@ export class Navigation {
     navItems.forEach(({ text, path, show, action }) => {
       if (show !== undefined && !show) return;
 
+      console.log(`🔄 Before Navigation: ${fullPath}`);
       const button = document.createElement("button");
       button.textContent = text;
       button.classList.add("nav-link", "text-white", "hover:text-gray-300", "transition");
@@ -74,10 +76,10 @@ export class Navigation {
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
-          const fullPath = `${basePath}${path}`;
-          console.log(`Navigating to: ${fullPath}`);
-          window.history.pushState({}, "", fullPath);
-          router(fullPath);
+          const cleanPath = fullPath.replace(/\/\//g, "/");
+          console.log(`🚀 Final Clean Path: ${cleanPath}`);
+          window.history.pushState({}, "", cleanPath);  // ✅ Use the cleaned path
+          router(cleanPath);
         });
         
       }
