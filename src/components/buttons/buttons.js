@@ -2,7 +2,7 @@ import { router } from "../../pages/router/router.js";
 import { avatarInstance } from "../../js/api/Avatar.js";
 import { toggleEditProfile } from "../../pages/profile/profile.js";
 import { deleteListingById } from "../../pages/manageListings/manageListings.js";
-import { basePath } from "../../js/api/constants.js";
+import { basePath } from "/semester-project-2/dist/js/api/constants.js";
 
 // import { showListingsTab, showBidsTab } from "../../pages/profile/profile.js";
 

@@ -1,4 +1,4 @@
-import { basePath } from "../../js/api/constants.js";
+import { basePath } from "/semester-project-2/dist/js/api/constants.js";
 import { setupListingButtons } from "../../components/buttons/buttons.js";
 
 console.log("Raw URL:", window.location.href);

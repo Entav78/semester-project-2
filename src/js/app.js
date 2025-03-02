@@ -8,7 +8,7 @@ import { Login } from "./../js/api/login.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
-import { basePath } from "./dist/js/api/constants.js"; // ✅ Fix import path
+import { basePath } from "/semester-project-2/dist/js/api/constants.js"; // ✅ Fix import path
 
 console.log("✅ basePath is:", basePath);
 /*// Load CSS
