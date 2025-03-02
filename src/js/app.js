@@ -2,7 +2,7 @@ import { Navigation } from "/semester-project-2/dist/components/navigation/navig
 
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
-import { initializeLoginPage } from "../../pages/auth/login/login.js";
+import { initializeLoginPage } from "/semester-project-2/dist/pages/auth/login/login.js";
 import { Login } from "./../js/api/login.js";
 //import { initializeItemPage } from ".../pages/item/item.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
