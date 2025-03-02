@@ -11,7 +11,9 @@ fetch("/config.json")
 export const API_BASE = "https://v2.api.noroff.dev";
 
 
-
+export const basePath =
+window.location.hostname === "localhost" ? "" : "/semester-project-2/";
+console.log("✅ basePath is:", basePath);
 
 // Auction Endpoints
 export const API_AUCTION = `${API_BASE}/auction`;

@@ -7,8 +7,9 @@ import { Login } from "./../js/api/login.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
-import { basePath } from "../js/api/constants.js";
+import { basePath } from "./dist/js/api/constants.js"; // ✅ Fix import path
 
+console.log("✅ basePath is:", basePath);
 /*// Load CSS
 const link = document.createElement("link");
 link.rel = "stylesheet";
@@ -20,9 +21,7 @@ script.src = `${basePath}js/app.js`;  // ✅ Now correct for GitHub Pages
 document.body.appendChild(script);
 */
 
-export const basePath =
-window.location.hostname === "localhost" ? "" : "/semester-project-2/";
-console.log("✅ basePath is:", basePath);
+
 
 // Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));
