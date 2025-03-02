@@ -1,8 +1,8 @@
-import { Navigation } from "/semester-project-2/dist/components/navigation/navigation.js"; // ✅ Fix for GitHub Pages
+import { Navigation } from "/semester-project-2/src/components/navigation/navigation.js"; // ✅ Fix for GitHub Pages
 
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
-import { initializeLoginPage } from "/semester-project-2/dist/pages/auth/login/login.js";
+import { initializeLoginPage } from "/semester-project-2/src/pages/auth/login/login.js";
 import { Login } from "./../js/api/login.js";
 //import { initializeItemPage } from ".../pages/item/item.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
