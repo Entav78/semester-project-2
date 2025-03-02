@@ -7,9 +7,9 @@ import { Login } from "./../js/api/login.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
-import { basePath } from "./js/api/constants.js";
+//import { basePath } from "./js/api/constants.js";
 
-// Load CSS
+/*// Load CSS
 const link = document.createElement("link");
 link.rel = "stylesheet";
 link.href = `${basePath}assets/main.css`;  // ✅ Now correct for GitHub Pages
@@ -18,7 +18,7 @@ document.head.appendChild(link);
 const script = document.createElement("script");
 script.src = `${basePath}js/app.js`;  // ✅ Now correct for GitHub Pages
 document.body.appendChild(script);
-
+*/
 
 
 console.log("Initializing App...");
