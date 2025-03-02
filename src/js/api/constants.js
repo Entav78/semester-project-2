@@ -12,9 +12,7 @@ export const API_BASE = "https://v2.api.noroff.dev";
 
 
 export const basePath =
-  window.location.hostname.includes("127.0.0.1") || window.location.hostname.includes("localhost")
-    ? "" // LOCAL: Use root "/"
-    : "/semester-project-2"; // GITHUB: Use "/semester-project-2"
+window.location.hostname === "localhost" ? "" : "./dist/";
 
 // Auction Endpoints
 export const API_AUCTION = `${API_BASE}/auction`;

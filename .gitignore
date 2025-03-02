@@ -90,7 +90,7 @@ out
 .nuxt
 
 # Dist folder for production builds (EXCEPT `output.css` if needed)
-dist/
+!dist/
 !dist/assets/main.css
 
 # Gatsby files

@@ -7,7 +7,18 @@ import { Login } from "./../js/api/login.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
+import { basePath } from "./js/api/constants.js";
 
+// Load CSS
+const link = document.createElement("link");
+link.rel = "stylesheet";
+link.href = `${basePath}assets/main.css`;  // ✅ Now includes ./dist/
+document.head.appendChild(link);
+
+// Load JS
+const script = document.createElement("script");
+script.src = `${basePath}js/app.js`;  // ✅ Now includes ./dist/
+document.body.appendChild(script);
 
 
 console.log("Initializing App...");
