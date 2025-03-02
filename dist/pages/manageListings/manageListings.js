@@ -1,4 +1,4 @@
-import { API_LISTINGS, API_PROFILES, API_KEY } from "../../js/api/constants.js";
+import { API_LISTINGS, API_PROFILES, API_KEY } from "/semester-project-2/dist/js/api/constants.js";
 import { router } from "../../pages/router/router.js";
 import { showLoader, hideLoader } from "../../components/loader/loader.js";
 import { createListingButton, createManageListingButtons } from "../../components/buttons/buttons.js";

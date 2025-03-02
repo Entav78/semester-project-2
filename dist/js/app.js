@@ -1,16 +1,28 @@
-import { Navigation } from "/components/navigation/navigation.js";
+import { Navigation } from "/semester-project-2/dist/components/navigation/navigation.js"; // ✅ Fix for GitHub Pages
+
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
-import { initializeLoginPage } from "../../pages/auth/login/login.js";
+import { initializeLoginPage } from "/semester-project-2/dist/pages/auth/login/login.js";
 import { Login } from "./../js/api/login.js";
 //import { initializeItemPage } from ".../pages/item/item.js";
 import { initializeHomePage } from "../pages/home/home.js"; 
 import { Avatar } from "./../js/api/Avatar.js";
 
+import { basePath } from "/semester-project-2/dist/js/api/constants.js"; // ✅ Fix import path
+
+console.log("✅ basePath is:", basePath);
+/*// Load CSS
+const link = document.createElement("link");
+link.rel = "stylesheet";
+link.href = `${basePath}assets/main.css`;  // ✅ Now correct for GitHub Pages
+document.head.appendChild(link);
+
+const script = document.createElement("script");
+script.src = `${basePath}js/app.js`;  // ✅ Now correct for GitHub Pages
+document.body.appendChild(script);
+*/
 
 
-
-console.log("Initializing App...");
 
 // Prevent multiple navigation instances
 const isLoggedIn = Boolean(localStorage.getItem("authToken"));

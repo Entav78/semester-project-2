@@ -1,4 +1,4 @@
-import { API_LISTINGS, API_PROFILES, API_KEY } from "../../js/api/constants.js";
+import { API_LISTINGS, API_PROFILES, API_KEY } from "/semester-project-2/dist/js/api/constants.js";
 import { fetchUserListings, fetchUserBids } from "../../js/api/profile.js";
 import { showLoader, hideLoader } from "../../components/loader/loader.js";
 import { Avatar, setAvatarInstance /*, avatarInstance*/ } from "../../js/api/Avatar.js";

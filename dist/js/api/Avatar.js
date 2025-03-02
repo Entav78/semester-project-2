@@ -1,5 +1,6 @@
-import { API_KEY, API_PROFILES } from "./constants.js";
+import { API_KEY, API_PROFILES } from from `${basePath}/js/api/constants.js`;
 import { toggleEditProfile } from "../../pages/profile/profile.js";
+
 
 
 export let avatarInstance = null; // ✅ Ensure it's exported globally

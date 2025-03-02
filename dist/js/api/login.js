@@ -1,4 +1,5 @@
-import { API_LOGIN } from "/js/api/constants.js";
+import { API_LOGIN } from "/semester-project-2/dist/js/api/constants.js";  // ✅ Works on GitHub Pages
+
 
 export class Login {
   async login(data) {
