@@ -1,6 +1,6 @@
 export let API_KEY = "";
 
-fetch("/config.json")
+fetch("/semester-project-2/config.json") 
   .then(response => response.json())
   .then(config => {
     API_KEY = config.API_KEY;
@@ -12,7 +12,7 @@ export const API_BASE = "https://v2.api.noroff.dev";
 
 
 export const basePath =
-window.location.hostname === "localhost" ? "" : "/semester-project-2/dist/";
+window.location.hostname === "localhost" ? "" : "/semester-project-2/";
 console.log("✅ basePath is:", basePath);
 
 // Auction Endpoints
