@@ -168,7 +168,7 @@ export async function loadNavigation() {
   }
 
   try {
-    const response = await fetch("/components/navigation/navigation.html");
+    const response = await fetch("/semester-project-2/dist/components/navigation/navigation.html");  // ✅ Fix for GitHub Pages
 
     if (!response.ok) throw new Error("Failed to load navigation");
 
