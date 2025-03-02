@@ -1,6 +1,6 @@
 export let API_KEY = "";
 
-fetch("/config.json")
+fetch("/semester-project-2/config.json") 
   .then(response => response.json())
   .then(config => {
     API_KEY = config.API_KEY;
