@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Header Navigation</title>
+  </head>
+  <body> 
+
+    <div id="navigation-container" class="bg-red-500 text-white">
+
+
+      <header class="bg-accent text-white p-4 flex items-center justify-between relative">
+        <!-- LOGO (Centered on Mobile, Left on Large Screens) -->
+        <a href="/" class="block mx-auto lg:mx-0 lg:ml-8">
+          <img src="/assets/logo.png" alt="Logo" class="h-24 lg:h-28 xl:h-32 transition-transform hover:scale-105">
+        </a>
+      
+        <!-- HAMBURGER BUTTON (Mobile Only) -->
+        <button id="openSidebar" 
+          class="lg:hidden text-3xl text-white hover:text-gray-300 absolute right-4 top-1/2 transform -translate-y-1/2 pr-4">
+          ☰
+        </button>
+      
+        <!-- MAIN NAVIGATION (Hidden on Mobile, Visible on Large Screens) -->
+        <nav id="main-nav" class="hidden lg:flex space-x-6 absolute lg:relative right-4 lg:right-auto">
+          <a href="/" class="nav-link text-white hover:text-gray-300 transition">Home</a>
+          <a href="/profile" class="nav-link text-white hover:text-gray-300 transition">Profile</a>
+          <a href="/manageListings" class="nav-link text-white hover:text-gray-300 transition">Manage Listings</a>
+          <a href="/login" class="nav-link text-white hover:text-gray-300 transition">Login</a>
+          <a href="/register" class="nav-link text-white hover:text-gray-300 transition">Register</a>
+        </nav>
+      </header>
+      
+    
+      <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
+      
+      <aside id="sidebar" class="fixed top-0 right-0 h-screen w-64 bg-[#4F3D35] shadow-lg transform translate-x-full transition-transform duration-300">
+
+        <button id="closeSidebar" class="absolute top-4 right-4 text-white hover:text-gray-300 transition text-3xl">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white hover:text-gray-300 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+          <nav id="sidebar-nav" class="p-6 space-y-6 flex flex-col"></nav>
+      </aside>
+
+  </div>
+</body>
+</html>

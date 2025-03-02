@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="./.././.././../styles/main.css">
+  <script type="module" src="./.././.././../js/app.js"></script>
+  </head>
+  <body class="bg-background text-text flex flex-col min-h-screen">
+    <main id="main-container" class="flex flex-col justify-center items-center p-16">
+
+      <h1 class="text-xl font-bold text-center mb-6">Register</h1>
+
+      <form id="registerForm" class="w-full max-w-2xl bg-gray-100 shadow-lg rounded-lg p-6">
+        
+        <!-- Username -->
+        <div>
+          <label for="userName" class="block font-semibold">Username</label>
+          <input type="text" id="userName" name="name" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Only letters, numbers, and underscores" />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block font-semibold">Email</label>
+          <input type="email" id="email" name="email" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Must be @stud.noroff.no" />
+        </div>
+
+        <!-- Password & Confirm Password -->
+        <div>
+          <label for="password" class="block font-semibold">Password</label>
+          <input type="password" id="password" name="password" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Min 8 characters" />
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block font-semibold">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required 
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Repeat password" />
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label for="bio" class="block font-semibold">Short Bio</label>
+          <textarea id="bio" name="bio" rows="3"
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Max 160 characters"></textarea>
+        </div>
+
+        <!-- Avatar -->
+        <div>
+          <label for="avatarUrl" class="block font-semibold">Avatar Image URL</label>
+          <input type="url" id="avatarUrl" name="avatarUrl"
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Image URL" />
+        </div>
+
+        <div>
+          <label for="avatarAlt" class="block font-semibold">Avatar Alt Text</label>
+          <input type="text" id="avatarAlt" name="avatarAlt"
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="Alt text (max 120 chars)" />
+        </div>
+
+        <!-- Banner -->
+        <div>
+          <label for="bannerUrl" class="block font-semibold">Banner Image URL</label>
+          <input type="url" id="bannerUrl" name="bannerUrl"
+            class="w-full p-2 border rounded" placeholder="Image URL" />
+        </div>
+
+        <div>
+          <label for="bannerAlt" class="block font-semibold">Banner Alt Text</label>
+          <input type="text" id="bannerAlt" name="bannerAlt"
+            class="w-full p-2 border rounded" placeholder="Alt text (max 120 chars)" />
+        </div>
+
+        <!-- Venue Manager Checkbox -->
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="venueManager" name="venueManager">
+          <label for="venueManager" class="font-semibold">Register as a Venue Manager</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-primary text-white py-2 rounded hover:bg-secondary transition">
+          Register
+        </button>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="text-red-600 font-semibold mt-2 hidden"></div>
+        <div id="successMessage" class="text-green-600 font-semibold mt-2 hidden"></div>
+
+      </form>
+    </main>
+
+    <footer class="bg-accent text-white py-6 mt-8">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2025 The Auction House. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+  </body>
+</html>
