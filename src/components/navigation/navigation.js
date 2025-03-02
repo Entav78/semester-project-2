@@ -76,14 +76,19 @@ export class Navigation {
       } else {
         button.addEventListener("click", (event) => {
           event.preventDefault();
+      
+          if (typeof fullPath === "undefined") {
+              console.warn("⚠️ fullPath is not defined. Setting default.");
+              fullPath = "/";
+          }
+      
           const cleanPath = fullPath.replace(/\/\//g, "/");
+          console.log(`🔄 Before Navigation: ${fullPath}`);
           console.log(`🚀 Final Clean Path: ${cleanPath}`);
-          window.history.pushState({}, "", cleanPath);  // ✅ Use the cleaned path
-          router(cleanPath);
-        });
-        
+      
+          window.history.pushState({}, "", cleanPath);  
+      });
       }
-
       const listItem = document.createElement("li");
       listItem.className = "nav-item";
       listItem.appendChild(button);
