@@ -1,4 +1,5 @@
-import { Navigation } from "../../../components/navigation/navigation.js";
+import { Navigation } from "/semester-project-2/dist/components/navigation/navigation.js"; // ✅ Fix for GitHub Pages
+
 import { router } from "../pages/router/router.js";
 import { initializeRegisterPage } from "../pages/auth/register/register.js";
 import { initializeLoginPage } from "../../pages/auth/login/login.js";
