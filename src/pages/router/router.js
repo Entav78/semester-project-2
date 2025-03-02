@@ -62,6 +62,8 @@ export async function router(pathname = window.location.pathname) {
 
         console.log(`📂 Fetching HTML from: ${htmlPath}`);
         console.log(`📦 Fetching JS module: ${jsModule}`);
+        console.log(`🛠️ Debugging htmlPath: ${htmlPath}`);
+
 
         try {
             const response = await fetch(htmlPath);
@@ -113,45 +115,69 @@ export async function router(pathname = window.location.pathname) {
         switch (cleanPathname) {
             case "":
             case "home":
-                loadPage("/", `${basePath}/index.html`, `${basePath}/pages/home/home.js`, "initializeHomePage");
+                loadPage("/", 
+                    `${basePath}/index.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/home/home.js`.replace(/\/\//g, "/"), 
+                    "initializeHomePage"
+                );
                 break;
-
+    
             case "login":
-                loadPage("/login", `${basePath}/pages/auth/login/login.html`, `${basePath}/pages/auth/login/login.js`, "initializeLoginPage");
+                loadPage("/login", 
+                    `${basePath}/pages/auth/login/login.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/auth/login/login.js`.replace(/\/\//g, "/"), 
+                    "initializeLoginPage"
+                );
                 break;
-
+    
             case "register":
-                loadPage("/register", `${basePath}/pages/auth/register/register.html`, `${basePath}/pages/auth/register/register.js`, "initializeRegisterPage");
+                loadPage("/register", 
+                    `${basePath}/pages/auth/register/register.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/auth/register/register.js`.replace(/\/\//g, "/"), 
+                    "initializeRegisterPage"
+                );
                 break;
-
+    
             case "profile":
-                loadPage("/profile", `${basePath}/pages/profile/profile.html`, `${basePath}/pages/profile/profile.js`, "initializeProfilePage")
-                    .catch(error => console.error(`❌ Error loading Profile Page:`, error));
+                loadPage("/profile", 
+                    `${basePath}/pages/profile/profile.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/profile/profile.js`.replace(/\/\//g, "/"), 
+                    "initializeProfilePage"
+                ).catch(error => console.error(`❌ Error loading Profile Page:`, error));
                 break;
-
+    
             case "manageListings":
-                loadPage("/manageListings", `${basePath}/pages/manageListings/manageListings.html`, `${basePath}/pages/manageListings/manageListings.js`, "initializeManageListingsPage");
+                loadPage("/manageListings", 
+                    `${basePath}/pages/manageListings/manageListings.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/manageListings/manageListings.js`.replace(/\/\//g, "/"), 
+                    "initializeManageListingsPage"
+                );
                 break;
-
-                case "item":
-                    loadPage("/item", `${basePath}/pages/item/item.html`, `${basePath}/pages/item/item.js`, "initializeItemPage")
-                        .then(() => {
-                            console.log("🔄 Re-initializing navigation on Item Page...");
-                            if (window.mainNavigation) {
-                                window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
-                            }
-                        })
-                        .catch(error => console.error("❌ Error loading Item Page:", error));
-                    break;
-                
-
+    
+            case "item":
+                loadPage("/item", 
+                    `${basePath}/pages/item/item.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/item/item.js`.replace(/\/\//g, "/"), 
+                    "initializeItemPage"
+                ).then(() => {
+                    console.log("🔄 Re-initializing navigation on Item Page...");
+                    if (window.mainNavigation) {
+                        window.mainNavigation.updateNavbar(Boolean(localStorage.getItem("authToken")));
+                    }
+                }).catch(error => console.error("❌ Error loading Item Page:", error));
+                break;
+    
             default:
                 console.log("❌ Page Not Found - Loading 404");
-                loadPage("/404", `${basePath}/pages/notFound.html`, `${basePath}/pages/notFound.js`, "initializeNotFoundPage")
-                    .catch(error => console.error("❌ Error loading 404 Page:", error));
+                loadPage("/404", 
+                    `${basePath}/pages/notFound.html`.replace(/\/\//g, "/"), 
+                    `${basePath}/pages/notFound.js`.replace(/\/\//g, "/"), 
+                    "initializeNotFoundPage"
+                ).catch(error => console.error("❌ Error loading 404 Page:", error));
                 break;
         }
-    } catch (error) {
+    }
+     catch (error) {
         console.error("❌ Router Error:", error.message);
     }
 }
